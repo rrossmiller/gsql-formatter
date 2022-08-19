@@ -79,7 +79,14 @@ CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) F
 	PRINT @@edges as _edges; 
 	PRINT @@graph as _graph;
 	PRINT Users;
-	PRINT Friends;
+
+	PRINT Users;
+	IF current_partition == total_partitions-1 THEN
+		Friends = {Friend.*};
+		Friends = SELECT f from Friends:f
+				  ACCUM f.@id = f.id
+		PRINT Friends;
+	END
 }
 end
 install query TwitchEgosData
