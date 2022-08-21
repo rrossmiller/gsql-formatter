@@ -11,7 +11,9 @@ func GetBracketState(bracketState int, line string) int {
 	}
 	return bracketState
 }
-
+func GetIndentState(){
+	
+}
 // // come back to this with an AST. You need to know the purpose of a bracket to get the right indent
 // func Brackets(){
 // 		// fist line should not be indented
