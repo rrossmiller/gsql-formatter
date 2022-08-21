@@ -1,0 +1,40 @@
+CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
+	TypeDef Tuple <INT from_id, INT to_id> Edges; // GNN train type
+	TypeDef Tuple <INT id, STRING t> Vert; // GNN train type
+
+	// Accumulators for tracking edges and involved Vertices
+MaxAccum<INT> @graph_id, @id;
+	MapAccum<INT, SetAccum<Edges>> @@edges;
+	MapAccum<INT, SetAccum<Vert>> @@graph;
+	
+Users = {User.*};
+	Users = SELECT s FROM Users:s 
+WHERE vertex_to_int(s) % total_partitions == current_partition
+			  					ACCUM s.@id += s.id;
+
+	// max 2-hop graph (this should be enough to encompas all subgraphs anyway)
+	Friends = SELECT tgt FROM Users:s -(FRIENDSHIP:e)- _:u -(FRIENDSHIP:e)- _:tgt
+				 WHERE s.label >= 0
+		ACCUM u.@graph_id += s.id,
+				 	   u.@id += u.id,
+	  				   tgt.@graph_id += s.id,
+					   tgt.@id += tgt.id,
+	  				   // gnn stuff
+				 	   @@edges += (s.id -> Edges(s.id, u.id)),
+				 	   @@edges += (s.id -> Edges(u.id, tgt.id)),
+					   @@graph += (s.id -> Vert(s.id, s.type)),
+					   @@graph += (s.id -> Vert(u.id, u.type)),
+					   @@graph += (s.id -> Vert(tgt.id, tgt.type));
+
+	PRINT @@edges as _edges; 
+	PRINT @@graph as _graph;
+	PRINT Users;
+
+	PRINT Users;
+	IF current_partition == total_partitions-1 THEN
+		Friends = {Friend.*};
+		Friends = SELECT f from Friends:f
+				  ACCUM f.@id = f.id
+		PRINT Friends;
+	END
+}
