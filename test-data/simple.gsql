@@ -1,12 +1,4 @@
-CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
-	TypeDef Tuple <INT from_id, INT to_id> Edges; // GNN train type
-	TypeDef Tuple <INT id, STRING t> Vert; // GNN train type
-
-	// Accumulators for tracking edges and involved Vertices
-	MaxAccum<INT> @graph_id, @id;
-	MapAccum<INT, SetAccum<Edges>> @@edges;
-	MapAccum<INT, SetAccum<Vert>> @@graph;
-	
+    CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
 	Users = {User.*};
 	Users = SELECT s FROM Users:s 
 			  WHERE vertex_to_int(s) % total_partitions == current_partition
