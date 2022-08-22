@@ -10,24 +10,20 @@ import (
 
 func main() {
 	// load file
-	fp := "../test-data/simple.gsql"
+	// fp := "../test-data/simple.gsql"
+	fp := "../test-data/complex.gsql"
 	b, err := os.ReadFile(fp)
-	Check(err)
+	utils.Check(err)
 	queryString := string(b)
 
 	queryString = EqualizeSpacing(queryString)
 	// EqualizeSpacing("../test-data/complex.gsql")
 
 	queryString = CapitalizeKeywords(queryString)
-	WriteQuery(queryString, fp)
 
 	// TODO ifblock indentation (should work inside select, too)
-}
 
-func Check(err error) {
-	if err != nil {
-		panic(err)
-	}
+	WriteQuery(queryString, fp)
 }
 
 func EqualizeSpacing(queryString string) string {
@@ -89,9 +85,16 @@ func EqualizeSpacing(queryString string) string {
 func CapitalizeKeywords(queryString string) string {
 	queryStringSplit := strings.Split(queryString, " ")
 	outSlice := make([]string, 0)
+	isComment := false
 	for _, word := range queryStringSplit {
 		for _, kw := range reserved.KEYWORDS {
-			if strings.ToUpper(word) == kw {
+			if strings.Contains(word, "\n") {
+				isComment = false
+			}
+			if strings.HasPrefix(word, "//") || isComment {
+				isComment = true
+				continue
+			} else if strings.ToUpper(word) == kw {
 				word = strings.ToUpper(word)
 			}
 		}
