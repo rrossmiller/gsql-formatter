@@ -5,4 +5,6 @@ echo building
 go build
 echo running
 echo
-./pepper
+mv pepper ..
+cd ..
+./pepper $1

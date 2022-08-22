@@ -1,18 +1,18 @@
 package utils
 
-import "unicode"
+import (
+	"unicode"
+)
 
 func RemoveLeadingWhitespace(runes []rune) []rune {
 	if unicode.IsSpace(runes[0]) {
-		idx := 0
-		for i := 0; i < len(runes); i++ {
-			if unicode.IsSpace(runes[i]) {
-				idx++
-			} else {
+		i := 0
+		for ; i < len(runes); i++ {
+			if !unicode.IsSpace(runes[i]) {
 				break
 			}
 		}
-		return runes[idx:]
+		return runes[i:]
 	}
 
 	return runes

@@ -9,9 +9,12 @@ import (
 )
 
 func main() {
+	// p := flag.String("fp", "", "path to the query to format")
+	fp := os.Args[1]
 	// load file
-	fp := "../test-data/simple.gsql"
+	// fp := "../test-data/simple.gsql"
 	// fp := "../test-data/complex.gsql"
+
 	b, err := os.ReadFile(fp)
 	utils.Check(err)
 	queryString := string(b)
@@ -36,11 +39,16 @@ func EqualizeSpacing(queryString string) string {
 	}
 
 	// resest all leading whitespace/indentation
-	for i, line := range queryText {
+	tmp := make([]string, 0)
+	for _, line := range queryText {
 		// skip empty lines
-		if utf8.RuneCountInString(line) == 0 {
-			continue
+		if utf8.RuneCountInString(line) != 0 {
+			tmp = append(tmp, line)
 		}
+	}
+	queryText = tmp
+
+	for i, line := range queryText {
 		runes := []rune(line)
 		runes = utils.RemoveLeadingWhitespace(runes)
 		queryText[i] = string(runes)
@@ -59,12 +67,6 @@ func EqualizeSpacing(queryString string) string {
 				if strings.ContainsRune(queryText[j], ';') {
 					// correct indentation for the block
 					utils.SelectBlock(i, j, queryText)
-
-					// idx := 0
-					// for k := i; k <= j; k++ {
-					// 	queryText[k] = sel_out[idx]
-					// 	idx++
-					// }
 					break
 				}
 			}
