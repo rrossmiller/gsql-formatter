@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	// TODO pass string/runes instead of loading the file every time
 	EqualizeSpacing("../test-data/simple.gsql")
 	// EqualizeSpacing("../test-data/complex.gsql")
 
@@ -80,8 +81,8 @@ func EqualizeSpacing(fp string) {
 		}
 	}
 
-	out := strings.Join(queryText, "\n")
-	os.WriteFile(fp, []byte(out), 0666)
+	outSlice := strings.Join(queryText, "\n")
+	os.WriteFile(fp, []byte(outSlice), 0666)
 }
 
 func SelectBlocks(start, end int, queryText []string) []string {
@@ -89,14 +90,14 @@ func SelectBlocks(start, end int, queryText []string) []string {
 	lower := strings.ToLower(queryText[start])
 	spacingToSelect := strings.Index(lower, " select ") + 1
 
-	rtn := make([]string, end-start+1)
-	rtn[0] = queryText[start]
+	outSlice := make([]string, end-start+1)
+	outSlice[0] = queryText[start]
 
 	// set spacing for the lines
 	idx := 1
 	indentLevel := 0 // if the line is a WHERE/Accum, subsequent lines should be indented again
 	for i := start + 1; i <= end; i++ {
-		rtn[idx] = strings.Repeat(" ", spacingToSelect) + queryText[i]
+		outSlice[idx] = strings.Repeat(" ", spacingToSelect) + queryText[i]
 		if containsSelectKeyword(queryText[i]) {
 			if indentLevel > 0 {
 				indentLevel--
@@ -104,7 +105,7 @@ func SelectBlocks(start, end int, queryText []string) []string {
 				indentLevel++
 			}
 		} else {
-			rtn[idx] = reserved.HALF_INDENTATION + rtn[idx]
+			outSlice[idx] = reserved.HALF_INDENTATION + outSlice[idx]
 
 		}
 		idx++
@@ -113,7 +114,7 @@ func SelectBlocks(start, end int, queryText []string) []string {
 	// if the next line is not blank, insert an empty line
 	if end < len(queryText) {
 		if queryText[end+1] != "" {
-			rtn[len(rtn)-1] += "\n"
+			outSlice[len(outSlice)-1] += "\n"
 		} else {
 			// leave only one space between query blocks
 			for j := end + 2; j < len(queryText); j++ {
@@ -124,7 +125,7 @@ func SelectBlocks(start, end int, queryText []string) []string {
 			}
 		}
 	}
-	return rtn
+	return outSlice
 
 }
 
@@ -139,7 +140,21 @@ func containsSelectKeyword(line string) bool {
 }
 
 func CapitalizeKeywords(fp string) {
-	// // load file
-	// b, err := os.ReadFile(fp)
-	// Check(err)
+	// load file
+	b, err := os.ReadFile(fp)
+	Check(err)
+
+	queryStringSplit := strings.Split(string(b), " ")
+	outSlice := make([]string, 0)
+	for _, word := range queryStringSplit {
+		for _, kw := range reserved.KEYWORDS {
+			if strings.ToUpper(word) == kw {
+				word = strings.ToUpper(word)
+			}
+		}
+		outSlice = append(outSlice, word)
+	}
+
+	out := strings.Join(outSlice, " ")
+	os.WriteFile(fp, []byte(out), 0666)
 }
