@@ -7,6 +7,7 @@ Format gsql queries so that you can spend more time writing and less time format
 Sample results:
 ```sql
     CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
+        // This is a comment
 Users = {User.*};
 	Users = SELECT s FROM Users:s 
 			             WHERE vertex_to_int(s) % total_partitions == current_partition
@@ -22,6 +23,7 @@ PRINT Users;
 Is formatted to...
 ```sql
 CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
+    // This is a comment
     Users = {User.*};
     Users = SELECT s FROM Users:s 
             WHERE vertex_to_int(s) % total_partitions == current_partition
