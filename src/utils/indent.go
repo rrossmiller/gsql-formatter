@@ -15,7 +15,7 @@ func GetBracketState(bracketState int, line string) int {
 	return bracketState
 }
 
-func SelectBlocks(start, end int, queryText []string) []string {
+func SelectBlock(start, end int, queryText []string) []string {
 	// get the number of spaces to the 'S' in SELECT
 	lower := strings.ToLower(queryText[start])
 	spacingToSelect := strings.Index(lower, " select ") + 1
@@ -27,7 +27,7 @@ func SelectBlocks(start, end int, queryText []string) []string {
 	idx := 1
 	indentLevel := 0 // if the line is a WHERE/Accum, subsequent lines should be indented again
 	for i := start + 1; i <= end; i++ {
-		outSlice[idx] = strings.Repeat(" ", spacingToSelect) + queryText[i]
+		queryText[i] = strings.Repeat(" ", spacingToSelect) + queryText[i]
 		if reserved.ContainsSelectKeyword(queryText[i]) {
 			if indentLevel > 0 {
 				indentLevel--
@@ -35,27 +35,38 @@ func SelectBlocks(start, end int, queryText []string) []string {
 				indentLevel++
 			}
 		} else {
-			outSlice[idx] = reserved.HALF_INDENTATION + outSlice[idx]
+			queryText[i] = reserved.HALF_INDENTATION + queryText[i]
 
 		}
 		idx++
 	}
 
-	// if the next line is not blank, insert an empty line
-	if end < len(queryText) {
-		if queryText[end+1] != "" {
-			outSlice[len(outSlice)-1] += "\n"
-		} else {
-			// leave only one space between query blocks
-			for j := end + 2; j < len(queryText); j++ {
-				if queryText[j] != "" {
-					queryText = append(queryText[:end+1], queryText[j-1:]...)
-					break
-				}
-			}
-		}
-	}
-	return outSlice
+	// 	idx := 0
+	// 	for k := i; k <= j; k++ {
+	// 		queryText[k] = sel_out[idx]
+	// 		idx++
+	// 	}
+	// 	break
+	// }
+	// 	//fixme buggy
+	// 	// if the next line is not blank, insert an empty line
+	// 	if end < len(queryText) {
+	// 		if queryText[end+1] != "" {
+	// 			outSlice[len(outSlice)-1] += "\n"
+	// 		} else {
+	// 			fmt.Printf("end: %v\n", end)
+	// 			// leave only one space between query blocks
+	// 			j := end + 2
+	// 			for ; j < len(queryText); j++ {
+	// 				if queryText[j] != "" {
+	// 					fmt.Printf("j: %v\n", j)
+	// 					break
+	// 				}
+	// 			}
+	// 			outSlice = append(queryText[:end+1], queryText[j:]...)
+	// 		}
+	// 	}
+	return queryText
 }
 
 // // come back to this with an AST. You need to know the purpose of a bracket to get the right indent

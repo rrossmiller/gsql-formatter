@@ -10,8 +10,8 @@ import (
 
 func main() {
 	// load file
-	// fp := "../test-data/simple.gsql"
-	fp := "../test-data/complex.gsql"
+	fp := "../test-data/simple.gsql"
+	// fp := "../test-data/complex.gsql"
 	b, err := os.ReadFile(fp)
 	utils.Check(err)
 	queryString := string(b)
@@ -58,18 +58,33 @@ func EqualizeSpacing(queryString string) string {
 			for j := i; j < len(queryText); j++ {
 				if strings.ContainsRune(queryText[j], ';') {
 					// correct indentation for the block
-					sel_out := utils.SelectBlocks(i, j, queryText)
+					utils.SelectBlock(i, j, queryText)
 
-					idx := 0
-					for k := i; k <= j; k++ {
-						queryText[k] = sel_out[idx]
-						idx++
-					}
+					// idx := 0
+					// for k := i; k <= j; k++ {
+					// 	queryText[k] = sel_out[idx]
+					// 	idx++
+					// }
 					break
 				}
 			}
-
 		}
+		// if lower := strings.ToLower(line); strings.Contains(lower, "if ") {
+		// 	// find which line the IF statement ends on --> j
+		// 	for j := i; j < len(queryText); j++ {
+		// 		if queryText[j] == "end" {
+		// 			// correct indentation for the block
+		// 			sel_out := utils.IfBlock(i, j, queryText)
+
+		// 			idx := 0
+		// 			for k := i; k <= j; k++ {
+		// 				queryText[k] = sel_out[idx]
+		// 				idx++
+		// 			}
+		// 			break
+		// 		}
+		// 	}
+		// }
 
 		// default one indentation for query body
 		if i > 0 && i < len(queryText)-1 {
