@@ -1,0 +1,13 @@
+    create QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
+Users = {User.*};
+	Users = SELECT s FROM Users:s 
+			             WHERE vertex_to_int(s) % total_partitions == current_partition
+						 And testCondition
+            
+			  Accum s.@id += s.id,
+              @@anotheraccum += 0;
+
+
+        
+PRINT Users;
+}
