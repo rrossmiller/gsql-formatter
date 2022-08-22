@@ -9,14 +9,19 @@ import (
 )
 
 func main() {
-	// TODO pass string/runes instead of loading the file every time
-	EqualizeSpacing("../test-data/simple.gsql")
+	// load file
+	fp := "../test-data/simple.gsql"
+	b, err := os.ReadFile(fp)
+	Check(err)
+	queryString := string(b)
+
+	queryString = EqualizeSpacing(queryString)
 	// EqualizeSpacing("../test-data/complex.gsql")
 
-	// caps keywords
-	CapitalizeKeywords("../test-data/simple.gsql")
-	// writebytes()
-	// ifblock indentation (should work inside select, too)
+	queryString = CapitalizeKeywords(queryString)
+	WriteQuery(queryString, fp)
+
+	// TODO ifblock indentation (should work inside select, too)
 }
 
 func Check(err error) {
@@ -25,13 +30,9 @@ func Check(err error) {
 	}
 }
 
-func EqualizeSpacing(fp string) {
-	// load file
-	b, err := os.ReadFile(fp)
-	Check(err)
-
+func EqualizeSpacing(queryString string) string {
 	// split into lines
-	queryText := strings.Split(string(b), "\n")
+	queryText := strings.Split(queryString, "\n")
 
 	// remove a file's trailing newline
 	if queryText[len(queryText)-1] == "" {
@@ -61,7 +62,7 @@ func EqualizeSpacing(fp string) {
 			for j := i; j < len(queryText); j++ {
 				if strings.ContainsRune(queryText[j], ';') {
 					// correct indentation for the block
-					sel_out := SelectBlocks(i, j, queryText)
+					sel_out := utils.SelectBlocks(i, j, queryText)
 
 					idx := 0
 					for k := i; k <= j; k++ {
@@ -82,69 +83,11 @@ func EqualizeSpacing(fp string) {
 	}
 
 	outSlice := strings.Join(queryText, "\n")
-	os.WriteFile(fp, []byte(outSlice), 0666)
-}
-
-func SelectBlocks(start, end int, queryText []string) []string {
-	// get the number of spaces to the 'S' in SELECT
-	lower := strings.ToLower(queryText[start])
-	spacingToSelect := strings.Index(lower, " select ") + 1
-
-	outSlice := make([]string, end-start+1)
-	outSlice[0] = queryText[start]
-
-	// set spacing for the lines
-	idx := 1
-	indentLevel := 0 // if the line is a WHERE/Accum, subsequent lines should be indented again
-	for i := start + 1; i <= end; i++ {
-		outSlice[idx] = strings.Repeat(" ", spacingToSelect) + queryText[i]
-		if containsSelectKeyword(queryText[i]) {
-			if indentLevel > 0 {
-				indentLevel--
-			} else {
-				indentLevel++
-			}
-		} else {
-			outSlice[idx] = reserved.HALF_INDENTATION + outSlice[idx]
-
-		}
-		idx++
-	}
-
-	// if the next line is not blank, insert an empty line
-	if end < len(queryText) {
-		if queryText[end+1] != "" {
-			outSlice[len(outSlice)-1] += "\n"
-		} else {
-			// leave only one space between query blocks
-			for j := end + 2; j < len(queryText); j++ {
-				if queryText[j] != "" {
-					queryText = append(queryText[:end+1], queryText[j-1:]...)
-					break
-				}
-			}
-		}
-	}
 	return outSlice
-
 }
 
-func containsSelectKeyword(line string) bool {
-	for _, kw := range reserved.SELECT_KEYWORDS {
-		if strings.Contains(line, kw) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func CapitalizeKeywords(fp string) {
-	// load file
-	b, err := os.ReadFile(fp)
-	Check(err)
-
-	queryStringSplit := strings.Split(string(b), " ")
+func CapitalizeKeywords(queryString string) string {
+	queryStringSplit := strings.Split(queryString, " ")
 	outSlice := make([]string, 0)
 	for _, word := range queryStringSplit {
 		for _, kw := range reserved.KEYWORDS {
@@ -156,5 +99,9 @@ func CapitalizeKeywords(fp string) {
 	}
 
 	out := strings.Join(outSlice, " ")
-	os.WriteFile(fp, []byte(out), 0666)
+	return out
+}
+
+func WriteQuery(query, fp string) {
+	os.WriteFile(fp, []byte(query), 0666)
 }
