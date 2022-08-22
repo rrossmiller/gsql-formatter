@@ -1,5 +1,7 @@
 # gsql-formatter
-🚧 Under development. put the path to your file in the main func. Then, `./run.sh`
+🚧 Under development. 
+To run: `./run.sh <path/to/query.gsql>`
+To run in dev mode: `./run.sh -dev <path/to/query.gsql>`
 
 Format gsql queries so that you can spend more time writing and less time formatting your code for readability.
 
