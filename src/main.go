@@ -4,15 +4,16 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"gourmet/reserved"
+	"gourmet/utils"
 	"os"
-	"pepper/reserved"
-	"pepper/utils"
 	"strings"
 	"unicode/utf8"
 )
 
 func main() {
-	dev := flag.Bool("dev", true, "reset query after execution")
+	dev := flag.Bool("dev", false, "reset query after execution")
+
 	var fp string
 	flag.Parse()
 	// parse args
@@ -122,7 +123,7 @@ func CapitalizeKeywords(queryString string) string {
 			if strings.HasPrefix(word, "//") || isComment {
 				isComment = true
 				continue
-			} else if strings.ToUpper(word) == kw {
+			} else if w := strings.ReplaceAll(word, "\n", ""); strings.ToUpper(w) == kw {
 				word = strings.ToUpper(word)
 			}
 		}

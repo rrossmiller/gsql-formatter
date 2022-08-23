@@ -7,7 +7,8 @@ Users = {User.*};
 			  Accum s.@id += s.id,
               @@anotheraccum += 0;
 
-
-        
+if (condition) then 
+	Users = SELECT s FROM Users:s ;
+	end
 PRINT Users;
 }

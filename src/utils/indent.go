@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"pepper/reserved"
+	"gourmet/reserved"
 	"strings"
 )
 
