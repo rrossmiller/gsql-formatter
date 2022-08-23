@@ -1,12 +1,11 @@
-rm pepper
+rm gourmet
 clear
 cd src
 echo building
 go build
 echo running
 echo
-mv pepper ..
-# cd ..
-# ./pepper 
+mv gourmet ..
+
 echo "run this:
-  ./pepper -dev path/to/query.gsql"
+  ./gourmet -dev path/to/query.gsql"
