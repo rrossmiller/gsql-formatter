@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"gourmet/reserved"
 	"strings"
 )
@@ -26,16 +27,19 @@ func SelectBlock(start, end int, queryText []string) {
 	// set spacing for the lines
 	idx := 1
 	indentLevel := 0 // if the line is a WHERE/Accum, subsequent lines should be indented again
+	currentKW:=""
 	for i := start + 1; i <= end; i++ {
 		queryText[i] = strings.Repeat(" ", spacingToSelect) + queryText[i]
-		if reserved.ContainsSelectKeyword(queryText[i]) {
+		if kw, ans := reserved.ContainsSelectKeyword(queryText[i]); ans {
+			currentKW = kw
 			if indentLevel > 0 {
 				indentLevel--
 			} else {
 				indentLevel++
 			}
 		} else {
-			queryText[i] = reserved.HALF_INDENTATION + queryText[i]
+			fmt.Printf("kw: %v\n", currentKW)
+			queryText[i] = reserved.SPEC_INDENTATION[currentKW] + queryText[i]
 		}
 		idx++
 	}

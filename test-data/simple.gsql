@@ -3,7 +3,7 @@ Users = {User.*};
 	Users = SELECT s FROM Users:s 
 			             WHERE vertex_to_int(s) % total_partitions == current_partition
 						 And testCondition
-            
+            and testCondition
 			  Accum s.@id += s.id,
               @@anotheraccum += 0;
 
