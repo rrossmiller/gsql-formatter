@@ -72,6 +72,8 @@ func EqualizeSpacing(queryString string) string {
 	queryText = tmp
 
 	for i, line := range queryText {
+		// if the line is an if statement
+		... you restarted the logic
 		// if the line is a select statement
 		if lower := strings.ToLower(line); strings.Contains(lower, " select ") {
 			// find which line the select statement ends on --> j
@@ -83,27 +85,10 @@ func EqualizeSpacing(queryString string) string {
 				}
 			}
 		}
-		// if lower := strings.ToLower(line); strings.Contains(lower, "if ") {
-		// 	// find which line the IF statement ends on --> j
-		// 	for j := i; j < len(queryText); j++ {
-		// 		if queryText[j] == "end" {
-		// 			// correct indentation for the block
-		// 			sel_out := utils.IfBlock(i, j, queryText)
-
-		// 			idx := 0
-		// 			for k := i; k <= j; k++ {
-		// 				queryText[k] = sel_out[idx]
-		// 				idx++
-		// 			}
-		// 			break
-		// 		}
-		// 	}
-		// }
 
 		// default one indentation for query body
 		if i > 0 && i < len(queryText)-1 {
-			queryText[i] = reserved.INDENTATION + queryText[i] // TODO change to config.NumIndents or something like that
-
+			queryText[i] = utils.INDENTATION + queryText[i] // TODO change to config.NumIndents or something like that
 		}
 	}
 

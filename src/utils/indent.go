@@ -39,7 +39,7 @@ func SelectBlock(start, end int, queryText []string) {
 			}
 		} else {
 			fmt.Printf("kw: %v\n", currentKW)
-			queryText[i] = reserved.SPEC_INDENTATION[currentKW] + queryText[i]
+			queryText[i] = KW_INDENTATION[currentKW] + queryText[i]
 		}
 		idx++
 	}
