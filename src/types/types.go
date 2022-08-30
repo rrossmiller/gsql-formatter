@@ -110,29 +110,21 @@ type Name struct {
 }
 
 type GraphName Name
-
 type QueryName Name
 type ParamName Name
+type AccumName Name
+type VertexSetName Name
+type AttrName Name
+type VarName Name
+type TupleType Name
+type FieldName Name
+type FuncName Name
 
 type VertexType struct {
 }
 
 type EdgeType struct {
 }
-
-type AccumName Name
-
-type VertexSetName Name
-
-type AttrName Name
-
-type VarName Name
-
-type TupleType Name
-
-type FieldName Name
-
-type FuncName Name
 
 type Type struct {
 }
