@@ -1,4 +1,4 @@
-package types
+package main
 
 import "fmt"
 
@@ -21,7 +21,8 @@ type ParameterConstant struct {
 type ParameterList struct {
 }
 
-type SyntaxName Name
+type SyntaxName struct {
+}
 
 type QueryBody struct {
 }
@@ -106,13 +107,16 @@ type StringLiteral struct {
 }
 
 type Name struct {
-	Str *string `@String`
 }
 
-type GraphName Name
+type GraphName struct {
+}
 
-type QueryName Name
-type ParamName Name
+type QueryName struct {
+}
+
+type ParamName struct {
+}
 
 type VertexType struct {
 }
@@ -120,19 +124,26 @@ type VertexType struct {
 type EdgeType struct {
 }
 
-type AccumName Name
+type AccumName struct {
+}
 
-type VertexSetName Name
+type VertexSetName struct {
+}
 
-type AttrName Name
+type AttrName struct {
+}
 
-type VarName Name
+type VarName struct {
+}
 
-type TupleType Name
+type TupleType struct {
+}
 
-type FieldName Name
+type FieldName struct {
+}
 
-type FuncName Name
+type FuncName struct {
+}
 
 type Type struct {
 }
@@ -225,9 +236,11 @@ type ColumnId struct {
 }
 
 type AssignStmt struct {
-	Name     string `@Ident "="`
-	Expr     string `"=" @Ident`
-	AttrName `@@`
+	Name string `@Ident "="`
+	AttrName
+	Expr string `"=" @Ident`
+	// name "=" expr
+	// | name "." attrName "=" expr
 }
 
 type AttrAccumStmt struct {
