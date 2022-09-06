@@ -10,20 +10,25 @@ import (
 )
 
 func main() {
+	fmt.Print("running\n\n")
 	parser, err := participle.Build[types.SelectStmt]()
-	utils.Check(err)
+	utils.Check(err, "")
 	stmts := [10]string{
-		`Users = SELECT s FROM asdf`,
-		"Users = SELECT s FROM Src:s",
-		"Users = SELECT s FROM Src:s -()-> VType",
+		"Users = SELECT s FROM Src;",
+		"Users = SELECT s FROM Src:s;",
+		"Users = SELECT s FROM Src:s -(Etype:e)-VType;",
+		"Users = SELECT s FROM Src:s -(DirEdge:e)-> VType:alias;",
 	}
 
 	for _, v := range stmts {
+		if v == "" {
+			continue
+		}
 		fmt.Println("***")
-		ini, err := parser.ParseString("", v)
+		gsql, err := parser.ParseString("", v)
 		fmt.Printf("%v\n", v)
-		utils.Check(err)
+		utils.Check(err, v)
 		fmt.Println("\n\nrepr:")
-		repr.Println(ini, repr.Indent("  "), repr.OmitEmpty(true))
+		repr.Println(gsql, repr.Indent("  "), repr.OmitEmpty(true))
 	}
 }

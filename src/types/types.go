@@ -41,27 +41,27 @@ type Query struct {
 }
 
 type QueryBodyStmt struct {
-	*AssignStmt           `@@`   // Assignment
-	*VSetVarDeclStmt      `| @@` // Declaration
-	*DeclStmts            `| @@` // Declaration
-	*LAccumAssignStmt     `| @@` // Assignment
-	*GAccumAssignStmt     `| @@` // Assignment
-	*GAccumAccumStmt      `| @@` // Assignment
-	*FuncCallStmt         `| @@` // Function Call
-	*SelectStmt           `| @@` // Select
-	*QueryBodyCaseStmt    `| @@` // Control Flow
-	*QueryBodyIfStmt      `| @@` // Control Flow
-	*QueryBodyWhileStmt   `| @@` // Control Flow
-	*QueryBodyForEachStmt `| @@` // Control Flow
-	*UpdateStmt           `| @@` // Data Modification
-	*InsertStmt           `| @@` // Data Modification
-	*QueryBodyDeleteStmt  `| @@` // Data Modification
-	*PrintStmt            `| @@` // Output
-	*PrintlnStmt          `| @@` // Output
-	*LogStmt              `| @@` // Output
-	*ReturnStmt           `| @@` // Output
-	*RaiseStmt            `| @@` // Exception
-	*TryStmt              `| @@` // Exception
+	// *AssignStmt `@@` // Assignment
+	// // *VSetVarDeclStmt      `| @@` // Declaration
+	// *DeclStmts            `| @@` // Declaration
+	// *LAccumAssignStmt     `| @@` // Assignment
+	// *GAccumAssignStmt     `| @@` // Assignment
+	// *GAccumAccumStmt      `| @@` // Assignment
+	// *FuncCallStmt         `| @@` // Function Call
+	SelectStmt *SelectStmt `| @@` // Select
+	// *QueryBodyCaseStmt    `| @@` // Control Flow
+	// *QueryBodyIfStmt      `| @@` // Control Flow
+	// *QueryBodyWhileStmt   `| @@` // Control Flow
+	// *QueryBodyForEachStmt `| @@` // Control Flow
+	// *UpdateStmt           `| @@` // Data Modification
+	// *InsertStmt           `| @@` // Data Modification
+	// *QueryBodyDeleteStmt  `| @@` // Data Modification
+	// *PrintStmt            `| @@` // Output
+	// *PrintlnStmt          `| @@` // Output
+	// *LogStmt              `| @@` // Output
+	// *ReturnStmt           `| @@` // Output
+	// *RaiseStmt            `| @@` // Exception
+	// *TryStmt              `| @@` // Exception
 	// BREAK                // Control Flow
 	// CONTINUE             // Control Flow
 
@@ -182,40 +182,40 @@ type LocalVarDeclStmt struct {
 type AssignDeclLocalTuple struct {
 }
 
-type VSetVarDeclStmt struct {
-	VertexSetName string `@Ident`
-	VertexType    `["(" @@ ")"]`
-	SeedSet       `"=" @@`
-	SimpleSet     `| "=" @@`
-	SelectStmt    `| "=" @@`
-}
+// type VSetVarDeclStmt struct {
+// 	VertexSetName string     `@Ident`
+// 	VertexType    VertexType `['(' @@ ')']`
+// 	SeedSet       SeedSet    `'=' @@`
+// 	SimpleSet  SimpleSet  `| '=' @@`
+// 	SelectStmt SelectStmt `| '=' @@`
+// }
 
 type SimpleSet struct {
 	VertexSetName string `@Ident`
 }
 
-type SeedSet struct {
-	Seed `"{" [@@ ["," @@ ]*] "}"`
-}
+// type SeedSet struct {
+// 	Seed Seed `'{' [@@ [',' @@ ]*] '}'`
+// }
 
-type Seed struct {
-	Seed             string `"_" | "ANY"`
-	VertexSetName    string `|@Ident`
-	GlobalAccumName  `| @@`
-	VertexType       `| @@ ".*"`
-	ParamName        string `|@Ident`
-	SelectVertParams `| "SelectVertex" @@`
-}
+// type Seed struct {
+// 	Seed             string           `'_' | 'ANY'`
+// 	VertexSetName    string           `|@Ident`
+// 	GlobalAccumName  GlobalAccumName  `| @@`
+// 	VertexType       VertexType       `| @@ '.*'`
+// 	ParamName        string           `|@Ident`
+// 	SelectVertParams SelectVertParams `| 'SelectVertex' @@`
+// }
 
-type SelectVertParams struct {
-}
+// type SelectVertParams struct {
+// }
 
 type ColumnId struct {
 }
 
 type AssignStmt struct {
-	Name     string `@Ident "="`
-	Expr     string `"=" @Ident`
+	Name     string `@Ident '='`
+	Expr     string `'=' @Ident`
 	AttrName string `@Ident`
 }
 
@@ -240,9 +240,13 @@ type FuncCallStmt struct {
 type ArgList struct {
 }
 
+type Alias struct {
+	Alias string `':' @Ident`
+}
+
 type SelectStmt struct {
 	GsqlSelectBlock `@@`
-	SqlSelectBlock  `| @@`
+	// SqlSelectBlock  `| @@`
 }
 
 type GsqlSelectBlock struct {
@@ -258,39 +262,51 @@ type GsqlSelectBlock struct {
 	// TODO HavingClause    `[ @@ ]`  // [havingClause]
 	// TODO OrderClause     `[ @@ ]`  // [orderClause]
 	// TODO LimitClause     `[ @@ ]`  // [limitClause]
+	EndColon string `";"`
 }
 
 type GsqlSelectClause struct {
-	VertexSetName string `@Ident "="`
-	VertexAlias   string `"SELECT" @Ident`
+	VertexSetName string `@Ident '='`
+	VertexAlias   string `'SELECT' @Ident`
 }
 
 type FromClause struct {
-	From string `"FROM"`
-	Step `@@`
+	StepSourceSet StepSourceSet `'FROM' @@`
+	Step          Step          `@@?`
 	// StepV2      `|(@@)`
-	// PathPattern `(@@ ["," @@]*)`
+	// PathPattern `(@@ [',' @@]*)`
 }
 
+type StepSourceSet struct {
+	VertexSetName string `@Ident`
+	VertexAlias   Alias  `@@?`
+}
 type Step struct {
-	StepSourceSet `@@`
-	// leadingBracket string `["-" "("]`
-	// StepEdgeSet    `[@@]`
-	// trailingArrow  string `[ ")" ("->" | "-") ]`
-	// StepVertexSet  `[@@]`
+	StepEdgeSet   StepEdgeSet   `( '-' '(' @@ ')' '-' '>'? )`
+	StepVertexSet StepVertexSet `@@?`
 }
 
 type StepV2 struct {
 }
 
-type StepSourceSet struct {
-	VertexSetName string `@Ident`
-	VertexAlias   Alias  `[@@]`
+type StepEdgeSet struct {
+	StepEdgeTypes StepEdgeTypes `@@`
+	EdgeAlias     Alias         `@@?`
 }
 
-type StepEdgeSet struct {
-	StepEdgeTypes `@@`
-	EdgeAlias     Alias `@@`
+type StepEdgeTypes struct {
+	EdgeType string `@Ident | '_' | 'ANY'`
+	// GlobalAccumName `|@@` //paramName | globalAccumName
+}
+
+type StepVertexSet struct {
+	StepVertexTypes StepVertexTypes `@@`
+	VertAlias       Alias           `@@?`
+}
+
+type StepVertexTypes struct {
+	VertType string `@Ident | '_' | 'ANY'`
+	// GlobalAccumName `|@@` //paramName | globalAccumName
 }
 
 type SqlSelectBlock struct {
@@ -314,31 +330,6 @@ type ColumnName struct {
 }
 
 type TableName struct {
-}
-
-type StepVertexSet struct {
-}
-
-type Alias struct {
-	Alias string `":" @Ident`
-}
-
-type StepEdgeTypes struct {
-	AtomicEdgeType `@@`
-	EdgeSetType    ` |@@`
-}
-
-type AtomicEdgeType struct {
-	Generic  string `"_" | "ANY" `
-	EdgeType string `| @Ident`
-}
-
-type EdgeSetType struct {
-	Name            string `@Ident` //| paramName |
-	GlobalAccumName `|@@`
-}
-
-type StepVertexTypes struct {
 }
 
 type AtomicVertexType struct {
