@@ -36,8 +36,8 @@ type DeclStmt struct {
 type DeclExceptStmts struct {
 }
 
-type QueryBodyStmts struct {
-	QueryBodyStmt []*QueryBodyStmt `@@*`
+type Query struct {
+	QueryBodyStmts []*QueryBodyStmt `@@*`
 }
 
 type QueryBodyStmt struct {
@@ -107,21 +107,7 @@ type Name struct {
 	Str string `@Ident`
 }
 
-type GraphName Name
-type QueryName Name
-type ParamName Name
-type AccumName Name
-type VertexSetName Name
-type AttrName Name
-type VarName Name
-type TupleType Name
-type FieldName Name
-type FuncName Name
-
 type VertexType struct {
-}
-
-type EdgeType struct {
 }
 
 type Type struct {
@@ -197,7 +183,7 @@ type AssignDeclLocalTuple struct {
 }
 
 type VSetVarDeclStmt struct {
-	VertexSetName `@@`
+	VertexSetName string `@Ident`
 	VertexType    `["(" @@ ")"]`
 	SeedSet       `"=" @@`
 	SimpleSet     `| "=" @@`
@@ -205,7 +191,7 @@ type VSetVarDeclStmt struct {
 }
 
 type SimpleSet struct {
-	VertexSetName `@@`
+	VertexSetName string `@Ident`
 }
 
 type SeedSet struct {
@@ -214,10 +200,10 @@ type SeedSet struct {
 
 type Seed struct {
 	Seed             string `"_" | "ANY"`
-	VertexSetName    `| @@`
+	VertexSetName    string `|@Ident`
 	GlobalAccumName  `| @@`
 	VertexType       `| @@ ".*"`
-	ParamName        `| @@`
+	ParamName        string `|@Ident`
 	SelectVertParams `| "SelectVertex" @@`
 }
 
@@ -230,7 +216,7 @@ type ColumnId struct {
 type AssignStmt struct {
 	Name     string `@Ident "="`
 	Expr     string `"=" @Ident`
-	AttrName `@@`
+	AttrName string `@Ident`
 }
 
 type AttrAccumStmt struct {
@@ -255,15 +241,67 @@ type ArgList struct {
 }
 
 type SelectStmt struct {
+	GsqlSelectBlock `@@`
+	SqlSelectBlock  `| @@`
 }
 
 type GsqlSelectBlock struct {
-}
+	GsqlSelectClause `@@`
+	FromClause       `@@`
 
-type SqlSelectBlock struct {
+	// TODO SampleClause    `[ @@ ]`  // [sampleClause]
+
+	// TODO WhereClause `[ @@ ]` // [whereClause]
+	// TODO AccumClause `[ @@ ]` // [accumClause]
+
+	// TODO PostAccumClause `[ @@ ]*` // [postAccumClause]*
+	// TODO HavingClause    `[ @@ ]`  // [havingClause]
+	// TODO OrderClause     `[ @@ ]`  // [orderClause]
+	// TODO LimitClause     `[ @@ ]`  // [limitClause]
 }
 
 type GsqlSelectClause struct {
+	VertexSetName string `@Ident "="`
+	VertexAlias   string `"SELECT" @Ident`
+}
+
+type FromClause struct {
+	From string `"FROM"`
+	Step `@@`
+	// StepV2      `|(@@)`
+	// PathPattern `(@@ ["," @@]*)`
+}
+
+type Step struct {
+	StepSourceSet `@@`
+	// leadingBracket string `["-" "("]`
+	// StepEdgeSet    `[@@]`
+	// trailingArrow  string `[ ")" ("->" | "-") ]`
+	// StepVertexSet  `[@@]`
+}
+
+type StepV2 struct {
+}
+
+type StepSourceSet struct {
+	VertexSetName string `@Ident`
+	VertexAlias   Alias  `[@@]`
+}
+
+type StepEdgeSet struct {
+	StepEdgeTypes `@@`
+	EdgeAlias     Alias `@@`
+}
+
+type SqlSelectBlock struct {
+	// SqlSelectClause `@@`
+	// FromClause      `@@`
+
+	// WhereClause   `[ @@ ]` // [GroupByClause]
+	// GroupByClause `[ @@ ]` // [accumClause]
+	// HavingClause  `[ @@ ]` // [havingClause]
+	// OrderClause   `[ @@ ]` // [orderClause]
+	// LimitClause   `[ @@ ]` // [limitClause]
 }
 
 type SqlSelectClause struct {
@@ -278,40 +316,26 @@ type ColumnName struct {
 type TableName struct {
 }
 
-type FromClause struct {
-}
-
-type Step struct {
-}
-
-type StepV2 struct {
-}
-
-type StepSourceSet struct {
-}
-
-type StepEdgeSet struct {
-}
-
 type StepVertexSet struct {
 }
 
 type Alias struct {
-}
-
-type VertexAlias struct {
-}
-
-type EdgeAlias struct {
+	Alias string `":" @Ident`
 }
 
 type StepEdgeTypes struct {
+	AtomicEdgeType `@@`
+	EdgeSetType    ` |@@`
 }
 
 type AtomicEdgeType struct {
+	Generic  string `"_" | "ANY" `
+	EdgeType string `| @Ident`
 }
 
 type EdgeSetType struct {
+	Name            string `@Ident` //| paramName |
+	GlobalAccumName `|@@`
 }
 
 type StepVertexTypes struct {
@@ -482,6 +506,6 @@ type TryStmt struct {
 type CaseExceptBlock struct {
 }
 
-type ElseExceptBlock struct {
-	*QueryBodyStmts ``
-}
+// type ElseExceptBlock struct {
+// *QueryBodyStmt ``
+// }

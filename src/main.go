@@ -10,22 +10,20 @@ import (
 )
 
 func main() {
-	parser, err := participle.Build[types.Property]()
+	parser, err := participle.Build[types.SelectStmt]()
 	utils.Check(err)
-	var fName string
-
-	if true {
-		fName = `
-Users = SELECT s FROM Users:s
-	`
-	} else {
-		// fName := `
-		// Users =
-		// `
+	stmts := [10]string{
+		`Users = SELECT s FROM asdf`,
+		"Users = SELECT s FROM Src:s",
+		"Users = SELECT s FROM Src:s -()-> VType",
 	}
 
-	ini, err := parser.ParseString("", fName)
-	utils.Check(err)
-	fmt.Println("\n\nrepr:")
-	repr.Println(ini, repr.Indent("  "), repr.OmitEmpty(true))
+	for _, v := range stmts {
+		fmt.Println("***")
+		ini, err := parser.ParseString("", v)
+		fmt.Printf("%v\n", v)
+		utils.Check(err)
+		fmt.Println("\n\nrepr:")
+		repr.Println(ini, repr.Indent("  "), repr.OmitEmpty(true))
+	}
 }
