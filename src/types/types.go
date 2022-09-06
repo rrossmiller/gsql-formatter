@@ -1,7 +1,5 @@
 package types
 
-import "fmt"
-
 // root structure
 type CreateQuery struct {
 }
@@ -43,27 +41,27 @@ type QueryBodyStmts struct {
 }
 
 type QueryBodyStmt struct {
-	*AssignStmt           `@@` // Assignment
-	*VSetVarDeclStmt           // Declaration
-	*DeclStmts                 // Declaration
-	*LAccumAssignStmt          // Assignment
-	*GAccumAssignStmt          // Assignment
-	*GAccumAccumStmt           // Assignment
-	*FuncCallStmt              // Function Call
-	*SelectStmt                // Select
-	*QueryBodyCaseStmt         // Control Flow
-	*QueryBodyIfStmt           // Control Flow
-	*QueryBodyWhileStmt        // Control Flow
-	*QueryBodyForEachStmt      // Control Flow
-	*UpdateStmt                // Data Modification
-	*InsertStmt                // Data Modification
-	*QueryBodyDeleteStmt       // Data Modification
-	*PrintStmt                 // Output
-	*PrintlnStmt               // Output
-	*LogStmt                   // Output
-	*ReturnStmt                // Output
-	*RaiseStmt                 // Exception
-	*TryStmt                   // Exception
+	*AssignStmt           `@@`   // Assignment
+	*VSetVarDeclStmt      `| @@` // Declaration
+	*DeclStmts            `| @@` // Declaration
+	*LAccumAssignStmt     `| @@` // Assignment
+	*GAccumAssignStmt     `| @@` // Assignment
+	*GAccumAccumStmt      `| @@` // Assignment
+	*FuncCallStmt         `| @@` // Function Call
+	*SelectStmt           `| @@` // Select
+	*QueryBodyCaseStmt    `| @@` // Control Flow
+	*QueryBodyIfStmt      `| @@` // Control Flow
+	*QueryBodyWhileStmt   `| @@` // Control Flow
+	*QueryBodyForEachStmt `| @@` // Control Flow
+	*UpdateStmt           `| @@` // Data Modification
+	*InsertStmt           `| @@` // Data Modification
+	*QueryBodyDeleteStmt  `| @@` // Data Modification
+	*PrintStmt            `| @@` // Output
+	*PrintlnStmt          `| @@` // Output
+	*LogStmt              `| @@` // Output
+	*ReturnStmt           `| @@` // Output
+	*RaiseStmt            `| @@` // Exception
+	*TryStmt              `| @@` // Exception
 	// BREAK                // Control Flow
 	// CONTINUE             // Control Flow
 
@@ -106,7 +104,7 @@ type StringLiteral struct {
 }
 
 type Name struct {
-	Str *string `@String`
+	Str string `@Ident`
 }
 
 type GraphName Name
@@ -199,15 +197,28 @@ type AssignDeclLocalTuple struct {
 }
 
 type VSetVarDeclStmt struct {
+	VertexSetName `@@`
+	VertexType    `["(" @@ ")"]`
+	SeedSet       `"=" @@`
+	SimpleSet     `| "=" @@`
+	SelectStmt    `| "=" @@`
 }
 
 type SimpleSet struct {
+	VertexSetName `@@`
 }
 
 type SeedSet struct {
+	Seed `"{" [@@ ["," @@ ]*] "}"`
 }
 
 type Seed struct {
+	Seed             string `"_" | "ANY"`
+	VertexSetName    `| @@`
+	GlobalAccumName  `| @@`
+	VertexType       `| @@ ".*"`
+	ParamName        `| @@`
+	SelectVertParams `| "SelectVertex" @@`
 }
 
 type SelectVertParams struct {
@@ -473,10 +484,4 @@ type CaseExceptBlock struct {
 
 type ElseExceptBlock struct {
 	*QueryBodyStmts ``
-}
-
-func main() {
-	var e ElseExceptBlock
-
-	fmt.Printf("e.QueryBodyStmts: %v\n", e.QueryBodyStmts)
 }
