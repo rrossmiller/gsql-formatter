@@ -10,15 +10,20 @@ import (
 )
 
 func main() {
-	parser, err := participle.Build[types.INI]()
+	parser, err := participle.Build[types.Property]()
 	utils.Check(err)
+	var fName string
 
-	fName := `age = 21
-	name = "Bob Smith"
-	
-	[address]
-	city = "Beverly Hills"
-	postal_code = 90210`
+	if true {
+		fName = `
+Users = SELECT s FROM Users:s
+	`
+	} else {
+		// fName := `
+		// Users =
+		// `
+	}
+
 	ini, err := parser.ParseString("", fName)
 	utils.Check(err)
 	fmt.Println("\n\nrepr:")
