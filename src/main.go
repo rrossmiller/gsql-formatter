@@ -56,10 +56,11 @@ func main() {
 	// 	}
 	// }
 
-	q := utils.MultiHop
+	q := utils.Q0
 	fmt.Printf("q: %v\n", q)
 	gsql, err := parser.ParseString("", q)
 	utils.Check(err, q)
 	fmt.Println("\n\nrepr:")
 	repr.Println(gsql, repr.Indent("  "), repr.OmitEmpty(true))
+	utils.Railroad(parser.String())
 }

@@ -11,3 +11,4 @@ cd ..
 ./gourmet $@
 #	echo "run this:
  # ./gourmet -dev path/to/query.gsql"
+mv gsql.html src/utils/assets

@@ -1,4 +1,3 @@
-// src https://github.com/alecthomas/participle/tree/v2.0.0-beta.5/cmd
 package utils
 
 import (
