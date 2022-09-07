@@ -1,5 +1,5 @@
-#########################################################
-## EBNF for GSQL Query Language
+(* ######################################################### *)
+(* ## EBNF for GSQL Query Language *)
 
 createQuery := CREATE [OR REPLACE] [DISTRIBUTED] QUERY queryName
                "(" [parameterList] ")"
@@ -8,28 +8,37 @@ createQuery := CREATE [OR REPLACE] [DISTRIBUTED] QUERY queryName
                [API "(" stringLiteral ")"]
                [SYNTAX syntaxName]
                "{" queryBody "}"
-
+;
 interpretQuery := INTERPRET QUERY "(" ")"
                [FOR GRAPH graphName]
                [SYNTAX syntaxName]
                "{" queryBody "}"
-
+;
 parameterValueList := parameterValue ["," parameterValue]*
+;
 parameterValue := parameterConstant
                 | "[" parameterValue ["," parameterValue]* "]"  // BAG or SET
-                | "(" stringLiteral "," stringLiteral ")"        // a generic VERTEX value
+                | "(" stringLiteral "," stringLiteral ")"        // a generic VERTEX value                
+;
 parameterConstant := numeric | stringLiteral | TRUE | FALSE
+;
 parameterList := parameterType paramName ["=" constant]
                  ["," parameterType paramName  ["=" constant]]*
-
-syntaxName := name
+                 ;
+syntaxName := name;
 
 queryBody := [typedefs] [declExceptStmts] queryBodyStmts
+;
 typedefs := (typedef ";")+
+;
 declStmts := (declStmt ";")+
+;
 declStmt := baseDeclStmt | accumDeclStmt | fileDeclStmt
+;
 declExceptStmts := (declExceptStmt ";")+
+;
 queryBodyStmts := (queryBodyStmt ";")+
+;
 queryBodyStmt := assignStmt           // Assignment
                | vSetVarDeclStmt      // Declaration
                | declStmts            // Declaration
@@ -54,40 +63,53 @@ queryBodyStmt := assignStmt           // Assignment
                | raiseStmt            // Exception
                | tryStmt              // Exception
 
+;
 installQuery := INSTALL QUERY [installOptions] ( "*" | ALL |queryName ["," queryName]* )
+;
 runQuery := (RUN | INTERPRET) QUERY [runOptions] queryName "(" parameterValueList ")"
 
+;
 showQuery := SHOW QUERY queryName
+;
 dropQuery := DROP QUERY ( "*" | ALL | queryName ["," queryName]* )
-
-#########################################################
-## Types and names
+;
+(* ######################################################### *)
+(* ## Types and names *)
 
 lowercase          := [a-z]
+;
 uppercase          := [A-Z]
+;
 letter             := lowercase | uppercase
+;
 digit              := [0-9]
+;
 integer            := ["-"]digit+
+;
 real               := ["-"]("."digit+) | ["-"](digit+"."digit*)
-
+;
 numeric            := integer | real
-stringLiteral      := '"' [~["] | '\\' ('"' | '\\')]* '"'
+;
+(* stringLiteral      := '"' [~["] | '\\' ('"' | '\\')]* '"' *)
 
-name := (letter | "_") [letter | digit | "_"]*   // can be a single "_" or start with "_"
-graphName := name
-queryName := name
-paramName := name
-vertexType := name
-edgeType := name
-accumName := name
-vertexSetName := name
-attrName := name
-varName := name
-tupleType := name
-fieldName := name
-funcName := name
+
+(* name := (letter | "_") [letter | digit | "_"]*   // can be a single "_" or start with "_" *)
+
+graphName := name;
+queryName := name;
+paramName := name;
+vertexType := name;
+edgeType := name;
+accumName := name;
+vertexSetName := name;
+attrName := name;
+varName := name;
+tupleType := name;
+fieldName := name;
+funcName := name;
 
 type := baseType | tupleType | accumType
+;
 
 baseType := INT
           | UINT
@@ -100,26 +122,28 @@ baseType := INT
           | JSONOBJECT
           | JSONARRAY
           | DATETIME
-
+;
 filePath := paramName | stringLiteral
-
+;
 typedef := TYPEDEF TUPLE "<" tupleFields ">" tupleType
-
+;
 tupleFields := (baseType fieldName) | (fieldName baseType)
            ["," (baseType fieldName) | (fieldName baseType)]*
-
+;
 parameterType := baseType
                | [ SET | BAG ] "<" baseType ">"
                | FILE
-
-#########################################################
-## Accumulators
+;
+(* ######################################################### *)
+(* ## Accumulators *)
 
 accumDeclStmt := accumType localAccumName ["=" constant]
                         ["," localAccumName ["=" constant]]*
                | accumType globalAccumName ["=" constant]
                                  ["," globalAccumName ["=" constant]]*
+;
 localAccumName := "@"accumName;
+
 globalAccumName := "@@"accumName;
 
 
@@ -140,19 +164,19 @@ accumType := "SumAccum" "<" ( INT | FLOAT | DOUBLE | STRING) ">"
            | "GroupByAccum" "<" elementType fieldName ["," elementType fieldName]* ,
 		                        accumType fieldName ["," accumType fieldName]* ">"
            | "ArrayAccum" "<" accumName ">"
-
+;
 elementType := baseType | tupleType
-
+;
 gAccumAccumStmt := globalAccumName "+=" expr
-
-###############################################################################
-## Operators, Functions, and Expressions
+;
+(* ############################################################################### *)
+(* ## Operators, Functions, and Expressions *)
 
 constant := numeric | stringLiteral | TRUE | FALSE | GSQL_UINT_MAX
           | GSQL_INT_MAX | GSQL_INT_MIN | TO_DATETIME "(" stringLiteral ")"
-
+;
 mathOperator := "*" | "/" | "%" | "+" | "-" | "<<" | ">>" | "&" | "|"
-
+;
 condition := expr
            | expr comparisonOperator expr
            | expr [ NOT ] IN setBagExpr
@@ -163,11 +187,11 @@ condition := expr
            | condition (AND | OR) condition
            | (TRUE | FALSE)
            | expr [NOT] LIKE expr [ESCAPE escape_char]
-
+;
 comparisonOperator := "<" | "<=" | ">" | ">=" | "==" | "!="
-
+;
 aggregator := COUNT | MAX | MIN | AVG | SUM
-
+;
 expr := name
     | globalAccumName
 		| name "." name
@@ -188,7 +212,7 @@ expr := name
 		| constant
 		| setBagExpr
 		| name "(" argList ")"          // function call or a tuple object
-
+;
 setBagExpr := name
         | globalAccumName
     	  | name "." name
@@ -199,25 +223,30 @@ setBagExpr := name
 		    | setBagExpr (UNION | INTERSECT | MINUS) setBagExpr
 		    | "(" argList ")"
 		    | "(" setBagExpr ")"
+;
+(* ######################################################### *)
+(* ## Declarations and Assignments ## *)
 
-#########################################################
-## Declarations and Assignments ##
-
-## Declarations ##
+(* ## Declarations ## *)
 baseDeclStmt    := baseType name ["=" expr] ["," name ["=" expr]]*
+;
 fileDeclStmt := FILE fileVar "(" filePath ")"
+;
+
 fileVar := name
-
+;
 localVarDeclStmt := baseType varName "=" expr
+;
 assignDeclLocalTuple := (tupleTypeName | anonymousTupleType) localTupleVal "=" expr
-
+;
 vSetVarDeclStmt := vertexSetName ["(" vertexType ")"]
                    "=" (seedSet | simpleSet | selectBlock)
-
+;
 simpleSet := vertexSetName | "(" simpleSet ")"
            | simpleSet (UNION | INTERSECT | MINUS) simpleSet
-
+;
 seedSet := "{" [seed ["," seed ]*] "}"
+;
 seed := '_'
       | ANY
       | vertexSetName
@@ -225,41 +254,39 @@ seed := '_'
       | vertexType ".*"
       | paramName
       | "SelectVertex" selectVertParams
-
+;
 selectVertParams := "(" filePath "," columnId "," (columnId | name) ","
                  stringLiteral "," (TRUE | FALSE) ")" ["." FILTER "(" condition ")"]
-
+;
 columnId := "$"(integer | stringLiteral)
-
-## Assignment Statements ##
+;
+(* ## Assignment Statements ## *)
 assignStmt := name "=" expr
             | name "." attrName "=" expr
-
+;
 attrAccumStmt := name "." attrName "+=" expr
-
+;
 lAccumAssignStmt := vertexAlias "." localAccumName ("+="| "=") expr
-
+;
 gAccumAssignStmt :=  globalAccumName ("+=" | "=") expr
-
+;
 loadAccumStmt := globalAccumName "=" "{" LOADACCUM loadAccumParams
                                   ["," LOADACCUM loadAccumParams]* "}"
+;
+(* loadAccumParams := "(" filePath "," columnId ["," [columnId]* "," *)
+                (* stringLiteral "," (TRUE | FALSE) ")" ["." FILTER "(" condition ")"] *)
+(* ; *)
+(* ## Function Call Statement ## *)
+(* funcCallStmt := name ["<" type ["," type"]* ">"] "(" [argList] ")" *)
+              (* | globalAccumName ("." funcName "(" [argList] ")")+ ; *)
+(* argList := expr ["," expr]* ; *)
 
-loadAccumParams := "(" filePath "," columnId ["," [columnId]* ","
-                stringLiteral "," (TRUE | FALSE) ")" ["." FILTER "(" condition ")"]
-
-## Function Call Statement ##
-funcCallStmt := name ["<" type ["," type"]* ">"] "(" [argList] ")"
-              | globalAccumName ("." funcName "(" [argList] ")")+
-
-argList := expr ["," expr]*
-
-
-#########################################################
-## Select Statement
+(* ######################################################### *)
+(* ## Select Statement *)
 
 selectStmt  := gsqlSelectBlock
              | sqlSelectBlock
-
+;
 gsqlSelectBlock := gsqlSelectClause
                fromClause
                [sampleClause]
@@ -269,7 +296,7 @@ gsqlSelectBlock := gsqlSelectClause
                [havingClause]
                [orderClause]
                [limitClause]
-
+;
 sqlSelectBlock := sqlSelectClause
                fromClause
                [whereClause]
@@ -277,72 +304,84 @@ sqlSelectBlock := sqlSelectClause
                [havingClause]
                [orderClause]
                [limitClause]
-
+;
 gsqlSelectClause := vertexSetName "=" SELECT vertexAlias
+;
 sqlSelectClause := SELECT [DISTINCT] columnExpr ("," columnExpr)*
                    INTO tableName
+;
 columnExpr := expr [AS columnName]
             | aggregator "("[DISTINCT] expr ")" [AS columnName]
-columnName := name
-tableName := name
-
+;
+columnName := name;
+tableName := name;
+;
 fromClause := FROM (step | stepV2 | pathPattern ["," pathPattern]*)
-
+;
 step   :=  stepSourceSet ["-" "(" stepEdgeSet ")" ("-"|"->") stepVertexSet]
+;
 stepV2 :=  stepVertexSet ["-" "(" stepEdgeSet ")" "-" stepVertexSet]
-
+;
 stepSourceSet := vertexSetName [":" vertexAlias]
+;
 stepEdgeSet := [stepEdgeTypes] [":" edgeAlias]
+;
 stepVertexSet := [stepVertexTypes] [":" vertexAlias]
-alias := (vertexAlias | edgeAlias)
-vertexAlias := name
-edgeAlias := name
+;
+alias := (vertexAlias | edgeAlias) ;
+vertexAlias := name;
+edgeAlias := name;
 
 stepEdgeTypes := atomicEdgeType | "(" edgeSetType ["|" edgeSetType]* ")"
+;
 atomicEdgeType := "_" | ANY | edgeSetType
+;
 edgeSetType := edgeType | paramName | globalAccumName
-
+;
 stepVertexTypes := atomicVertexType | "(" vertexSetType ["|" vertexSetType]* ")"
+;
 atomicVertexType := "_" | ANY | vertexSetType
+;
 vertexSetType := vertexType | paramName | globalAccumName
-
-#----------# Pattern Matching #----------#
+;
+(* #----------# Pattern Matching #----------# *)
 pathPattern :=  stepVertexSet ["-" "(" pathEdgePattern ")" "-" stepVertexSet]*
-
+;
 pathEdgePattern := atomicEdgePattern
                  | "(" pathEdgePattern ")"
                  | pathEdgePattern "." pathEdgePattern
                  | disjPattern
                  | starPattern
-
+;
 atomicEdgePattern  := atomicEdgeType
         	        | atomicEdgeType ">"
         	        | "<" atomicEdgeType
-
+;
 disjPattern := atomicEdgePattern ("|" atomicEdgePattern)*
-
+;
 starPattern := ([atomicEdgePattern] | "(" disjPattern ")") "*" [starBounds]
-
+;
 starBounds := CONST_INT ".." CONST_INT
             | CONST_INT ".."
             | ".." CONST_INT
             | CONST_INT
-#--------------------------------------#
+;
+(* #--------------------------------------# *)
 
 sampleClause := SAMPLE ( expr | expr "%" ) EDGE WHEN condition
               | SAMPLE expr TARGET WHEN condition
               | SAMPLE expr "%" TARGET PINNED WHEN condition
-
+;
 whereClause := WHERE condition
-
+;
 accumClause := [perClauseV2] ACCUM dmlSubStmtList
-
+;
 perClauseV2 := PER "(" alias ["," alias] ")"
-
+;
 postAccumClause := "POST-ACCUM" dmlSubStmtList
-
+;
 dmlSubStmtList := dmlSubStmt ["," dmlSubStmt]*
-
+;
 dmlSubStmt := assignStmt           // Assignment
             | funcCallStmt         // Function Call
             | gAccumAccumStmt      // Assignment
@@ -361,92 +400,110 @@ dmlSubStmt := assignStmt           // Assignment
             | printlnStmt          // Output
             | logStmt              // Output
 
-
+;
 vAccumFuncCall := vertexAlias "." localAccumName ("." funcName "(" [argList] ")")+
-
+;
 groupByClause := GROUP BY groupExpr ("," groupExpr)*
-groupExpr := expr
+;
+groupExpr := expr;
 
 havingClause := HAVING condition
-
+;
 orderClause := ORDER BY expr [ASC | DESC] ["," expr [ASC | DESC]]*
-
+;
 limitClause := LIMIT ( expr | expr "," expr | expr OFFSET expr )
-
-#########################################################
-## Control Flow Statements ##
+;
+(* ######################################################### *)
+(* ## Control Flow Statements ## *)
 
 queryBodyIfStmt := IF condition THEN queryBodyStmts
                  [ELSE IF condition THEN queryBodyStmts ]*
                  [ELSE queryBodyStmts ] END
+;
 dmlSubIfStmt :=    IF condition THEN dmlSubStmtList
                  [ELSE IF condition THEN dmlSubStmtList ]*
                  [ELSE dmlSubStmtList ] END
-
+;
 queryBodyCaseStmt := CASE  (WHEN condition THEN queryBodyStmts)+ [ELSE queryBodyStmts] END
                | CASE expr (WHEN constant  THEN queryBodyStmts)+ [ELSE queryBodyStmts] END
+;
 dmlSubCaseStmt := CASE     (WHEN condition THEN dmlSubStmtList)+ [ELSE dmlSubStmtList] END
                | CASE expr (WHEN constant  THEN dmlSubStmtList)+ [ELSE dmlSubStmtList] END
-
+;
 queryBodyWhileStmt := WHILE condition [LIMIT simpleSize] DO queryBodyStmts END
+;
 dmlSubWhileStmt :=    WHILE condition [LIMIT simpleSize] DO dmlSubStmtList END
+;
 simpleSize := integer | varName | paramName
-
+;
 queryBodyForEachStmt := FOREACH forEachControl DO queryBodyStmts END
+;
 dmlSubForEachStmt :=    FOREACH forEachControl DO dmlSubStmtList END
-
+;
 forEachControl := ( iterationVar | "(" keyVar ("," valueVar)+ ")") (IN | ":") setBagExpr
                 | iterationVar IN RANGE "[" expr "," expr"]" ["." STEP "(" expr ")"]
-iterationVar := name
-keyVar := name
-valueVar := name
+;
+iterationVar := name;
+keyVar := name;
+valueVar := name;
 
-#########################################################
-## Other Data Modifications Statements ##
+(* ######################################################### *)
+(* ## Other Data Modifications Statements ## *)
 
 queryBodyDeleteStmt := DELETE alias FROM pattern [whereClause]
+;
 dmlSubDeleteStmt := DELETE "(" alias ")"
-
+;
 updateStmt := UPDATE alias FROM pattern SET dmlSubStmtList [whereClause]
-
+;
 insertStmt := insertVertexStmt | insertEdgeStmt
+;
 insertVertexStmt := INSERT INTO (vertexType | name)
                  ["(" PRIMARY_ID ["," attrName]* ")"]
                  VALUES "(" ( "_" | expr ) ["," ("_" | expr)]*] ")"
-
+;
 insertEdgeStmt   := INSERT INTO (edgeType | EDGE name)
                  ["(" FROM "," TO ["," attrName]* ")"]
                  VALUES "(" ( "_" | expr ) [vertexType]
                  ["," ( "_" | expr ) [vertexType] ["," ("_" | expr)]*] ")"
-
-#########################################################
-## Output Statements ##
+;
+(* ######################################################### *)
+(* ## Output Statements ## *)
 
 printStmt := PRINT printExpr ("," printExpr)* [WHERE condition] [TO_CSV (filePath | fileVar)]
+;
 printExpr := (expr | vExprSet) [ AS jsonKey]
            | tableName
+;
 vExprSet  := expr "[" vSetProj ("," vSetProj)* "]"
+;
 vSetProj  := expr [ AS jsonKey]
-jsonKey := name
+;
+jsonKey := name;
 
 printlnStmt := fileVar ".println" "(" expr ("," expr)* ")"
-
+;
 logStmt := LOG "(" condition "," argList ")"
-
+;
 returnStmt := RETURN expr
-
-#########################################################
-## Exception Statements ##
+;
+(* ######################################################### *)
+(* ## Exception Statements ## *)
 
 declExceptStmt := EXCEPTION exceptVarName "(" errorInt ")"
-exceptVarName  := name
-errorInt      := integer
+;
+exceptVarName  := name;
+errorInt      := integer;
 
 
 raiseStmt       := RAISE exceptVarName [errorMsg]
+;
 errorMsg        := "(" expr ")"
-
+;
 
 tryStmt         := TRY queryBodyStmts EXCEPTION caseExceptBlock+ [elseExceptBlock] END ";"
+;
 caseExceptBlock := WHEN exceptVarName THEN queryBodyStmts
+;
 elseExceptBlock := ELSE queryBodyStmts
+;
