@@ -41,27 +41,27 @@ type Query struct {
 }
 
 type QueryBodyStmt struct {
-	AssignStmt *AssignStmt `@@ ";"` // Assignment
-	// // *VSetVarDeclStmt      `| @@` // Declaration
-	// *DeclStmts            `| @@` // Declaration
-	// *LAccumAssignStmt     `| @@` // Assignment
-	// *GAccumAssignStmt     `| @@` // Assignment
-	// *GAccumAccumStmt      `| @@` // Assignment
-	// *FuncCallStmt         `| @@` // Function Call
+	AssignStmt      *AssignStmt      `@@ ";"`   // Assignment
+	VSetVarDeclStmt *VSetVarDeclStmt `| @@ ";"` // Declaration
+	// DeclStmts       *DeclStmts       `| @@ ";"`   // Declaration
+	// *LAccumAssignStmt     `| @@ ";"` // Assignment
+	// *GAccumAssignStmt     `| @@ ";"` // Assignment
+	// *GAccumAccumStmt      `| @@ ";"` // Assignment
+	// *FuncCallStmt         `| @@ ";"` // Function Call
 	SelectStmt *SelectStmt `| @@ ";"` // Select
-	// *QueryBodyCaseStmt    `| @@` // Control Flow
-	// *QueryBodyIfStmt      `| @@` // Control Flow
-	// *QueryBodyWhileStmt   `| @@` // Control Flow
-	// *QueryBodyForEachStmt `| @@` // Control Flow
-	// *UpdateStmt           `| @@` // Data Modification
-	// *InsertStmt           `| @@` // Data Modification
-	// *QueryBodyDeleteStmt  `| @@` // Data Modification
-	// *PrintStmt            `| @@` // Output
-	// *PrintlnStmt          `| @@` // Output
-	// *LogStmt              `| @@` // Output
-	// *ReturnStmt           `| @@` // Output
-	// *RaiseStmt            `| @@` // Exception
-	// *TryStmt              `| @@` // Exception
+	// *QueryBodyCaseStmt    `| @@ ";"` // Control Flow
+	// *QueryBodyIfStmt      `| @@ ";"` // Control Flow
+	// *QueryBodyWhileStmt   `| @@ ";"` // Control Flow
+	// *QueryBodyForEachStmt `| @@ ";"` // Control Flow
+	// *UpdateStmt           `| @@ ";"` // Data Modification
+	// *InsertStmt           `| @@ ";"` // Data Modification
+	// *QueryBodyDeleteStmt  `| @@ ";"` // Data Modification
+	// *PrintStmt            `| @@ ";"` // Output
+	// *PrintlnStmt          `| @@ ";"` // Output
+	// *LogStmt              `| @@ ";"` // Output
+	// *ReturnStmt           `| @@ ";"` // Output
+	// *RaiseStmt            `| @@ ";"` // Exception
+	// *TryStmt              `| @@ ";"` // Exception
 	// BREAK                // Control Flow
 	// CONTINUE             // Control Flow
 }
@@ -178,7 +178,7 @@ type Expr struct {
 
 type LocalAccumName struct {
 	ParentName *string `(@Ident ".")?`
-	AccumName  *string `("@" @Ident)!`
+	AccumName  *string `("@" @Ident)`
 }
 
 type GlobalAccumName struct {
@@ -206,33 +206,33 @@ type LocalVarDeclStmt struct {
 type AssignDeclLocalTuple struct {
 }
 
-// type VSetVarDeclStmt struct {
-// 	VertexSetName string     `@Ident`
-// 	VertexType    VertexType `["(" @@ ")"]`
-// 	SeedSet       SeedSet    `"=" @@`
-// 	SimpleSet  SimpleSet  `| "=" @@`
-// 	SelectStmt SelectStmt `| "=" @@`
-// }
+type VSetVarDeclStmt struct {
+	VertexSetName string     `@Ident`
+	VertexType    string     `( "(" @Ident ")" )?`
+	SeedSet       SeedSet    `("=" @@)?`
+	SimpleSet     SimpleSet  `| ("=" @@)?`
+	SelectStmt    SelectStmt `| ("=" @@)?`
+}
 
 type SimpleSet struct {
 	VertexSetName string `@Ident`
 }
 
-// type SeedSet struct {
-// 	Seed Seed `"{" [@@ ["," @@ ]*] "}"`
-// }
+type SeedSet struct {
+	Seed *Seed `"{" (@@)? "}"`
+	// Seeds []*Seed `"{" (("," @@ )*)? "}"`
+}
 
-// type Seed struct {
-// 	Seed             string           `"_" | "ANY"`
-// 	VertexSetName    string           `|@Ident`
-// 	GlobalAccumName  GlobalAccumName  `| @@`
-// 	VertexType       VertexType       `| @@ ".*"`
-// 	ParamName        string           `|@Ident`
-// 	SelectVertParams SelectVertParams `| "SelectVertex" @@`
-// }
+type Seed struct {
+	Seed            string          `"_" | "ANY"`
+	GlobalAccumName GlobalAccumName `| @@`
+	VertexType      string          `| @Ident (".""*")?`
+	// TODO ParamName        string           `| @Ident`
+	// SelectVertParams SelectVertParams `| "SelectVertex" @@`
+}
 
-// type SelectVertParams struct {
-// }
+type SelectVertParams struct {
+}
 
 type ColumnId struct {
 }
@@ -273,8 +273,8 @@ type SelectStmt struct {
 }
 
 type GsqlSelectBlock struct {
-	GsqlSelectClause `@@`
-	FromClause       `@@`
+	GsqlSelectClause *GsqlSelectClause `@@`
+	FromClause       *FromClause       `@@`
 
 	// TODO SampleClause    `[ @@ ]`  // [sampleClause]
 
@@ -294,7 +294,7 @@ type GsqlSelectClause struct {
 
 type FromClause struct {
 	StepSourceSet *StepSourceSet `"FROM" @@`
-	Step          *Step          `@@?`
+	Step          []*Step        `@@*`
 	// PathPattern `(@@ ["," @@]*)`
 }
 

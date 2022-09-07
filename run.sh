@@ -7,6 +7,7 @@ mv gourmet ..
 cd ..
 #echo running
 # echo
-./gourmet
+
+./gourmet $@
 #	echo "run this:
  # ./gourmet -dev path/to/query.gsql"
