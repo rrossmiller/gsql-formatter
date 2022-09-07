@@ -1,6 +1,12 @@
 package types
 
+import "github.com/alecthomas/participle/v2/lexer"
+
 // root structure
+type GsqlRoot struct {
+	QueryBody *QueryBody `@@`
+}
+
 type CreateQuery struct {
 }
 
@@ -22,6 +28,9 @@ type ParameterList struct {
 type SyntaxName Name
 
 type QueryBody struct {
+	// [typedefs]
+	// [declExceptStmts] // declaration
+	QueryBodyStmts []*QueryBodyStmt `@@*`
 }
 
 type Typedefs struct {
@@ -34,10 +43,6 @@ type DeclStmt struct {
 }
 
 type DeclExceptStmts struct {
-}
-
-type Query struct {
-	QueryBodyStmts []*QueryBodyStmt `@@*`
 }
 
 type QueryBodyStmt struct {
@@ -226,7 +231,8 @@ type SeedSet struct {
 type Seed struct {
 	Seed            string          `"_" | "ANY"`
 	GlobalAccumName GlobalAccumName `| @@`
-	VertexType      string          `| @Ident (".""*")?`
+	VertexDotStar   string          `| @Ident ".""*"`
+	VertexType      string          `| @Ident`
 	// TODO ParamName        string           `| @Ident`
 	// SelectVertParams SelectVertParams `| "SelectVertex" @@`
 }
@@ -268,6 +274,7 @@ type Alias struct {
 }
 
 type SelectStmt struct {
+	Pos             lexer.Position
 	GsqlSelectBlock `@@`
 	// SqlSelectBlock  `| @@`
 }

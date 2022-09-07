@@ -1,3 +1,4 @@
+#! /bin/bash
 rm gourmet
 clear
 cd src
@@ -9,6 +10,9 @@ cd ..
 # echo
 
 ./gourmet $@
-#	echo "run this:
- # ./gourmet -dev path/to/query.gsql"
-mv gsql.html src/utils/assets
+
+
+FILE=gsql.html
+if [[ -f "$FILE" ]]; then
+    mv $FILE src/utils/assets
+fi

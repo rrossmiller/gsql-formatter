@@ -12,7 +12,12 @@ h1 {
 <link rel='stylesheet' href='railroad-diagrams.css'>
 <script src='railroad-diagrams.js'></script>
 <body>
-<h1 id="Query">Query</h1>
+<h1 id="GsqlRoot">GsqlRoot</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("QueryBody", {href:"#QueryBody"})))).addTo();
+</script>
+
+<h1 id="QueryBody">QueryBody</h1>
 <script>
 Diagram(Choice(0, Sequence(ZeroOrMore(NonTerminal("QueryBodyStmt", {href:"#QueryBodyStmt"}))))).addTo();
 </script>

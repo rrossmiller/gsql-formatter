@@ -41,15 +41,15 @@ const (
 			i := @@global;    
 			i := a.@lclaccum; `
 	Q0 = `
-		Users = {User.*};
-		Users = SELECT s FROM Users:s ;
+	Users = {User};
+	Users = {User.*};
+	Users = SELECT s FROM Users:s ;
 		
-		Friends1 = SELECT u FROM Users:s -(FRIENDSHIP:e)- Friend:u;
-
-		Friends2 = SELECT tgt FROM Users:s -(FRIENDSHIP:e)- _:u -(FRIENDSHIP:e)- Friend:tgt;
+	Friends1 = SELECT u FROM Users:s -(FRIENDSHIP:e)- Friend:u;
+	Friends2 = SELECT tgt FROM Users:s -(FRIENDSHIP:e)- _:u -(FRIENDSHIP:e2)- Friend:tgt;
 	`
 
-	Q2 = `
+	Q1 = `
 		CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
 			TYPEDEF TUPLE <INT from_id, INT to_id> Edges; // GNN train type
 			TYPEDEF TUPLE <INT id, STRING t> Vert; // GNN train type
