@@ -14,9 +14,9 @@ func Check(err error, v string) {
 			i, _ := strconv.Atoi(s)
 
 			if i+5 < utf8.RuneCountInString(v) {
-				fmt.Printf("\nxxxxxx %v\n", v[i-5:i+5])
+				fmt.Printf("\nxxxxxx %v\n", v[:i+2])
 			} else {
-				fmt.Printf("\nxxxxxx %v\n", v[i-5:])
+				fmt.Printf("\nxxxxxx %v\n", v[:i])
 			}
 		}
 		panic(err)

@@ -41,14 +41,14 @@ type Query struct {
 }
 
 type QueryBodyStmt struct {
-	// *AssignStmt `@@` // Assignment
+	AssignStmt *AssignStmt `@@ ";"` // Assignment
 	// // *VSetVarDeclStmt      `| @@` // Declaration
 	// *DeclStmts            `| @@` // Declaration
 	// *LAccumAssignStmt     `| @@` // Assignment
 	// *GAccumAssignStmt     `| @@` // Assignment
 	// *GAccumAccumStmt      `| @@` // Assignment
 	// *FuncCallStmt         `| @@` // Function Call
-	SelectStmt *SelectStmt `| @@` // Select
+	SelectStmt *SelectStmt `| @@ ";"` // Select
 	// *QueryBodyCaseStmt    `| @@` // Control Flow
 	// *QueryBodyIfStmt      `| @@` // Control Flow
 	// *QueryBodyWhileStmt   `| @@` // Control Flow
@@ -64,7 +64,6 @@ type QueryBodyStmt struct {
 	// *TryStmt              `| @@` // Exception
 	// BREAK                // Control Flow
 	// CONTINUE             // Control Flow
-
 }
 
 type InstallQuery struct {
@@ -104,7 +103,7 @@ type StringLiteral struct {
 }
 
 type Name struct {
-	Str string `@Ident`
+	Str *string `@Ident`
 }
 
 type VertexType struct {
@@ -131,15 +130,6 @@ type ParameterType struct {
 type AccumDeclStmt struct {
 }
 
-type LocalAccumName struct {
-}
-
-type GlobalAccumName struct {
-}
-
-type AccumType struct {
-}
-
 type ElementType struct {
 }
 
@@ -162,6 +152,40 @@ type Aggregator struct {
 }
 
 type Expr struct {
+	StrVal    *string          ` @String`
+	GlblAccum *GlobalAccumName `| @@`
+	LclAccum  *LocalAccumName  `| @@`
+	NumVal    *float64         ` | @Float | @Int`
+	// 	| name "." name
+	// 	| name "." localAccumName ["\""]
+	// 	| name "." name "." name "(" [argList] ")"
+	// | name "." name "(" [argList] ")" [ "." FILTER "(" condition ")" ]
+	// 	| name ["<" type ["," type]* ">"] "(" [argList] ")"
+	// 	| name "." localAccumName ("." name "(" [argList] ")")+ ["." name]
+	// 	| globalAccumName ("." name "(" [argList] ")")+ ["." name]
+	// 	| COALESCE "(" [argList] ")"
+	// 	| aggregator "(" [DISTINCT] setBagExpr ")"
+	// 	| ISEMPTY "(" setBagExpr ")"
+	// 	| expr mathOperator expr
+	// 	| "-" expr
+	// 	| "(" expr ")"
+	// 	| "(" argList "->" argList ")"	// key value pair for MapAccum
+	// 	| "[" argList "]"               // a list
+	// 	| constant
+	// 	| setBagExpr
+	// 	| name "(" argList ")"          // function call or a tuple object
+}
+
+type LocalAccumName struct {
+	ParentName *string `(@Ident ".")?`
+	AccumName  *string `("@" @Ident)!`
+}
+
+type GlobalAccumName struct {
+	AccumName *string `"@""@" @Ident`
+}
+
+type AccumType struct {
 }
 
 type SetBagExpr struct {
@@ -184,10 +208,10 @@ type AssignDeclLocalTuple struct {
 
 // type VSetVarDeclStmt struct {
 // 	VertexSetName string     `@Ident`
-// 	VertexType    VertexType `['(' @@ ')']`
-// 	SeedSet       SeedSet    `'=' @@`
-// 	SimpleSet  SimpleSet  `| '=' @@`
-// 	SelectStmt SelectStmt `| '=' @@`
+// 	VertexType    VertexType `["(" @@ ")"]`
+// 	SeedSet       SeedSet    `"=" @@`
+// 	SimpleSet  SimpleSet  `| "=" @@`
+// 	SelectStmt SelectStmt `| "=" @@`
 // }
 
 type SimpleSet struct {
@@ -195,16 +219,16 @@ type SimpleSet struct {
 }
 
 // type SeedSet struct {
-// 	Seed Seed `'{' [@@ [',' @@ ]*] '}'`
+// 	Seed Seed `"{" [@@ ["," @@ ]*] "}"`
 // }
 
 // type Seed struct {
-// 	Seed             string           `'_' | 'ANY'`
+// 	Seed             string           `"_" | "ANY"`
 // 	VertexSetName    string           `|@Ident`
 // 	GlobalAccumName  GlobalAccumName  `| @@`
-// 	VertexType       VertexType       `| @@ '.*'`
+// 	VertexType       VertexType       `| @@ ".*"`
 // 	ParamName        string           `|@Ident`
-// 	SelectVertParams SelectVertParams `| 'SelectVertex' @@`
+// 	SelectVertParams SelectVertParams `| "SelectVertex" @@`
 // }
 
 // type SelectVertParams struct {
@@ -214,9 +238,8 @@ type ColumnId struct {
 }
 
 type AssignStmt struct {
-	Name     string `@Ident '='`
-	Expr     string `'=' @Ident`
-	AttrName string `@Ident`
+	Name string `@Ident ":""=" `
+	Expr Expr   `@@`
 }
 
 type AttrAccumStmt struct {
@@ -241,7 +264,7 @@ type ArgList struct {
 }
 
 type Alias struct {
-	Alias string `':' @Ident`
+	Alias string `":" @Ident`
 }
 
 type SelectStmt struct {
@@ -262,40 +285,38 @@ type GsqlSelectBlock struct {
 	// TODO HavingClause    `[ @@ ]`  // [havingClause]
 	// TODO OrderClause     `[ @@ ]`  // [orderClause]
 	// TODO LimitClause     `[ @@ ]`  // [limitClause]
-	EndColon string `";"`
 }
 
 type GsqlSelectClause struct {
-	VertexSetName string `@Ident '='`
-	VertexAlias   string `'SELECT' @Ident`
+	VertexSetName string `@Ident "="`
+	VertexAlias   string `"SELECT" @Ident`
 }
 
 type FromClause struct {
-	StepSourceSet StepSourceSet `'FROM' @@`
-	Step          Step          `@@?`
-	// StepV2      `|(@@)`
-	// PathPattern `(@@ [',' @@]*)`
+	StepSourceSet *StepSourceSet `"FROM" @@`
+	Step          *Step          `@@?`
+	// PathPattern `(@@ ["," @@]*)`
 }
 
 type StepSourceSet struct {
 	VertexSetName string `@Ident`
 	VertexAlias   Alias  `@@?`
 }
-type Step struct {
-	StepEdgeSet   StepEdgeSet   `( '-' '(' @@ ')' '-' '>'? )`
-	StepVertexSet StepVertexSet `@@?`
-}
 
-type StepV2 struct {
+type Step struct {
+	StepEdgeSet   StepEdgeSet   `( "-" "(" @@ ")" "-" ">"? )`
+	StepVertexSet StepVertexSet `@@?`
 }
 
 type StepEdgeSet struct {
 	StepEdgeTypes StepEdgeTypes `@@`
-	EdgeAlias     Alias         `@@?`
+	EdgeAlias     string        `":" @Ident`
 }
 
 type StepEdgeTypes struct {
-	EdgeType string `@Ident | '_' | 'ANY'`
+	FwdEdgeType  string `@Ident">" | "_"">" | "ANY" ">"`
+	BackEdgeType string `| "<" @Ident | "<""_" | "<""ANY"`
+	EdgeType     string `| @Ident | "_" | "ANY"`
 	// GlobalAccumName `|@@` //paramName | globalAccumName
 }
 
@@ -305,7 +326,7 @@ type StepVertexSet struct {
 }
 
 type StepVertexTypes struct {
-	VertType string `@Ident | '_' | 'ANY'`
+	VertType string `@Ident | "_" | "ANY"`
 	// GlobalAccumName `|@@` //paramName | globalAccumName
 }
 

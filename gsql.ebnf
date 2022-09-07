@@ -315,7 +315,7 @@ columnExpr := expr [AS columnName]
 ;
 columnName := name;
 tableName := name;
-;
+
 fromClause := FROM (step | stepV2 | pathPattern ["," pathPattern]*)
 ;
 step   :=  stepSourceSet ["-" "(" stepEdgeSet ")" ("-"|"->") stepVertexSet]
