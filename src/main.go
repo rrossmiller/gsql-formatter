@@ -11,16 +11,35 @@ import (
 	"github.com/alecthomas/repr"
 )
 
-var (
-	parser = participle.MustBuild[types.GsqlRoot]()
-)
+// type Operator string
+// type Comparison struct {
+// 	// Lt   *Operator `@"<" ?`
+// 	// LtEq *Operator `| @("<" "=") ?`
+// 	// Gt   *Operator `| @">" ?`
+// 	// GtEq *Operator `| @(">" "=") ?`
+// 	// Eq   *Operator `| @("=" "=") ?`
+// 	// NEq  *Operator `| @("!" "=") ?`
+// 	Eq *string `@( "<" | ("<" "=") | ">" | (">" "=")
+// 				 | ("=" "=") | ("!" "=") )?`
+// }
+
+// var parser = participle.MustBuild[Comparison]()
+
+// func main() {
+// 	q := "<"
+// 	gsql, err := parser.ParseString("", q)
+// 	utils.Check(err, q)
+// 	fmt.Println("\n\nrepr:")
+// 	repr.Println(gsql, repr.Indent("  "), repr.OmitEmpty(true))
+// }
+
+var parser = participle.MustBuild[types.GsqlRoot]()
 
 func main() {
 	// dev := flag.Bool("dev", false, "run through lines one by one")
 	railroad := flag.Bool("r", false, "Make railroad file")
 	verbose := flag.Bool("v", false, "Verbose output")
 	flag.Parse()
-	// fmt.Printf("dev: %v\n", *dev)
 
 	fmt.Print("running\n\n")
 

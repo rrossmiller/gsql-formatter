@@ -148,19 +148,38 @@ type MathOperator struct {
 }
 
 type Condition struct {
+	NotComparison *Condition  `"NOT" @@` // NOT condition
+	IsTrue        *bool       `| @"TRUE"`
+	IsFalse       *bool       `| @"FALSE"`
+	Comparison    *Comparison `| @@` // expr | expr comparisonOperator expr
+	// Expr       *Expr       `| @@` //| expr [ NOT ] IN setBagExpr
+	// Expr       *Expr       `| @@` //| expr IS [ NOT ] NULL
+	// Expr       *Expr       `| @@` //| expr BETWEEN expr AND expr
+	// Expr       *Expr       `| @@` //| "(" condition ")"
+
+	ANDConditions *Condition `| ("AND" | "OR") @@*` //| condition (AND | OR) condition
+	// Expr       *Expr       `| @@` //| (TRUE | FALSE)
+	// Expr       *Expr       `| @@` //| expr [NOT] LIKE expr [ESCAPE escape_char]
 }
 
-type ComparisonOperator struct {
+type Comparison struct {
+	Expr1              *Expr   `@@`
+	ComparisonOperator *string `@( "<" | ("<" "=") | ">" | (">" "=") 
+								  | ("=" "=") | ("!" "=") 
+								)?`
+	Expr2 *Expr `@@?`
 }
 
 type Aggregator struct {
 }
 
 type Expr struct {
-	StrVal    *string          ` @String`
+	StrVal    *string          `@String`
 	GlblAccum *GlobalAccumName `| @@`
 	LclAccum  *LocalAccumName  `| @@`
 	NumVal    *float64         ` | @Float | @Int`
+	Val       Name             `| @@`
+
 	// 	| name "." name
 	// 	| name "." localAccumName ["\""]
 	// 	| name "." name "." name "(" [argList] ")"
@@ -194,6 +213,16 @@ type AccumType struct {
 }
 
 type SetBagExpr struct {
+	// name
+	//     | globalAccumName
+	// 	  | name "." name
+	// 	    | name "." localAccumName
+	// 	    | name "." localAccumName ("." name "(" [argList] ")")+
+	// 	    | name "." name "(" [argList] ")" [ "." FILTER "(" condition ")" ]
+	// 	    | globalAccumName ("." name "(" [argList] ")")+
+	// 	    | setBagExpr (UNION | INTERSECT | MINUS) setBagExpr
+	// 	    | "(" argList ")"
+	// 	    | "(" setBagExpr ")"
 }
 
 type BaseDeclStmt struct {
@@ -275,7 +304,7 @@ type Alias struct {
 
 type SelectStmt struct {
 	Pos             lexer.Position
-	GsqlSelectBlock `@@`
+	GsqlSelectBlock *GsqlSelectBlock `@@`
 	// SqlSelectBlock  `| @@`
 }
 
@@ -283,15 +312,15 @@ type GsqlSelectBlock struct {
 	GsqlSelectClause *GsqlSelectClause `@@`
 	FromClause       *FromClause       `@@`
 
-	// TODO SampleClause    `[ @@ ]`  // [sampleClause]
+	// TODO SampleClause     // [sampleClause]
 
-	// TODO WhereClause `[ @@ ]` // [whereClause]
-	// TODO AccumClause `[ @@ ]` // [accumClause]
+	WhereClause *WhereClause `@@?` // [whereClause]
+	// TODO AccumClause // [accumClause]
 
-	// TODO PostAccumClause `[ @@ ]*` // [postAccumClause]*
-	// TODO HavingClause    `[ @@ ]`  // [havingClause]
-	// TODO OrderClause     `[ @@ ]`  // [orderClause]
-	// TODO LimitClause     `[ @@ ]`  // [limitClause]
+	// TODO PostAccumClause // [postAccumClause]*
+	// TODO HavingClause     // [havingClause]
+	// TODO OrderClause      // [orderClause]
+	// TODO LimitClause      // [limitClause]
 }
 
 type GsqlSelectClause struct {
@@ -388,6 +417,7 @@ type SampleClause struct {
 }
 
 type WhereClause struct {
+	Conditions []*Condition `"WHERE" @@*`
 }
 
 type AccumClause struct {

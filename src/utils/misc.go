@@ -43,8 +43,12 @@ const (
 	Q0 = `
 	Users = {User};
 	Users = {User.*};
-	Users = SELECT s FROM Users:s ;
-		
+	Users = SELECT s FROM Users:s WHERE NOT a.@thing AND True;
+	
+	Friends1 = SELECT u FROM Users:s -(FRIENDSHIP:e)- Friend:u;
+	Friends2 = SELECT tgt FROM Users:s -(FRIENDSHIP>:e)- _:u -(<FRIENDSHIP:e2)- Friend:tgt;
+	`
+	a = `
 	Friends1 = SELECT u FROM Users:s -(FRIENDSHIP:e)- Friend:u;
 	Friends2 = SELECT tgt FROM Users:s -(FRIENDSHIP:e)- _:u -(FRIENDSHIP:e2)- Friend:tgt;
 	`
