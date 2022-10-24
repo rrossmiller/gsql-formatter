@@ -1,42 +1,12 @@
 (* ######################################################### *)
 (* ## EBNF for GSQL Query Language *)
-
-createQuery := CREATE [OR REPLACE] [DISTRIBUTED] QUERY queryName
-               "(" [parameterList] ")"
-               [FOR GRAPH graphName]
-               [RETURNS "("  baseType | accumType ")"]
-               [API "(" stringLiteral ")"]
-               [SYNTAX syntaxName]
-               "{" queryBody "}"
+(* // root structure *)
+gsqlRoot := queryBody
 ;
-interpretQuery := INTERPRET QUERY "(" ")"
-               [FOR GRAPH graphName]
-               [SYNTAX syntaxName]
-               "{" queryBody "}"
-;
-parameterValueList := parameterValue ["," parameterValue]*
-;
-parameterValue := parameterConstant
-                | "[" parameterValue ["," parameterValue]* "]"  // BAG or SET
-                | "(" stringLiteral "," stringLiteral ")"        // a generic VERTEX value                
-;
-parameterConstant := numeric | stringLiteral | TRUE | FALSE
-;
-parameterList := parameterType paramName ["=" constant]
-                 ["," parameterType paramName  ["=" constant]]*
-                 ;
-syntaxName := name;
 
 queryBody := [typedefs] [declExceptStmts] queryBodyStmts
 ;
-typedefs := (typedef ";")+
-;
-declStmts := (declStmt ";")+
-;
-declStmt := baseDeclStmt | accumDeclStmt | fileDeclStmt
-;
-declExceptStmts := (declExceptStmt ";")+
-;
+
 queryBodyStmts := (queryBodyStmt ";")+
 ;
 queryBodyStmt := assignStmt           // Assignment
@@ -64,6 +34,42 @@ queryBodyStmt := assignStmt           // Assignment
                | tryStmt              // Exception
 
 ;
+
+createQuery := CREATE [OR REPLACE] [DISTRIBUTED] QUERY queryName
+               "(" [parameterList] ")"
+               [FOR GRAPH graphName]
+               [RETURNS "("  baseType | accumType ")"]
+               [API "(" stringLiteral ")"]
+               [SYNTAX syntaxName]
+               "{" queryBody "}"
+;
+interpretQuery := INTERPRET QUERY "(" ")"
+               [FOR GRAPH graphName]
+               [SYNTAX syntaxName]
+               "{" queryBody "}"
+;
+parameterValueList := parameterValue ["," parameterValue]*
+;
+parameterValue := parameterConstant
+                | "[" parameterValue ["," parameterValue]* "]"  // BAG or SET
+                | "(" stringLiteral "," stringLiteral ")"        // a generic VERTEX value                
+;
+parameterConstant := numeric | stringLiteral | TRUE | FALSE
+;
+parameterList := parameterType paramName ["=" constant]
+                 ["," parameterType paramName  ["=" constant]]*
+                 ;
+syntaxName := name;
+
+typedefs := (typedef ";")+
+;
+declStmts := (declStmt ";")+
+;
+declStmt := baseDeclStmt | accumDeclStmt | fileDeclStmt
+;
+declExceptStmts := (declExceptStmt ";")+
+;
+
 installQuery := INSTALL QUERY [installOptions] ( "*" | ALL |queryName ["," queryName]* )
 ;
 runQuery := (RUN | INTERPRET) QUERY [runOptions] queryName "(" parameterValueList ")"
@@ -194,25 +200,25 @@ comparisonOperator := "<" | "<=" | ">" | ">=" | "==" | "!="
 aggregator := COUNT | MAX | MIN | AVG | SUM
 ;
 expr := name
-    | globalAccumName
-		| name "." name
-		| name "." localAccumName ["\'"]
-		| name "." name "." name "(" [argList] ")"
-    | name "." name "(" [argList] ")" [ "." FILTER "(" condition ")" ]
-		| name ["<" type ["," type]* ">"] "(" [argList] ")"
-		| name "." localAccumName ("." name "(" [argList] ")")+ ["." name]
-		| globalAccumName ("." name "(" [argList] ")")+ ["." name]
-		| COALESCE "(" [argList] ")"
-		| aggregator "(" [DISTINCT] setBagExpr ")"
-		| ISEMPTY "(" setBagExpr ")"
-		| expr mathOperator expr
-		| "-" expr
-		| "(" expr ")"
-		| "(" argList "->" argList ")"	// key value pair for MapAccum
-		| "[" argList "]"               // a list
-		| constant
-		| setBagExpr
-		| name "(" argList ")"          // function call or a tuple object
+        | globalAccumName
+        | name "." name
+        | name "." localAccumName ["\'"]
+        | name "." name "." name "(" [argList] ")"
+        | name "." name "(" [argList] ")" [ "." FILTER "(" condition ")" ]
+        | name ["<" type ["," type]* ">"] "(" [argList] ")"
+        | name "." localAccumName ("." name "(" [argList] ")")+ ["." name]
+        | globalAccumName ("." name "(" [argList] ")")+ ["." name]
+        | COALESCE "(" [argList] ")"
+        | aggregator "(" [DISTINCT] setBagExpr ")"
+        | ISEMPTY "(" setBagExpr ")"
+        | expr mathOperator expr
+        | "-" expr
+        | "(" expr ")"
+        | "(" argList "->" argList ")"	// key value pair for MapAccum
+        | "[" argList "]"               // a list
+        | constant
+        | setBagExpr
+        | name "(" argList ")"          // function call or a tuple object
 ;
 setBagExpr := name
         | globalAccumName

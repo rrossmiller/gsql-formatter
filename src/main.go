@@ -11,29 +11,26 @@ import (
 	"github.com/alecthomas/repr"
 )
 
-// type Operator string
-// type Comparison struct {
-// 	// Lt   *Operator `@"<" ?`
-// 	// LtEq *Operator `| @("<" "=") ?`
-// 	// Gt   *Operator `| @">" ?`
-// 	// GtEq *Operator `| @(">" "=") ?`
-// 	// Eq   *Operator `| @("=" "=") ?`
-// 	// NEq  *Operator `| @("!" "=") ?`
-// 	Eq *string `@( "<" | ("<" "=") | ">" | (">" "=")
-// 				 | ("=" "=") | ("!" "=") )?`
-// }
-
-// var parser = participle.MustBuild[Comparison]()
-
-// func main() {
-// 	q := "<"
-// 	gsql, err := parser.ParseString("", q)
-// 	utils.Check(err, q)
-// 	fmt.Println("\n\nrepr:")
-// 	repr.Println(gsql, repr.Indent("  "), repr.OmitEmpty(true))
-// }
-
 var parser = participle.MustBuild[types.GsqlRoot]()
+
+// var (
+// 	sqlLexer = lexer.MustSimple([]lexer.SimpleRule{
+// 		{Name: `Keyword`, Pattern: `(?i)\b(ACCUM|AND|ANY|API|AS|ASC|AVG|BAG|BATCH|BETWEEN|BOOL|BOTH|BREAK|CASE|CATCH|COALESCE|COMPRESS|CONTINUE|COUNT|CREATE|DATETIME|DATETIME_ADD|DATETIME_SUB|DELETE|DESC|DISTRIBUTED|DO|DOUBLE|EDGE|ELSE|END|ESCAPE|EXCEPTION|FALSE|FILTER|FLOAD|FOR|FOREACH|FROM|GRAPH|HAVING|IF|IN|INT|INTERPRET|INTERSECT|INTERVAL|INTO|IS|ISEMPTY|JSONARRAY|JSONOBJECT|LEADING|LIKE|LIMIT|LOADACCUM|MAX|MIN|MINUS|NOT|NULL|OFFSET|OR|ORDER|PINNED|POST_ACCUM|PRIMARY_ID|PRINT|QUERY|RAISE|RANGE|RETURN|RETURNS|RUN|SAMPLE|SELECT|SELECTVERTEX|SET|STATIC|STRING|SUM|SYNTAX|TARGET|TAGS|THEN|TO|TO_CSV|TRAILING|TRIM|TRUE|TRY|TUPLE|TYPEDEF|UINT|UNION|VALUES|VERTEX|WHEN|WHILE|WITH|GSQL_INT_MAX|GSQL_INT_MIN|GSQL_UINT_MAX|RESET_COLLECTION_ACCUM)\b`},
+// 		{Name: `Ident`, Pattern: `[a-zA-Z_][a-zA-Z0-9_]*`},
+// 		{Name: `Number`, Pattern: `[-+]?\d*\.?\d+([eE][-+]?\d+)?`},
+// 		{Name: `String`, Pattern: `'[^']*'|"[^"]*"`},
+// 		{Name: `Operators`, Pattern: `<>|!=|<=|>=||[-+*/%,.()=<>]`},
+// 		{Name: "whitespace", Pattern: `\s+`},
+// 	})
+// 	parser = participle.MustBuild[types.GsqlRoot](
+// 		participle.Lexer(sqlLexer),
+// 		participle.Unquote("String"),
+// 		participle.CaseInsensitive("Keyword"),
+// 		// participle.Elide("Comment"),
+// 		// Need to solve left recursion detection first, if possible.
+// 		// participle.UseLookahead(),
+// 	)
+// )
 
 func main() {
 	// dev := flag.Bool("dev", false, "run through lines one by one")
@@ -42,9 +39,8 @@ func main() {
 	flag.Parse()
 
 	fmt.Print("running\n\n")
-
-	q := utils.Q0
-	fmt.Printf("q: %v\n", q)
+	q := utils.LinesOfCommands
+	utils.PrintQuery(q)
 	gsql, err := parser.ParseString("", q)
 	utils.Check(err, q)
 
