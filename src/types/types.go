@@ -1,13 +1,26 @@
 package types
 
-import "github.com/alecthomas/participle/v2/lexer"
-
 // root structure
 type GsqlRoot struct {
-	QueryBody *QueryBody `@@`
+	CreateQuery *CreateQuery `@@?`
 }
 
 type CreateQuery struct {
+	IsDistributed bool      `"CREATE" ("OR REPLACE")? @"DISTRIBUTED"?`
+	QueryName     string    `("QUERY")! @Ident`
+	ParameterList string    `"(" @Ident ")"` // TODO
+	GraphName     string    `"FOR" "GRAPH" @Ident`
+	SyntaxV2      bool      `("SYNTAX" @"V2")?`
+	OpenBody      bool      `@"{"!`
+	QueryBody     QueryBody `@@`
+	CloseBody     bool      `"end" @"}"!`
+	// CREATE [OR REPLACE] [DISTRIBUTED] QUERY queryName
+	//            "(" [parameterList] ")"
+	//            [FOR GRAPH graphName]
+	//            [RETURNS "("  baseType | accumType ")"]
+	//            [API "(" stringLiteral ")"]
+	//            [SYNTAX syntaxName]
+	//            "{" queryBody "}"
 }
 
 type InterpretQuery struct {
@@ -23,17 +36,27 @@ type ParameterConstant struct {
 }
 
 type ParameterList struct {
+	t string `@Ident` //TODO
+	// parameterType paramName ["=" constant]
+	// ["," parameterType paramName  ["=" constant]]*
 }
-
-type SyntaxName Name
 
 type QueryBody struct {
-	// [typedefs]
-	// [declExceptStmts] // declaration
-	QueryBodyStmts []*QueryBodyStmt `@@*`
+	Typedefs []Typedef `@@*` //[typedefs]
+	// [declExceptStmts]
+	QueryBodyStmts []QueryBodyStmt `@@*` // 0 or more query body stmts
 }
 
-type Typedefs struct {
+type Typedef struct {
+	Fields    []TupleFields `"TYPEDEF"! "TUPLE"! "<"! (@@ ","?)+  ">"!`
+	TupleType string        `@Ident ";"`
+	// typedef := TYPEDEF TUPLE "<" tupleFields ">" tupleType
+
+}
+
+type TupleFields struct {
+	BaseType  string `@Ident`
+	FieldName string `@Ident`
 }
 
 type DeclStmts struct {
@@ -46,14 +69,14 @@ type DeclExceptStmts struct {
 }
 
 type QueryBodyStmt struct {
-	AssignStmt      *AssignStmt      `@@ ";"`   // Assignment
-	VSetVarDeclStmt *VSetVarDeclStmt `| @@ ";"` // Declaration
+	AssignStmt      AssignStmt      `@@ ";"`   // Assignment
+	VSetVarDeclStmt VSetVarDeclStmt `| @@ ";"` // Declaration
 	// DeclStmts       *DeclStmts       `| @@ ";"`   // Declaration
 	// *LAccumAssignStmt     `| @@ ";"` // Assignment
 	// *GAccumAssignStmt     `| @@ ";"` // Assignment
 	// *GAccumAccumStmt      `| @@ ";"` // Assignment
 	// *FuncCallStmt         `| @@ ";"` // Function Call
-	SelectStmt *SelectStmt `| @@ ";"` // Select
+	SelectStmt SelectStmt `| @@ ";"` // Select
 	// *QueryBodyCaseStmt    `| @@ ";"` // Control Flow
 	// *QueryBodyIfStmt      `| @@ ";"` // Control Flow
 	// *QueryBodyWhileStmt   `| @@ ";"` // Control Flow
@@ -61,7 +84,7 @@ type QueryBodyStmt struct {
 	// *UpdateStmt           `| @@ ";"` // Data Modification
 	// *InsertStmt           `| @@ ";"` // Data Modification
 	// *QueryBodyDeleteStmt  `| @@ ";"` // Data Modification
-	// *PrintStmt            `| @@ ";"` // Output
+	// PrintStmt bool `| @"PRINT" ";"` // Output
 	// *PrintlnStmt          `| @@ ";"` // Output
 	// *LogStmt              `| @@ ";"` // Output
 	// *ReturnStmt           `| @@ ";"` // Output
@@ -107,10 +130,6 @@ type Numeric struct {
 type StringLiteral struct {
 }
 
-type Name struct {
-	Str *string `@Ident`
-}
-
 type VertexType struct {
 }
 
@@ -121,12 +140,6 @@ type BaseType struct {
 }
 
 type FilePath struct {
-}
-
-type Typedef struct {
-}
-
-type TupleFields struct {
 }
 
 type ParameterType struct {
@@ -148,65 +161,29 @@ type MathOperator struct {
 }
 
 type Condition struct {
-	NotComparison *Condition  `"NOT" @@` // NOT condition
-	IsTrue        *bool       `| @"TRUE"`
-	IsFalse       *bool       `| @"FALSE"`
-	Comparison    *Comparison `| @@` // expr | expr comparisonOperator expr
+	NotComparison *Condition `"NOT" @@` // NOT condition
+	IsTrue        bool       `| @"TRUE"`
+	IsFalse       bool       `| @"FALSE"`
+	ANDCondition  *Condition `| "AND" @@*` //| condition (AND | OR) condition
+	OrCondition   *Condition `| "OR" @@*`  //| condition (AND | OR) condition
+	Comparison    Comparison `| @@`        // expr | expr comparisonOperator expr
 	// Expr       *Expr       `| @@` //| expr [ NOT ] IN setBagExpr
 	// Expr       *Expr       `| @@` //| expr IS [ NOT ] NULL
 	// Expr       *Expr       `| @@` //| expr BETWEEN expr AND expr
 	// Expr       *Expr       `| @@` //| "(" condition ")"
 
-	ANDConditions *Condition `| ("AND" | "OR") @@*` //| condition (AND | OR) condition
-	// Expr       *Expr       `| @@` //| (TRUE | FALSE)
 	// Expr       *Expr       `| @@` //| expr [NOT] LIKE expr [ESCAPE escape_char]
 }
 
 type Comparison struct {
-	Expr1              *Expr   `@@`
-	ComparisonOperator *string `@( "<" | ("<" "=") | ">" | (">" "=") 
+	Expr1              Expr   `@@`
+	ComparisonOperator string `@( "<" | ("<" "=") | ">" | (">" "=") 
 								  | ("=" "=") | ("!" "=") 
-								)?`
-	Expr2 *Expr `@@?`
+								)!`
+	Expr2 Expr `@@`
 }
 
 type Aggregator struct {
-}
-
-type Expr struct {
-	StrVal    *string          `@String`
-	GlblAccum *GlobalAccumName `| @@`
-	LclAccum  *LocalAccumName  `| @@`
-	NumVal    *float64         ` | @Float | @Int`
-	Val       Name             `| @@`
-
-	// 	| name "." name
-	// 	| name "." localAccumName ["\""]
-	// 	| name "." name "." name "(" [argList] ")"
-	// | name "." name "(" [argList] ")" [ "." FILTER "(" condition ")" ]
-	// 	| name ["<" type ["," type]* ">"] "(" [argList] ")"
-	// 	| name "." localAccumName ("." name "(" [argList] ")")+ ["." name]
-	// 	| globalAccumName ("." name "(" [argList] ")")+ ["." name]
-	// 	| COALESCE "(" [argList] ")"
-	// 	| aggregator "(" [DISTINCT] setBagExpr ")"
-	// 	| ISEMPTY "(" setBagExpr ")"
-	// 	| expr mathOperator expr
-	// 	| "-" expr
-	// 	| "(" expr ")"
-	// 	| "(" argList "->" argList ")"	// key value pair for MapAccum
-	// 	| "[" argList "]"               // a list
-	// 	| constant
-	// 	| setBagExpr
-	// 	| name "(" argList ")"          // function call or a tuple object
-}
-
-type LocalAccumName struct {
-	ParentName *string `(@Ident ".")?`
-	AccumName  *string `("@" @Ident)`
-}
-
-type GlobalAccumName struct {
-	AccumName *string `"@""@" @Ident`
 }
 
 type AccumType struct {
@@ -241,11 +218,11 @@ type AssignDeclLocalTuple struct {
 }
 
 type VSetVarDeclStmt struct {
-	VertexSetName string     `@Ident`
-	VertexType    string     `( "(" @Ident ")" )?`
-	SeedSet       SeedSet    `("=" @@)?`
-	SimpleSet     SimpleSet  `| ("=" @@)?`
-	SelectStmt    SelectStmt `| ("=" @@)?`
+	VertexSetName string  `@Ident`
+	VertexType    string  `( "(" @Ident ")" )?`
+	SeedSet       SeedSet `("=" @@)?`
+	// SimpleSet     SimpleSet  `| ("=" @@)?`
+	SelectStmt SelectStmt `| ("=" @@)?`
 }
 
 type SimpleSet struct {
@@ -253,7 +230,7 @@ type SimpleSet struct {
 }
 
 type SeedSet struct {
-	Seed *Seed `"{" (@@)? "}"`
+	Seed Seed `"{" (@@)? "}"`
 	// Seeds []*Seed `"{" (("," @@ )*)? "}"`
 }
 
@@ -261,7 +238,7 @@ type Seed struct {
 	Seed            string          `"_" | "ANY"`
 	GlobalAccumName GlobalAccumName `| @@`
 	VertexDotStar   string          `| @Ident ".""*"`
-	VertexType      string          `| @Ident`
+	Param           string          `| @Ident`
 	// TODO ParamName        string           `| @Ident`
 	// SelectVertParams SelectVertParams `| "SelectVertex" @@`
 }
@@ -273,10 +250,47 @@ type ColumnId struct {
 }
 
 type AssignStmt struct {
-	Name string `@Ident ":""=" `
+	Name string `@Ident (":""=")! `
 	Expr Expr   `@@`
+	// AttrName string `| @Ident"."@Ident ":""=" `
 }
 
+type Expr struct {
+	StrVal    string          `@String`
+	GlblAccum GlobalAccumName `| @@`
+	LclAccum  LocalAccumName  `| @@`
+	IntVal    int             `| @Int`
+	FloatVal  float64         ` | @Float`
+	Val       string          `| @Ident`
+
+	// 	| name "." name
+	// 	| name "." localAccumName ["\""]
+	// 	| name "." name "." name "(" [argList] ")"
+	// | name "." name "(" [argList] ")" [ "." FILTER "(" condition ")" ]
+	// 	| name ["<" type ["," type]* ">"] "(" [argList] ")"
+	// 	| name "." localAccumName ("." name "(" [argList] ")")+ ["." name]
+	// 	| globalAccumName ("." name "(" [argList] ")")+ ["." name]
+	// 	| COALESCE "(" [argList] ")"
+	// 	| aggregator "(" [DISTINCT] setBagExpr ")"
+	// 	| ISEMPTY "(" setBagExpr ")"
+	// 	| expr mathOperator expr
+	// 	| "-" expr
+	// 	| "(" expr ")"
+	// 	| "(" argList "->" argList ")"	// key value pair for MapAccum
+	// 	| "[" argList "]"               // a list
+	// 	| constant
+	// 	| setBagExpr
+	// 	| name "(" argList ")"          // function call or a tuple object
+}
+
+type LocalAccumName struct {
+	ParentName *string `(@Ident ".")?`
+	AccumName  *string `("@"! @Ident)`
+}
+
+type GlobalAccumName struct {
+	AccumName *string `("@""@")! @Ident`
+}
 type AttrAccumStmt struct {
 }
 
@@ -303,18 +317,18 @@ type Alias struct {
 }
 
 type SelectStmt struct {
-	Pos             lexer.Position
-	GsqlSelectBlock *GsqlSelectBlock `@@`
+	// Pos             lexer.Position
+	GsqlSelectBlock GsqlSelectBlock `@@`
 	// SqlSelectBlock  `| @@`
 }
 
 type GsqlSelectBlock struct {
-	GsqlSelectClause *GsqlSelectClause `@@`
-	FromClause       *FromClause       `@@`
+	GsqlSelectClause GsqlSelectClause `@@`
+	FromClause       FromClause       `@@`
 
 	// TODO SampleClause     // [sampleClause]
 
-	WhereClause *WhereClause `@@?` // [whereClause]
+	WhereClause WhereClause `@@?` // [whereClause]
 	// TODO AccumClause // [accumClause]
 
 	// TODO PostAccumClause // [postAccumClause]*
@@ -329,8 +343,8 @@ type GsqlSelectClause struct {
 }
 
 type FromClause struct {
-	StepSourceSet *StepSourceSet `"FROM" @@`
-	Step          []*Step        `@@*`
+	StepSourceSet StepSourceSet `"FROM" @@`
+	Step          []Step        `@@*`
 	// PathPattern `(@@ ["," @@]*)`
 }
 
@@ -340,13 +354,14 @@ type StepSourceSet struct {
 }
 
 type Step struct {
-	StepEdgeSet   StepEdgeSet   `( "-" "(" @@ ")" "-" ">"? )`
+	StepEdgeSet   StepEdgeSet   ` "-" "(" @@ ")" "-"`
+	Directed      bool          `@">"?`
 	StepVertexSet StepVertexSet `@@?`
 }
 
 type StepEdgeSet struct {
 	StepEdgeTypes StepEdgeTypes `@@`
-	EdgeAlias     string        `":" @Ident`
+	EdgeAlias     Alias         `@@?`
 }
 
 type StepEdgeTypes struct {
@@ -417,7 +432,7 @@ type SampleClause struct {
 }
 
 type WhereClause struct {
-	Conditions []*Condition `"WHERE" @@*`
+	Conditions []Condition `"WHERE" @@*`
 }
 
 type AccumClause struct {
@@ -556,5 +571,5 @@ type CaseExceptBlock struct {
 }
 
 // type ElseExceptBlock struct {
-// *QueryBodyStmt ``
+// QueryBodyStmt ``
 // }
