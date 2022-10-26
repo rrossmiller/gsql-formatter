@@ -1,0 +1,4 @@
+// this is a comment
+var language = "lox";
+/* this is a block comment */
+print "hi";
