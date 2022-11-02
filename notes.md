@@ -1,0 +1,1 @@
+static typeing: https://craftinginterpreters.com/evaluating-expressions.html#design-note

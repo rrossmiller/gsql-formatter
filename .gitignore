@@ -20,3 +20,4 @@ setup.cmds
 
 # java
 *.class
+target
