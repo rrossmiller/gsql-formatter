@@ -18,13 +18,13 @@ public class Environment {
         this.enclosing = enclosing;
     }
 
-    void define(String name, Object value) {
+    public void define(String name, Object value) {
         // TODO static type. Variable object with type attr instead of object
         values.put(name, value); // var a = 0; var a = 1; ... second will overwrite the var. Change this for
                                  // redefining assignment
     }
 
-    Object get(Token name) {
+    public Object get(Token name) {
         if (values.containsKey(name.lexeme))
             return values.get(name.lexeme);
 
@@ -34,11 +34,11 @@ public class Environment {
         throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
     }
 
-    Object getAt(int distance, String name) {
+    public Object getAt(int distance, String name) {
         return ancestor(distance).values.get(name);
     }
 
-    Environment ancestor(int distance) {
+    public Environment ancestor(int distance) {
         Environment environment = this;
         for (int i = 0; i < distance; i++) {
             environment = environment.enclosing;
@@ -47,7 +47,7 @@ public class Environment {
         return environment;
     }
 
-    void assign(Token name, Object value) {
+    public void assign(Token name, Object value) {
         if (values.containsKey(name.lexeme)) {
             values.put(name.lexeme, value);
             return;
@@ -61,7 +61,7 @@ public class Environment {
         throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
     }
 
-    void assignAt(int distance, Token name, Object value) {
+    public void assignAt(int distance, Token name, Object value) {
         ancestor(distance).values.put(name.lexeme, value);
     }
 

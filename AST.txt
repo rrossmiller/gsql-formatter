@@ -1,0 +1,1 @@
+fun fibn if < n 2.0 return nreturn + call fib  - n 2.0 call fib  - n 1.0var start = call clock print == call fib  35.0 9227465.0print - call clock  start

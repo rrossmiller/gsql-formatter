@@ -1,19 +1,17 @@
 package com.optum.ghs.grommet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
 import com.optum.ghs.grommet.exception.RuntimeError;
+import com.optum.ghs.grommet.types.Stmt;
 import com.optum.ghs.grommet.types.Token;
 import static com.optum.ghs.grommet.types.TokenType.*;
 
 public class Grommet {
-    // private static final Interpreter interpreter = new Interpreter();
+    private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
 
@@ -43,25 +41,25 @@ public class Grommet {
 
         // For now, just print the tokens.
         for (Token token : tokens) {
-        System.out.println(token);
+            System.out.println(token);
         }
-        // System.out.println("***");
+        System.out.println("***");
 
-        // Parser parser = new Parser(tokens);
-        // List<Stmt> statements = parser.parse();
+        Parser parser = new Parser(tokens);
+        List<Stmt> statements = parser.parse();
 
-        // // stop if there was a syntax error
-        // if (hadError)
-        //     return;
+        // stop if there was a syntax error
+        if (hadError)
+            return;
 
-        // Resolver resolver = new Resolver(interpreter); // semantic analysis
-        // resolver.resolve(statements);
+        Resolver resolver = new Resolver(interpreter); // semantic analysis
+        resolver.resolve(statements);
 
-        // // Stop if there was a resolution error.
-        // if (hadError)
-        //     return;
+        // Stop if there was a resolution error.
+        if (hadError)
+            return;
 
-        // new AstPrinter().printTree(statements, false, true);
+        new AstPrinter().printTree(statements, false, true);
         //// interpreter.interpret(statements);
     }
 

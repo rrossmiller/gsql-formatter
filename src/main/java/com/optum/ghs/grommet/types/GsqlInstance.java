@@ -1,16 +1,15 @@
-package com.optum.ghs.grommet;
+package com.optum.ghs.grommet.types;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.optum.ghs.grommet.types.Token;
 import com.optum.ghs.grommet.exception.RuntimeError;
 
-class LoxInstance {
-    private LoxClass klass;
+public class GsqlInstance {
+    private GsqlClass klass;
     private final Map<String, Object> fields = new HashMap<>();
 
-    public LoxInstance(LoxClass klass) {
+    public GsqlInstance(GsqlClass klass) {
         this.klass = klass;
     }
 
@@ -18,7 +17,7 @@ class LoxInstance {
         if (fields.containsKey(name.lexeme)) {
             return fields.get(name.lexeme);
         }
-        LoxFunction method = klass.findMethod(name.lexeme);
+        GsqlFunction method = klass.findMethod(name.lexeme);
         if (method != null)
             return method.bind(this);
 

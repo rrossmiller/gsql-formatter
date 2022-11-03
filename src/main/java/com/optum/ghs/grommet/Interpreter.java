@@ -7,6 +7,10 @@ import java.util.Map;
 
 import static com.optum.ghs.grommet.types.TokenType.*;
 import com.optum.ghs.grommet.types.FunReturn;
+import com.optum.ghs.grommet.types.GsqlCallable;
+import com.optum.ghs.grommet.types.GsqlClass;
+import com.optum.ghs.grommet.types.GsqlFunction;
+import com.optum.ghs.grommet.types.GsqlInstance;
 import com.optum.ghs.grommet.types.Expr;
 import com.optum.ghs.grommet.types.Stmt;
 import com.optum.ghs.grommet.types.Token;
@@ -16,13 +20,13 @@ import com.optum.ghs.grommet.exception.RuntimeError;
 
 // interpret statements to runnable java
 // Every new syntax tree node gets a new visit method.
-class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Environment globals = new Environment();
     private Environment environment = globals;
     private final Map<Expr, Integer> locals = new HashMap<>();
 
     public Interpreter() {
-        globals.define("clock", new LoxCallable() {
+        globals.define("clock", new GsqlCallable() {
             @Override
             public int arity() {
                 return 0;
@@ -75,12 +79,12 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Object visitSetExpr(Expr.Set expr) {
         Object object = evaluate(expr.object);
 
-        if (!(object instanceof LoxInstance)) {
+        if (!(object instanceof GsqlInstance)) {
             throw new RuntimeError(expr.name, "Only instances have fields.");
         }
 
         Object value = evaluate(expr.value);
-        ((LoxInstance) object).set(expr.name, value);
+        ((GsqlInstance) object).set(expr.name, value);
         return value;
     }
 
@@ -174,10 +178,10 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             arguments.add(evaluate(argument));
         }
 
-        if (!(callee instanceof LoxCallable)) {
+        if (!(callee instanceof GsqlCallable)) {
             throw new RuntimeError(expr.paren, "Can only call functions and classes");
         }
-        LoxCallable function = (LoxCallable) callee;
+        GsqlCallable function = (GsqlCallable) callee;
 
         if (arguments.size() != function.arity()) {
             throw new RuntimeError(expr.paren,
@@ -189,8 +193,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Object visitGetExpr(Expr.Get expr) {
         Object object = evaluate(expr.object);
-        if (object instanceof LoxInstance) {
-            return ((LoxInstance) object).get(expr.name);
+        if (object instanceof GsqlInstance) {
+            return ((GsqlInstance) object).get(expr.name);
         }
 
         throw new RuntimeError(expr.name,
@@ -205,7 +209,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitFunctionStmt(Function stmt) {
-        LoxFunction function = new LoxFunction(stmt, environment, false);
+        GsqlFunction function = new GsqlFunction(stmt, environment, false);
         environment.define(stmt.name.lexeme, function);
         return null;
     }
@@ -276,7 +280,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
-    void executeBlock(List<Stmt> statements, Environment environment) {
+    public void executeBlock(List<Stmt> statements, Environment environment) {
         Environment previous = this.environment;
         try {
             this.environment = environment;
@@ -292,13 +296,13 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitClassStmt(Stmt.Class stmt) {
         environment.define(stmt.name.lexeme, null);
 
-        Map<String, LoxFunction> methods = new HashMap<>();
+        Map<String, GsqlFunction> methods = new HashMap<>();
         for (Stmt.Function method : stmt.methods) {
-            LoxFunction function = new LoxFunction(method, environment, method.name.lexeme.equals("init"));
+            GsqlFunction function = new GsqlFunction(method, environment, method.name.lexeme.equals("init"));
             methods.put(method.name.lexeme, function);
         }
 
-        LoxClass klass = new LoxClass(stmt.name.lexeme, methods);
+        GsqlClass klass = new GsqlClass(stmt.name.lexeme, methods);
         environment.assign(stmt.name, klass);
         return null;
     }

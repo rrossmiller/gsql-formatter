@@ -1,16 +1,16 @@
-package com.optum.ghs.grommet;
+package com.optum.ghs.grommet.types;
 
 import java.util.List;
 
-import com.optum.ghs.grommet.types.FunReturn;
-import com.optum.ghs.grommet.types.Stmt;
+import com.optum.ghs.grommet.Environment;
+import com.optum.ghs.grommet.Interpreter;
 
-public class LoxFunction implements LoxCallable {
+public class GsqlFunction implements GsqlCallable {
     private final Stmt.Function declaration;
     private final Environment closure;
     private final boolean isInitializer;
 
-    LoxFunction(Stmt.Function declaration, Environment closure, boolean isInitializer) {
+    public GsqlFunction(Stmt.Function declaration, Environment closure, boolean isInitializer) {
         this.isInitializer = isInitializer;
         this.declaration = declaration;
         this.closure = closure;
@@ -43,10 +43,10 @@ public class LoxFunction implements LoxCallable {
         return declaration.params.size();
     }
 
-    LoxFunction bind(LoxInstance instance) {
+    GsqlFunction bind(GsqlInstance instance) {
         Environment environment = new Environment(closure);
         environment.define("this", instance);
-        return new LoxFunction(declaration, environment, isInitializer);
+        return new GsqlFunction(declaration, environment, isInitializer);
     }
 
     @Override
