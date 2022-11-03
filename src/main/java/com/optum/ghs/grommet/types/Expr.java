@@ -1,7 +1,6 @@
 package com.optum.ghs.grommet.types;
 
 import java.util.List;
-import lombok.Getter;
 
 public abstract class Expr {
     public abstract <R> R accept(Visitor<R> visitor);
@@ -31,10 +30,9 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Assign extends Expr {
-        private final Token name;
-        private final Expr value;
+        public final Token name;
+        public final Expr value;
 
         public Assign(Token name, Expr value) {
             this.name = name;
@@ -48,11 +46,10 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Binary extends Expr {
-        private final Expr left;
-        private final Token operator;
-        private final Expr right;
+        public final Expr left;
+        public final Token operator;
+        public final Expr right;
 
         public Binary(Expr left, Token operator, Expr right) {
             this.left = left;
@@ -67,11 +64,10 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Call extends Expr {
-        private final Expr callee;
-        private final Token paren;
-        private final List<Expr> arguments;
+        public final Expr callee;
+        public final Token paren;
+        public final List<Expr> arguments;
 
         public Call(Expr callee, Token paren, List<Expr> arguments) {
             this.callee = callee;
@@ -86,10 +82,9 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Get extends Expr {
-        private final Expr object;
-        private final Token name;
+        public final Expr object;
+        public final Token name;
 
         public Get(Expr object, Token name) {
             this.object = object;
@@ -103,9 +98,8 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Grouping extends Expr {
-        private final Expr expression;
+        public final Expr expression;
 
         public Grouping(Expr expression) {
             this.expression = expression;
@@ -118,9 +112,8 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Literal extends Expr {
-        private final Object value;
+        public final Object value;
 
         public Literal(Object value) {
             this.value = value;
@@ -133,11 +126,10 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Logical extends Expr {
-        private final Expr left;
-        private final Token operator;
-        private final Expr right;
+        public final Expr left;
+        public final Token operator;
+        public final Expr right;
 
         public Logical(Expr left, Token operator, Expr right) {
             this.left = left;
@@ -152,11 +144,10 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Set extends Expr {
-        private final Expr object;
-        private final Token name;
-        private final Expr value;
+        public final Expr object;
+        public final Token name;
+        public final Expr value;
 
         public Set(Expr object, Token name, Expr value) {
             this.object = object;
@@ -171,9 +162,8 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class This extends Expr {
-        private final Token keyword;
+        public final Token keyword;
 
         public This(Token keyword) {
             this.keyword = keyword;
@@ -186,10 +176,9 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Unary extends Expr {
-        private final Token operator;
-        private final Expr right;
+        public final Token operator;
+        public final Expr right;
 
         public Unary(Token operator, Expr right) {
             this.operator = operator;
@@ -203,9 +192,8 @@ public abstract class Expr {
 
     }
 
-    @Getter
     public static class Variable extends Expr {
-        private final Token name;
+        public final Token name;
 
         public Variable(Token name) {
             this.name = name;

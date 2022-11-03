@@ -56,7 +56,7 @@ public class GenerateAst {
         writer.println("package com.optum.ghs.grommet.types;");
         writer.println();
         writer.println("import java.util.List;");
-        writer.println("import lombok.Getter;");
+        // writer.println("import lombok.Getter;");
         writer.println();
         writer.println("public abstract class " + baseName + " {");
 
@@ -93,13 +93,13 @@ public class GenerateAst {
 
     private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
 
-        writer.println("    @Getter");
+        // writer.println("    @Getter");
         writer.println("    public static class " + className + " extends " + baseName + " {");
         String[] fields = fieldList.split(", ");
 
         // Fields.
         for (String field : fields) {
-            writer.println("        private final " + field + ";");
+            writer.println("        public final " + field + ";");
         }
         writer.println();
         // Constructor.

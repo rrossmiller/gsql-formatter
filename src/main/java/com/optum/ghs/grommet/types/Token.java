@@ -1,13 +1,11 @@
 package com.optum.ghs.grommet.types;
 
-import lombok.Getter;
 
-@Getter
 public class Token {
-    private final TokenType type;
-    private final String lexeme;
-    private final Object literal;
-    private final int line;
+    public final TokenType type;
+    public final String lexeme;
+    public final Object literal;
+    public final int line;
     // add col and length
 
     public Token(TokenType type, String lexeme, Object literal, int line) {

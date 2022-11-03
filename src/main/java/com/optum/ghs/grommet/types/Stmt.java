@@ -1,7 +1,6 @@
 package com.optum.ghs.grommet.types;
 
 import java.util.List;
-import lombok.Getter;
 
 public abstract class Stmt {
     public abstract <R> R accept(Visitor<R> visitor);
@@ -27,9 +26,8 @@ public abstract class Stmt {
 
     }
 
-    @Getter
     public static class Block extends Stmt {
-        private final List<Stmt> statements;
+        public final List<Stmt> statements;
 
         public Block(List<Stmt> statements) {
             this.statements = statements;
@@ -42,10 +40,9 @@ public abstract class Stmt {
 
     }
 
-    @Getter
     public static class Class extends Stmt {
-        private final Token name;
-        private final List<Function> methods;
+        public final Token name;
+        public final List<Function> methods;
 
         public Class(Token name, List<Function> methods) {
             this.name = name;
@@ -59,9 +56,8 @@ public abstract class Stmt {
 
     }
 
-    @Getter
     public static class Expression extends Stmt {
-        private final Expr expression;
+        public final Expr expression;
 
         public Expression(Expr expression) {
             this.expression = expression;
@@ -74,11 +70,10 @@ public abstract class Stmt {
 
     }
 
-    @Getter
     public static class Function extends Stmt {
-        private final Token name;
-        private final List<Token> params;
-        private final List<Stmt> body;
+        public final Token name;
+        public final List<Token> params;
+        public final List<Stmt> body;
 
         public Function(Token name, List<Token> params, List<Stmt> body) {
             this.name = name;
@@ -93,11 +88,10 @@ public abstract class Stmt {
 
     }
 
-    @Getter
     public static class If extends Stmt {
-        private final Expr condition;
-        private final Stmt thenBranch;
-        private final Stmt elseBranch;
+        public final Expr condition;
+        public final Stmt thenBranch;
+        public final Stmt elseBranch;
 
         public If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
             this.condition = condition;
@@ -112,9 +106,8 @@ public abstract class Stmt {
 
     }
 
-    @Getter
     public static class Print extends Stmt {
-        private final Expr expression;
+        public final Expr expression;
 
         public Print(Expr expression) {
             this.expression = expression;
@@ -127,10 +120,9 @@ public abstract class Stmt {
 
     }
 
-    @Getter
     public static class Return extends Stmt {
-        private final Token keyword;
-        private final Expr value;
+        public final Token keyword;
+        public final Expr value;
 
         public Return(Token keyword, Expr value) {
             this.keyword = keyword;
@@ -144,10 +136,9 @@ public abstract class Stmt {
 
     }
 
-    @Getter
     public static class Var extends Stmt {
-        private final Token name;
-        private final Expr initializer;
+        public final Token name;
+        public final Expr initializer;
 
         public Var(Token name, Expr initializer) {
             this.name = name;
@@ -161,10 +152,9 @@ public abstract class Stmt {
 
     }
 
-    @Getter
     public static class While extends Stmt {
-        private final Expr condition;
-        private final Stmt body;
+        public final Expr condition;
+        public final Stmt body;
 
         public While(Expr condition, Stmt body) {
             this.condition = condition;

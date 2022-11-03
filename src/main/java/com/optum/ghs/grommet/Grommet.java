@@ -65,21 +65,20 @@ public class Grommet {
         //// interpreter.interpret(statements);
     }
 
-    static void error(int line, String message) {
+    public static void error(int line, String message) {
         report(line, "", message);
     }
 
-    static void error(Token token, String message) {
-        if (token.getType() == EOF) {
-            report(token.getLine(), " at end", message);
+    public static void error(Token token, String message) {
+        if (token.type == EOF) {
+            report(token.line, " at end", message);
         } else {
-            report(token.getLine(), " at '" + token.getLexeme() + "'", message);
+            report(token.line, " at '" + token.lexeme + "'", message);
         }
     }
 
-    static void runtimeError(RuntimeError error) {
-        // System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
-        System.err.println("[line " + error.token.getLine() + "] -->  " + error.getMessage());
+    public static void runtimeError(RuntimeError error) {
+        System.err.println("[line " + error.token.line + "] -->  " + error.getMessage());
         hadRuntimeError = true;
     }
 
