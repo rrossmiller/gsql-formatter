@@ -10,4 +10,4 @@ clear
 #javac -d bin src/$pkg/*.java && java -cp bin $pkg.Grommet $@
 
 # mvn clean
-java -cp target/classes com.optum.ghs.grommet.Grommet $@
+java -cp target/classes com.optum.grnd.grommet.Grommet $@

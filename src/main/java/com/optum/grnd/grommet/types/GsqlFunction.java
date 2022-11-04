@@ -1,9 +1,8 @@
-package com.optum.ghs.grommet.types;
+package com.optum.grnd.grommet.types;
 
 import java.util.List;
 
-import com.optum.ghs.grommet.Environment;
-import com.optum.ghs.grommet.Interpreter;
+import com.optum.grnd.grommet.Interpreter;
 
 public class GsqlFunction implements GsqlCallable {
     private final Stmt.Function declaration;
@@ -30,7 +29,7 @@ public class GsqlFunction implements GsqlCallable {
         } catch (FunReturn returnValue) {
             if (isInitializer)
                 return closure.getAt(0, "this");
-                
+
             return returnValue.value;
         }
         if (isInitializer)
@@ -43,7 +42,7 @@ public class GsqlFunction implements GsqlCallable {
         return declaration.params.size();
     }
 
-    GsqlFunction bind(GsqlInstance instance) {
+    public GsqlFunction bind(GsqlInstance instance) {
         Environment environment = new Environment(closure);
         environment.define("this", instance);
         return new GsqlFunction(declaration, environment, isInitializer);

@@ -1,13 +1,12 @@
-package com.optum.ghs.grommet;
+package com.optum.grnd.grommet.types;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.optum.ghs.grommet.types.Token;
-import com.optum.ghs.grommet.exception.RuntimeError;
+import com.optum.grnd.grommet.exception.RuntimeError;
 
 public class Environment {
-    final Environment enclosing;
+    public final Environment enclosing;
     private final Map<String, Object> values = new HashMap<>();
 
     public Environment() {

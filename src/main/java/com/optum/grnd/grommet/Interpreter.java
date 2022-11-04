@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.optum.grnd.grommet.exception.RuntimeError;
+import com.optum.grnd.grommet.types.Environment;
 import com.optum.grnd.grommet.types.Expr;
 import com.optum.grnd.grommet.types.FunReturn;
 import com.optum.grnd.grommet.types.GsqlCallable;
@@ -185,6 +186,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         GsqlCallable function = (GsqlCallable) callee;
 
         if (arguments.size() != function.arity()) {
+            System.out.println(arguments.size());
+            System.out.println(function.arity());
             throw new RuntimeError(expr.paren,
                     "Expected " + function.arity() + " arguments but got " + arguments.size() + ".");
         }
@@ -295,15 +298,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitClassStmt(Stmt.Class stmt) {
+        Object superclass = null;
         environment.define(stmt.name.lexeme, null);
 
         Map<String, GsqlFunction> methods = new HashMap<>();
         for (Stmt.Function method : stmt.methods) {
-            GsqlFunction function = new GsqlFunction(method, environment, method.name.lexeme.equals("init"));
+            GsqlFunction function = new GsqlFunction(method, environment,
+                    method.name.lexeme.equals("init"));
             methods.put(method.name.lexeme, function);
         }
 
-        GsqlClass klass = new GsqlClass(stmt.name.lexeme, methods);
+        GsqlClass klass = new GsqlClass(stmt.name.lexeme, (GsqlClass) superclass, methods);
         environment.assign(stmt.name, klass);
         return null;
     }

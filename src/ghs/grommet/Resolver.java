@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import com.optum.ghs.grommet.types.Expr;
-import com.optum.ghs.grommet.types.Stmt;
-import com.optum.ghs.grommet.types.Token;
+
+import com.optum.grnd.grommet.types.Expr;
+import com.optum.grnd.grommet.types.Stmt;
+import com.optum.grnd.grommet.types.Token;
 
 class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private enum FunctionType {

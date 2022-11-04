@@ -9,7 +9,7 @@ import java.util.List;
 //CHECKME translate EBNF to the types/statements arrays???
 public class GenerateAst {
     public static void main(String[] args) throws IOException {
-        String outputDir = "src/main/java/com/optum/ghs/grommet/types";
+        String outputDir = "src/main/java/com/optum/grnd/grommet/types";
         if (args.length == 1) {
             // System.err.println("Usage: generate_ast <output directory>");
             // System.exit(64);
@@ -53,7 +53,7 @@ public class GenerateAst {
         f.createNewFile();
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        writer.println("package com.optum.ghs.grommet.types;");
+        writer.println("package com.optum.grnd.grommet.types;");
         writer.println();
         writer.println("import java.util.List;");
         // writer.println("import lombok.Getter;");

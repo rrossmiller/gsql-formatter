@@ -1,4 +1,4 @@
-package com.optum.ghs.grommet.types;
+package com.optum.grnd.grommet.types;
 
 public class FunReturn extends RuntimeException {
     public final Object value;

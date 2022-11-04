@@ -1,6 +1,6 @@
 package com.optum.ghs.grommet;
 
-import com.optum.ghs.grommet.types.Token;
+import com.optum.grnd.grommet.types.Token;
 
 class RuntimeError extends RuntimeException{
     final Token token;

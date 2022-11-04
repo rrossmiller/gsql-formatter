@@ -1,4 +1,4 @@
-package com.optum.ghs.grommet.types;
+package com.optum.grnd.grommet.types;
 
 public enum TokenType {
     // Single-character tokens.

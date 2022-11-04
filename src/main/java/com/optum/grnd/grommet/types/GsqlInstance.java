@@ -1,9 +1,9 @@
-package com.optum.ghs.grommet.types;
+package com.optum.grnd.grommet.types;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.optum.ghs.grommet.exception.RuntimeError;
+import com.optum.grnd.grommet.exception.RuntimeError;
 
 public class GsqlInstance {
     private GsqlClass klass;

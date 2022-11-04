@@ -45,7 +45,7 @@ public class Grommet {
             System.out.println(token);
         }
         System.out.println("***");
-        System.exit(0);
+        // System.exit(0);
         Parser parser = new Parser(tokens);
         List<Stmt> statements = parser.parse();
 
@@ -61,7 +61,7 @@ public class Grommet {
             return;
 
         new AstPrinter().printTree(statements, false, true);
-        //// interpreter.interpret(statements);
+        interpreter.interpret(statements);
     }
 
     public static void error(int line, String message) {

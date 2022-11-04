@@ -1,12 +1,16 @@
-package gfmt;
+package com.optum.ghs.grommet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.optum.grnd.grommet.types.Token;
+import com.optum.grnd.grommet.types.TokenType;
+
+// characters to tokens
 public class Scanner {
-    private static final Map<String, TokenType> keywords; //https://docs.tigergraph.com/gsql-ref/3.6/appendix/query-language-reserved-words
+    private static final Map<String, TokenType> keywords;
     static {
         keywords = new HashMap<>();
         keywords.put("and", TokenType.AND);
@@ -34,10 +38,6 @@ public class Scanner {
 
     Scanner(String source) {
         this.source = source;
-    }
-
-    List<Token> getTokens() {
-        return this.tokens;
     }
 
     List<Token> scanTokens() {
@@ -74,16 +74,19 @@ public class Scanner {
                 addToken(TokenType.DOT);
                 break;
             case '-':
-                addToken(TokenType.MINUS);
+                addToken(match('=') ? TokenType.MINUSEQUALS : TokenType.MINUS);
                 break;
             case '+':
-                addToken(TokenType.PLUS);
+                addToken(match('=') ? TokenType.PLUSEQUALS : TokenType.PLUS);
                 break;
             case ';':
                 addToken(TokenType.SEMICOLON);
                 break;
             case '*':
                 addToken(TokenType.STAR);
+                break;
+            case '%':
+                addToken(TokenType.MODULO);
                 break;
             case '!':
                 addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
@@ -102,16 +105,15 @@ public class Scanner {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd())
                         advance();
-                    addToken(TokenType.COMMENT);
+                    // addToken(TokenType.COMMENT);
                 } else if (match('*')) {
                     // A block comment goes until '*/' termination
                     while (!isAtEnd() && (peek() != '*' && peekNext() != '/'))
-                        System.out.print(advance());
-                    System.out.println();
+                        advance();
                     // consume */
                     advance(2);
-                    
-                    addToken(TokenType.COMMENT);
+                    // addToken(TokenType.COMMENT);
+
                 } else {
                     addToken(TokenType.SLASH);
                 }
@@ -134,10 +136,9 @@ public class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                    GFmt.error(line, "Unexpected character.");
+                    Grommet.error(line, "Unexpected character.");
                 }
                 break;
-
         }
     }
 
@@ -172,6 +173,9 @@ public class Scanner {
 
         while (isDigit(peek()))
             advance();
+
+        double value = Double.parseDouble(source.substring(start, current));
+        addToken(TokenType.NUMBER, value);
     }
 
     private void string() {
@@ -183,7 +187,7 @@ public class Scanner {
         }
 
         if (isAtEnd()) {
-            GFmt.error(line, "Unterminiated string.");
+            Grommet.error(line, "Unterminiated string.");
             return;
         }
         // the closing "
@@ -228,12 +232,12 @@ public class Scanner {
     private char advance() {
         return source.charAt(current++);
     }
+
     private void advance(int n) {
         for (int i = 0; i < n; i++) {
             advance();
-        };
+        }
     }
-
 
     // creates a new token for the curernt lexeme
     private void addToken(TokenType type) {
