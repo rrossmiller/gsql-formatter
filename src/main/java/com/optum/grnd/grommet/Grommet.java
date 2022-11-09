@@ -10,6 +10,7 @@ import java.util.List;
 import com.optum.grnd.grommet.exception.RuntimeError;
 import com.optum.grnd.grommet.types.Stmt;
 import com.optum.grnd.grommet.types.Token;
+import com.optum.grnd.grommet.types.TokenType.*;
 
 public class Grommet {
     private static final Interpreter interpreter = new Interpreter();
@@ -41,11 +42,17 @@ public class Grommet {
         List<Token> tokens = scanner.scanTokens();
 
         // For now, just print the tokens.
+        System.out.println("type" + " | " + "lexeme" + " | " + "literal");
         for (Token token : tokens) {
-            System.out.println(token);
+            if (token.type == BLOCK_COMMENT) {
+                Token tkn = new Token(BLOCK_COMMENT, token.lexeme.replaceAll("\n", " "), null, token.line);
+               System.out.println(tkn);
+            } else
+                System.out.println(token);
         }
         System.out.println("***");
-        // System.exit(0);
+
+        // System.out.println("parse");
         Parser parser = new Parser(tokens);
         List<Stmt> statements = parser.parse();
 
@@ -53,6 +60,11 @@ public class Grommet {
         if (hadError)
             return;
 
+        // System.out.println("ast");
+        new AstPrinter().printTree(statements, false, true);
+        System.exit(0);
+
+        // System.out.println("resolve");
         Resolver resolver = new Resolver(interpreter); // semantic analysis
         resolver.resolve(statements);
 
@@ -60,7 +72,7 @@ public class Grommet {
         if (hadError)
             return;
 
-        new AstPrinter().printTree(statements, false, true);
+        // System.out.println("interpret");
         interpreter.interpret(statements);
     }
 

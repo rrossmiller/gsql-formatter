@@ -60,6 +60,11 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitCommentStmt(Stmt.Comment comment) {
+        return null;
+    }
+
+    @Override
     public Void visitClassStmt(Stmt.Class stmt) {
         ClassType enclosingClass = currentClass;
         currentClass = ClassType.CLASS;

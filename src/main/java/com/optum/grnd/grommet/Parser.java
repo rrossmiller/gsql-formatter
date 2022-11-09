@@ -11,6 +11,7 @@ import com.optum.grnd.grommet.types.Stmt;
 import com.optum.grnd.grommet.types.Token;
 import com.optum.grnd.grommet.types.TokenType;
 import com.optum.grnd.grommet.types.Stmt.Function;
+import com.optum.grnd.grommet.types.Stmt.Query;
 
 // tokens to statements
 class Parser {
@@ -45,11 +46,6 @@ class Parser {
 
     private Stmt declaration() {
         try {
-            if (findMatch(FUN))
-                return function("function");
-            if (findMatch(VAR))
-                return varDeclaration();
-
             return statement();
         } catch (ParseError error) {
             synchronize();
@@ -59,6 +55,14 @@ class Parser {
 
     // each statement gets its own method
     private Stmt statement() {
+        if (findMatch(COMMENT, BLOCK_COMMENT))
+            return comment();
+        if (findMatch(FUN))
+            return function("function");
+        if (findMatch(CREATE, INTERPRET))
+            return queryStatement();
+        if (findMatch(VAR, TYPE))
+            return varDeclaration();
         if (findMatch(CLASS))
             return classDeclaration();
         if (findMatch(FOR))
@@ -96,7 +100,7 @@ class Parser {
         Stmt initializer;
         if (findMatch(SEMICOLON)) { // initializer omited
             initializer = null;
-        } else if (findMatch(VAR)) { // initialize new var
+        } else if (findMatch(VAR, TYPE)) { // initialize new var
             initializer = varDeclaration();
         } else {
             initializer = expressionStatement();
@@ -178,7 +182,7 @@ class Parser {
         if (!check(RIGHT_PAREN)) {
             do {
                 if (parameters.size() >= 255) {
-                    error(peek(), "Can't have more than 255 parameters.");
+                    throw error(peek(), "Can't have more than 255 parameters.");
                 }
 
                 parameters.add(
@@ -190,6 +194,65 @@ class Parser {
         // block() assumes the left brace has alredy been consumed
         List<Stmt> body = block();
         return new Stmt.Function(name, parameters, body);
+    }
+
+    private Query queryStatement() {
+        Token mode = previous();
+        boolean distributed = false;
+
+        // handle "OR REPLACE" and "DISTRIBTUED"
+        if (findMatch(OR) && findMatch(REPLACE)) {
+            mode = Token.sum(mode, previous(2), previous());
+        }
+        if (findMatch(DISTRIBUTED)) {
+            distributed = true;
+        }
+        // expect Query keyword
+        if (!findMatch(QUERY)) { // expect load job, too
+            throw error(peekNext(), "Expect QUERY after");
+        }
+        Token queryName = consume(IDENTIFIER, "should be the query's name");
+
+        List<Token> params = new ArrayList<>();
+        consume(LEFT_PAREN, "Expect '(' after " + "query" + " name."); // change "query" to kind when impl load jobs
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (params.size() > 255) {
+                    throw error(peek(), "Can't have more than 255 parameters.");
+                }
+                consume(TYPE, "type");
+                consume(IDENTIFIER, "id");
+                consume(EQUAL, "eq");
+                consume(NUMBER, "num");
+                // params.add(consume(IDENTIFIER, "Expect parameter name."));
+            } while (findMatch(COMMA));
+        }
+        consume(RIGHT_PAREN, "Expect ')' after parameters.");
+        consume(FOR, "Expect 'FOR' after parameters.");
+        consume(GRAPH, "Expect 'GRAPH' after 'FOR'.");
+        Token graphName = consume(IDENTIFIER, "Expect");
+
+        // syntax
+        Token syntax = null;
+        if (findMatch(SYNTAX)) { // expect load job, too
+            System.out.println("syntax");
+            syntax = consume(IDENTIFIER, "Expect V2 after syntax");
+        }
+        System.out.println(":"+tokens.get(current)+":");
+
+        // body
+        // consume(LEFT_BRACE, "Expect '{' before " + "QUERY" + " body.");// change "query" to kind when impl load jobs
+        // List<Stmt> body = block();
+        List<Stmt > body = null;
+
+        // !bookmark
+        System.out.println(mode);
+        System.out.println(queryName);
+        System.out.println(params);
+        System.out.println(graphName);
+        System.out.println(body);
+        System.exit(current);
+        return new Query(mode, distributed, queryName, params, graphName, syntax, body);
     }
 
     /**
@@ -224,7 +287,7 @@ class Parser {
                 Expr.Get get = (Expr.Get) expr;
                 return new Expr.Set(get.object, get.name, value);
             }
-            error(equals, "Invalid assignment target.");
+            throw error(equals, "Invalid assignment target.");
         } else if (findMatch(PLUSEQUALS, MINUSEQUALS)) {
 
             Token operator = previous();
@@ -242,6 +305,10 @@ class Parser {
         }
 
         return expr;
+    }
+
+    private Stmt comment() {
+        return new Stmt.Comment(previous());
     }
 
     private Expr logicalOr() {
@@ -361,7 +428,7 @@ class Parser {
         if (!check(RIGHT_PAREN)) {
             do {
                 if (arguments.size() >= 255) {
-                    error(peek(), "Can't have more than 255 args.");
+                    throw error(peek(), "Can't have more than 255 args.");
                 }
                 arguments.add(expression());
             } while (findMatch(COMMA));
@@ -442,8 +509,16 @@ class Parser {
         return tokens.get(current);
     }
 
+    private Token peekNext() {
+        return tokens.get(current + 1);
+    }
+
     private Token previous() {
         return tokens.get(current - 1);
+    }
+
+    private Token previous(int i) {
+        return tokens.get(current - i);
     }
 
     private ParseError error(Token token, String message) {
@@ -460,7 +535,9 @@ class Parser {
                 return;
 
             switch (peek().type) {
+                case BLOCK_COMMENT:
                 case CLASS:
+                case COMMENT:
                 case FUN:
                 case VAR:
                 case FOR:
@@ -468,6 +545,7 @@ class Parser {
                 case WHILE:
                 case PRINT:
                 case RETURN:
+                case TYPE:
                     return;
                 default:
                     break;

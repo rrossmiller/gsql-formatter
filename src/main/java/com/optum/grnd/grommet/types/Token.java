@@ -1,6 +1,5 @@
 package com.optum.grnd.grommet.types;
 
-
 public class Token {
     public final TokenType type;
     public final String lexeme;
@@ -17,5 +16,17 @@ public class Token {
 
     public String toString() {
         return type + " | " + lexeme + " | " + literal;
+    }
+
+    public static Token sum(Token... tokens) {
+        TokenType type = tokens[0].type;
+        StringBuilder lexeme = new StringBuilder();
+        Object literal = null;
+        int line = tokens[0].line;
+
+        for (Token token : tokens) {
+            lexeme.append(token.lexeme + " ");
+        }
+        return new Token(type, lexeme.toString(), literal, line);
     }
 }

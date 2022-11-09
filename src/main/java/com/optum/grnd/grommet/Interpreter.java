@@ -297,6 +297,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitCommentStmt(Stmt.Comment stmt) {
+        return null;
+    }
+
+    @Override
     public Void visitClassStmt(Stmt.Class stmt) {
         Object superclass = null;
         environment.define(stmt.name.lexeme, null);

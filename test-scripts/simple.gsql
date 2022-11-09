@@ -1,5 +1,9 @@
-// CREATE DISTRIBUTED QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
-//     // This is a comment
+/*
+     query description
+*/
+CREATE  or REPLACE DISTRIBUTED QUERY TwitchEgosData() FOR GRAPH TwitchEgos SYNTAX V2 {
+// CREATE  or REPLACE DISTRIBUTED QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2 {
+    // This is a comment
 //     Users = {User.*};
 //     Users = SELECT s FROM Users:s 
 //             WHERE vertex_to_int(s) % total_partitions == current_partition
@@ -9,4 +13,4 @@
 //               another.@accum += 0;
 
 //     PRINT Users;
-// }
+}

@@ -10,4 +10,8 @@ clear
 #javac -d bin src/$pkg/*.java && java -cp bin $pkg.Grommet $@
 
 # mvn clean
-java -cp target/classes com.optum.grnd.grommet.Grommet $@
+if [[ $# -lt 1 ]] then;
+	java -cp target/classes com.optum.grnd.grommet.Grommet test-scripts/simple.gsql
+else
+	java -cp target/classes com.optum.grnd.grommet.Grommet $@
+fi

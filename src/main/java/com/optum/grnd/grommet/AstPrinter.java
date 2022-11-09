@@ -9,6 +9,7 @@ import com.optum.grnd.grommet.exception.RuntimeError;
 import com.optum.grnd.grommet.types.Expr;
 import com.optum.grnd.grommet.types.Stmt;
 import com.optum.grnd.grommet.types.Token;
+import com.optum.grnd.grommet.types.TokenType;
 
 class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
@@ -74,6 +75,21 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     }
     level--;
 
+    return builder.toString();
+  }
+
+  @Override
+  public String visitCommentStmt(Stmt.Comment stmt) {
+    StringBuilder builder = new StringBuilder();
+    if (stmt.comment.type == TokenType.BLOCK_COMMENT) {
+      builder.append("block comment ");
+      builder.append(stmt.comment.lexeme.replaceAll("\n", " "));
+    } else {
+      builder.append("comment ");
+      builder.append(stmt.comment.lexeme);
+    }
+
+    builder.append("\n");
     return builder.toString();
   }
 
@@ -149,6 +165,30 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
   @Override
   public String visitPrintStmt(Stmt.Print stmt) {
     return parenthesize("print", stmt.expression);
+  }
+
+  public String visitQueryStmt(Stmt.Query stmt) {
+    StringBuilder builder = new StringBuilder();
+    
+
+    builder.append("query ");
+    builder.append(stmt.mode.lexeme);
+    if(stmt.distributed)
+    builder.append("DISTRIBUTED");
+
+    return builder.toString();
+
+    StringBuilder builder = new StringBuilder();
+    if (stmt.comment.type == TokenType.BLOCK_COMMENT) {
+      builder.append("block comment ");
+      builder.append(stmt.comment.lexeme.replaceAll("\n", " "));
+    } else {
+      builder.append("comment ");
+      builder.append(stmt.comment.lexeme);
+    }
+
+    builder.append("\n");
+    return builder.toString();
   }
 
   @Override

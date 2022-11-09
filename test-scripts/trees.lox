@@ -1,3 +1,7 @@
+/*
+this is the class' description
+or something
+*/
 class Tree {
   init(depth) {
     this.depth = depth;
@@ -11,6 +15,7 @@ class Tree {
   }
 
   walk() {
+    // if the depth is 0, return 0s
     if (this.depth == 0) return 0;
     return this.depth 
         + this.a.walk()

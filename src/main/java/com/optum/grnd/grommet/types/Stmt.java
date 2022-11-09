@@ -10,6 +10,8 @@ public abstract class Stmt {
 
         public R visitClassStmt(Class stmt);
 
+        public R visitCommentStmt(Comment stmt);
+
         public R visitExpressionStmt(Expression stmt);
 
         public R visitFunctionStmt(Function stmt);
@@ -17,6 +19,8 @@ public abstract class Stmt {
         public R visitIfStmt(If stmt);
 
         public R visitPrintStmt(Print stmt);
+
+        public R visitQueryStmt(Query stmt);
 
         public R visitReturnStmt(Return stmt);
 
@@ -52,6 +56,20 @@ public abstract class Stmt {
         @Override
         public <R> R accept(Visitor<R> visitor) {
             return visitor.visitClassStmt(this);
+        }
+
+    }
+
+    public static class Comment extends Stmt {
+        public final Token comment;
+
+        public Comment(Token comment) {
+            this.comment = comment;
+        }
+
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitCommentStmt(this);
         }
 
     }
@@ -116,6 +134,32 @@ public abstract class Stmt {
         @Override
         public <R> R accept(Visitor<R> visitor) {
             return visitor.visitPrintStmt(this);
+        }
+
+    }
+
+    public static class Query extends Stmt {
+        public final Token mode;
+        public final boolean distributed;
+        public final Token name;
+        public final List<Token> params;
+        public final Token graphName;
+        public final Token syntax;
+        public final List<Stmt> body;
+
+        public Query(Token mode, boolean distributed, Token name, List<Token> params, Token graphName, Token syntax, List<Stmt> body) {
+            this.mode = mode;
+            this.distributed = distributed;
+            this.name = name;
+            this.params = params;
+            this.graphName = graphName;
+            this.syntax = syntax;
+            this.body = body;
+        }
+
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitQueryStmt(this);
         }
 
     }

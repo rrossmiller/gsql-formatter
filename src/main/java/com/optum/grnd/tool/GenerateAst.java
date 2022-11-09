@@ -32,15 +32,16 @@ public class GenerateAst {
 
         );
         defineAst(outputDir, "Expr", types);
-
         // statement nodes in the AST
         List<String> stmts = Arrays.asList(
                 "Block        : List<Stmt> statements",
                 "Class        : Token name, List<Function> methods",
+                "Comment      : Token comment",
                 "Expression   : Expr expression",
                 "Function     : Token name, List<Token> params, List<Stmt> body",
                 "If           : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Print        : Expr expression",
+                "Query        : Token mode, boolean distributed, Token name, List<Token> params, Token graphName, Token syntax, List<Stmt> body",
                 "Return       : Token keyword, Expr value",
                 "Var          : Token name, Expr initializer",
                 "While        : Expr condition, Stmt body");

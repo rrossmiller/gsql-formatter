@@ -1,35 +1,14 @@
 package com.optum.grnd.grommet;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.optum.grnd.grommet.types.Token;
 import com.optum.grnd.grommet.types.TokenType;
+import static com.optum.grnd.grommet.types.Keywords.*;
 
 // characters to tokens
 public class Scanner {
-    private static final Map<String, TokenType> keywords;
-    static {
-        keywords = new HashMap<>();
-        keywords.put("and", TokenType.AND);
-        keywords.put("class", TokenType.CLASS);
-        keywords.put("else", TokenType.ELSE);
-        keywords.put("false", TokenType.FALSE);
-        keywords.put("for", TokenType.FOR);
-        keywords.put("fun", TokenType.FUN);
-        keywords.put("if", TokenType.IF);
-        keywords.put("nil", TokenType.NIL);
-        keywords.put("or", TokenType.OR);
-        keywords.put("print", TokenType.PRINT);
-        keywords.put("return", TokenType.RETURN);
-        keywords.put("super", TokenType.SUPER);
-        keywords.put("this", TokenType.THIS);
-        keywords.put("true", TokenType.TRUE);
-        keywords.put("var", TokenType.VAR);
-        keywords.put("while", TokenType.WHILE);
-    }
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
     private int start = 0;
@@ -105,14 +84,14 @@ public class Scanner {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd())
                         advance();
-                    // addToken(TokenType.COMMENT);
+                    addToken(TokenType.COMMENT);
                 } else if (match('*')) {
                     // A block comment goes until '*/' termination
                     while (!isAtEnd() && (peek() != '*' && peekNext() != '/'))
                         advance();
                     // consume */
                     advance(2);
-                    // addToken(TokenType.COMMENT);
+                    addToken(TokenType.BLOCK_COMMENT);
 
                 } else {
                     addToken(TokenType.SLASH);
@@ -146,8 +125,11 @@ public class Scanner {
         while (isAlphaNumeric(peek()))
             advance();
 
-        String text = source.substring(start, current);
+        String text = source.substring(start, current).toLowerCase();
         TokenType type = keywords.get(text);
+        if (type == null)
+            type = types.get(text);
+
         if (type == null)
             type = TokenType.IDENTIFIER;
 
