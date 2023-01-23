@@ -386,4 +386,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return object.toString();
     }
 
+    @Override
+    public Void visitQueryStmt(Query stmt) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

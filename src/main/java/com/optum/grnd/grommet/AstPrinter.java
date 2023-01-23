@@ -34,20 +34,16 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
       System.out.println(out);
 
     if (save) {
-      String outputDir = ".";
+      String outputDir = "test-scripts";
+      // String outputDir = ".";
       String path = outputDir + "/AST.txt";
-      PrintWriter writer = null;
-      try {
+      try (PrintWriter writer = new PrintWriter(path, "UTF-8");) {
         final File f = new File(path);
         f.createNewFile();
-        writer = new PrintWriter(path, "UTF-8");
         writer.print(out);
 
       } catch (IOException e) {
         System.err.println(e.getMessage());
-      } finally {
-        if (writer != null)
-          writer.close();
       }
     }
   }
@@ -119,6 +115,7 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
   @Override
   public String visitExpressionStmt(Stmt.Expression stmt) {
+    System.out.println(stmt.expression.getClass());
     return parenthesize(";", stmt.expression);
   }
 
@@ -167,27 +164,19 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     return parenthesize("print", stmt.expression);
   }
 
+  @Override
   public String visitQueryStmt(Stmt.Query stmt) {
     StringBuilder builder = new StringBuilder();
-    
 
     builder.append("query ");
     builder.append(stmt.mode.lexeme);
-    if(stmt.distributed)
-    builder.append("DISTRIBUTED");
+    if (stmt.distributed)
+      builder.append("DISTRIBUTED");
 
-    return builder.toString();
-
-    StringBuilder builder = new StringBuilder();
-    if (stmt.comment.type == TokenType.BLOCK_COMMENT) {
-      builder.append("block comment ");
-      builder.append(stmt.comment.lexeme.replaceAll("\n", " "));
-    } else {
-      builder.append("comment ");
-      builder.append(stmt.comment.lexeme);
+    for(Stmt statement:stmt.body){
+      //deleteme here
+      builder.append(print(statement));
     }
-
-    builder.append("\n");
     return builder.toString();
   }
 

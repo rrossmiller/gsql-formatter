@@ -70,6 +70,9 @@ public class Scanner {
             case '!':
                 addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
                 break;
+            case ':':
+                addToken(TokenType.COLON);
+                break;
             case '=':
                 addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
                 break;
@@ -80,22 +83,7 @@ public class Scanner {
                 addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
                 break;
             case '/':
-                if (match('/')) {
-                    // A comment goes until the end of the line.
-                    while (peek() != '\n' && !isAtEnd())
-                        advance();
-                    addToken(TokenType.COMMENT);
-                } else if (match('*')) {
-                    // A block comment goes until '*/' termination
-                    while (!isAtEnd() && (peek() != '*' && peekNext() != '/'))
-                        advance();
-                    // consume */
-                    advance(2);
-                    addToken(TokenType.BLOCK_COMMENT);
-
-                } else {
-                    addToken(TokenType.SLASH);
-                }
+                comment();
                 break;
             // whitespace
             case ' ':
@@ -178,6 +166,28 @@ public class Scanner {
         // Trim the surrounding quotes
         String value = source.substring(start + 1, current - 1);
         addToken(TokenType.STRING, value);
+    }
+
+    private void comment() {
+        if (match('/')) {
+            // A comment goes until the end of the line.
+            while (peek() != '\n' && !isAtEnd())
+                advance();
+            addToken(TokenType.COMMENT);
+        } else if (match('*')) {
+            // A block comment goes until '*/' termination
+            while (!isAtEnd() && (peek() != '*' && peekNext() != '/')) {
+                if (peek() == '\n') // lox supports multi-line strings
+                    line++;
+                advance();
+            }
+            // consume */
+            advance(2);
+            addToken(TokenType.BLOCK_COMMENT);
+
+        } else {
+            addToken(TokenType.SLASH);
+        }
     }
 
     private boolean match(char expected) {

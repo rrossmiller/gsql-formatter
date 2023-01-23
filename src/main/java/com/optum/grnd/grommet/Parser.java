@@ -200,10 +200,11 @@ class Parser {
         Token mode = previous();
         boolean distributed = false;
 
-        // handle "OR REPLACE" and "DISTRIBTUED"
+        // handle "OR REPLACE"
         if (findMatch(OR) && findMatch(REPLACE)) {
             mode = Token.sum(mode, previous(2), previous());
         }
+        // handle "DISTRIBTUED"
         if (findMatch(DISTRIBUTED)) {
             distributed = true;
         }
@@ -235,23 +236,14 @@ class Parser {
         // syntax
         Token syntax = null;
         if (findMatch(SYNTAX)) { // expect load job, too
-            System.out.println("syntax");
             syntax = consume(IDENTIFIER, "Expect V2 after syntax");
         }
-        System.out.println(":"+tokens.get(current)+":");
 
         // body
-        // consume(LEFT_BRACE, "Expect '{' before " + "QUERY" + " body.");// change "query" to kind when impl load jobs
-        // List<Stmt> body = block();
-        List<Stmt > body = null;
+        consume(LEFT_BRACE, "Expect '{' before " + "query body.");// change "query" to kind after load jobs implemented
+        List<Stmt> body = block();
+        // List<Stmt> body = null;
 
-        // !bookmark
-        System.out.println(mode);
-        System.out.println(queryName);
-        System.out.println(params);
-        System.out.println(graphName);
-        System.out.println(body);
-        System.exit(current);
         return new Query(mode, distributed, queryName, params, graphName, syntax, body);
     }
 
@@ -336,7 +328,7 @@ class Parser {
         Token name = consume(IDENTIFIER, "Expect variable name.");
         Expr initializer = null;
 
-        if (findMatch(EQUAL)) {
+        if (findMatch(EQUAL, COLON)) {
             initializer = expression();
         }
         consume(SEMICOLON, "Expect ';' after variable declaration.");

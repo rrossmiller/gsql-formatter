@@ -7,6 +7,7 @@ import java.util.Stack;
 
 import com.optum.grnd.grommet.types.Expr;
 import com.optum.grnd.grommet.types.Stmt;
+import com.optum.grnd.grommet.types.Stmt.Query;
 import com.optum.grnd.grommet.types.Token;
 
 class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
@@ -268,6 +269,12 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitUnaryExpr(Expr.Unary expr) {
         resolve(expr.right);
+        return null;
+    }
+
+    @Override
+    public Void visitQueryStmt(Query stmt) {
+        // TODO Auto-generated method stub
         return null;
     }
 

@@ -10,10 +10,9 @@ import java.util.List;
 import com.optum.grnd.grommet.exception.RuntimeError;
 import com.optum.grnd.grommet.types.Stmt;
 import com.optum.grnd.grommet.types.Token;
-import com.optum.grnd.grommet.types.TokenType.*;
 
 public class Grommet {
-    private static final Interpreter interpreter = new Interpreter();
+    // private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
 
@@ -40,7 +39,6 @@ public class Grommet {
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
-
         // For now, just print the tokens.
         System.out.println("type" + " | " + "lexeme" + " | " + "literal");
         for (Token token : tokens) {
@@ -52,28 +50,28 @@ public class Grommet {
         }
         System.out.println("***");
 
-        // System.out.println("parse");
         Parser parser = new Parser(tokens);
         List<Stmt> statements = parser.parse();
 
         // stop if there was a syntax error
+        System.out.println("****"+hadError);
         if (hadError)
             return;
 
         // System.out.println("ast");
         new AstPrinter().printTree(statements, false, true);
-        System.exit(0);
+        // System.exit(0);
 
         // System.out.println("resolve");
-        Resolver resolver = new Resolver(interpreter); // semantic analysis
-        resolver.resolve(statements);
+        // Resolver resolver = new Resolver(interpreter); // semantic analysis
+        // resolver.resolve(statements);
 
-        // Stop if there was a resolution error.
-        if (hadError)
-            return;
+        // // Stop if there was a resolution error.
+        // if (hadError)
+        //     return;
 
-        // System.out.println("interpret");
-        interpreter.interpret(statements);
+        // // System.out.println("interpret");
+        // interpreter.interpret(statements);
     }
 
     public static void error(int line, String message) {

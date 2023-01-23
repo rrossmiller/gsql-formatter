@@ -32,6 +32,9 @@ public class Keywords {
         keywords.put("distributed", TokenType.DISTRIBUTED);
         keywords.put("query", TokenType.QUERY);
         keywords.put("graph", TokenType.GRAPH);
+        keywords.put("select", TokenType.SELECT);
+        keywords.put("from", TokenType.FROM);
+        keywords.put("where", TokenType.WHERE);
         keywords.put("returns", TokenType.RETURNS);
         // keywords.put("api", TokenType.API);
         keywords.put("syntax", TokenType.SYNTAX);
