@@ -1,0 +1,69 @@
+package tokens
+
+type TokenType int
+
+const (
+	// Single-character tokens.
+	LEFT_PAREN = iota 
+	RIGHT_PAREN
+	LEFT_BRACE
+	RIGHT_BRACE
+	COMMA
+	DOT
+	MINUS
+	PLUS
+	SEMICOLON
+	SLASH
+	STAR
+	MODULO
+	PLUSEQUALS
+	MINUSEQUALS
+
+	// One or two character tokens.
+	BANG
+	BANG_EQUAL
+	EQUAL
+	EQUAL_EQUAL
+	GREATER
+	GREATER_EQUAL
+	LESS
+	LESS_EQUAL
+	COLON
+
+	// Literals.
+	IDENTIFIER
+	STRING
+	NUMBER
+
+	// Keywords.
+	AND
+	ELSE
+	FALSE
+	FUN
+	FOR
+	IF
+	NULL
+	OR
+	PRINT
+	TRUE
+	WHILE
+	TYPE
+	TYPEDEF
+	CREATE
+	INTERPRET
+	REPLACE
+	DISTRIBUTED
+	QUERY
+
+	GRAPH
+	RETURNS
+	API
+	SYNTAX
+	SELECT
+	FROM
+	WHERE
+	// comments
+	COMMENT
+	BLOCK_COMMENT
+	EOF
+)

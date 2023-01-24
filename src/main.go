@@ -5,12 +5,16 @@ import (
 	"flag"
 	"fmt"
 	"gourmet/reserved"
-	"gourmet/utils"
+	"gourmet/util"
 	"os"
 	"strings"
 	"unicode/utf8"
 )
 
+/*
+1. make sure the token can be recognized by the scanner
+2. parse: what's the diff between stmt and expr? https://craftinginterpreters.com/representing-code.html#top
+*/
 func main() {
 	dev := flag.Bool("dev", false, "reset query after execution")
 
@@ -21,21 +25,18 @@ func main() {
 	fmt.Printf("args: %v\n", args)
 	if len(args) > 0 {
 		fp = args[0]
-	} else if fp == "" {
+	} else if fp == "" { //fixme remove after dev
 		fp = "test-data/simple.gsql"
 	}
 
 	// load file
 	b, err := os.ReadFile(fp)
-	utils.Check(err)
-	queryString := string(b)
-
-	queryString = EqualizeSpacing(queryString)
-
-	queryString = CapitalizeKeywords(queryString)
+	util.Check(err)
+	query := string(b)
+	ScanTokens(query)
 
 	// TODO ifblock indentation (should work inside select, too)
-	WriteQuery(queryString, fp)
+	// WriteQuery(queryString, fp)
 
 	// if in dev mode reset file
 	if *dev {
@@ -63,7 +64,7 @@ func EqualizeSpacing(queryString string) string {
 		// skip empty lines
 		if utf8.RuneCountInString(line) != 0 {
 			runes := []rune(line)
-			runes = utils.RemoveLeadingWhitespace(runes)
+			runes = util.RemoveLeadingWhitespace(runes)
 			if len(runes) > 0 {
 				tmp = append(tmp, string(runes))
 			}
@@ -78,7 +79,7 @@ func EqualizeSpacing(queryString string) string {
 			for j := i; j < len(queryText); j++ {
 				if strings.ContainsRune(queryText[j], ';') {
 					// correct indentation for the block
-					utils.SelectBlock(i, j, queryText)
+					util.SelectBlock(i, j, queryText)
 					break
 				}
 			}
@@ -88,7 +89,7 @@ func EqualizeSpacing(queryString string) string {
 		// 	for j := i; j < len(queryText); j++ {
 		// 		if queryText[j] == "end" {
 		// 			// correct indentation for the block
-		// 			sel_out := utils.IfBlock(i, j, queryText)
+		// 			sel_out := util.IfBlock(i, j, queryText)
 
 		// 			idx := 0
 		// 			for k := i; k <= j; k++ {

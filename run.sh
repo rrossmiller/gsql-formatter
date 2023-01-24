@@ -6,6 +6,7 @@ go build
 echo running
 echo
 mv gourmet ..
-
-echo "run this:
-  ./gourmet -dev path/to/query.gsql"
+cd ..
+./gourmet
+# echo "run this:
+#   ./gourmet -dev path/to/query.gsql"
