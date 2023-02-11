@@ -20,7 +20,7 @@ var (
 	line    int = 1
 )
 
-func ScanTokens(input string) {
+func ScanTokens(input string) []tokens.Token {
 	src = input
 	srcLen = utf8.RuneCountInString(src)
 	for !isAtEnd() {
@@ -31,6 +31,7 @@ func ScanTokens(input string) {
 	for _, v := range tkns {
 		fmt.Println(v)
 	}
+	return tkns
 }
 
 func scanToken() {

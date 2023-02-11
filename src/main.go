@@ -1,3 +1,5 @@
+// https://craftinginterpreters.com/scanning.html
+just reread the book
 package main
 
 import (
@@ -12,8 +14,11 @@ import (
 )
 
 /*
-1. make sure the token can be recognized by the scanner
-2. parse: what's the diff between stmt and expr? https://craftinginterpreters.com/representing-code.html#top
+ 1. make sure the token can be recognized by the scanner
+ 2. parse: https://craftinginterpreters.com/parsing-expressions.html
+    if you hit an error, discard tokens until you hit a statement boundary https://craftinginterpreters.com/parsing-expressions.html#synchronizing-a-recursive-descent-parser
+ 3. AST/formatting
+    AST takes a list of statements. Each statemtent has expressions that need to correctly placed on the page
 */
 func main() {
 	dev := flag.Bool("dev", false, "reset query after execution")
@@ -26,14 +31,16 @@ func main() {
 	if len(args) > 0 {
 		fp = args[0]
 	} else if fp == "" { //fixme remove after dev
-		fp = "test-data/simple.gsql"
+		fp = "../test-data/simple.gsql"
 	}
 
 	// load file
 	b, err := os.ReadFile(fp)
 	util.Check(err)
 	query := string(b)
-	ScanTokens(query)
+	tkns := ScanTokens(query)
+	ParseQuery(tkns) //!bookmark You are doing the parser
+	//
 
 	// TODO ifblock indentation (should work inside select, too)
 	// WriteQuery(queryString, fp)
