@@ -1,0 +1,6 @@
+func a(int i) bool {
+	if(){
+		1;
+	}
+	return 1;
+}
