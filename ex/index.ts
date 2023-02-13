@@ -6,8 +6,8 @@ import gsql from 'tree-sitter-gsql';
 const parser = new Parser();
 parser.setLanguage(gsql);
 
-const sourceCode = fs.readFileSync('example-file', 'utf8');
+const sourceCode = fs.readFileSync('example-file.gsql', 'utf8');
 const tree: Tree = parser.parse(sourceCode);
 tree.printDotGraph();
 
-fs.writeFileSync('o.json', JSON.stringify(tree));
+fs.writeFileSync('result.json', JSON.stringify(tree));

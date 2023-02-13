@@ -6,8 +6,12 @@ dist
 
 # extension
 out
+
 # parser
 target
 Cargo.*
 binding*
 tree-sitter-gsql/src/
+
+# results
+result.*
