@@ -1,6 +1,3 @@
-func a(int i) bool {
-	if(){
-		1;
-	}
-	return 1;
+CREATE OR REPLACE DISTRIBUTED QUERY queryName() FOR GRAPH  SYNTAX V2 {
+
 }

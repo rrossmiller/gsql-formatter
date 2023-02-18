@@ -6,8 +6,14 @@ import gsql from 'tree-sitter-gsql';
 const parser = new Parser();
 parser.setLanguage(gsql);
 
-const sourceCode = fs.readFileSync('example-file.gsql', 'utf8');
-const tree: Tree = parser.parse(sourceCode);
-tree.printDotGraph();
+let sourceCode = fs.readFileSync('example.gsql', 'utf8');
+// sourceCode = sourceCode.toLowerCase();
+console.log(sourceCode);
 
-fs.writeFileSync('result.json', JSON.stringify(tree));
+const tree: Tree = parser.parse(sourceCode);
+console.log('*********************************');
+tree.printDotGraph();
+console.log('*********************************');
+
+// fs.writeFileSync('result.json', JSON.stringify(tree));
+console.log(tree.rootNode.toString());
