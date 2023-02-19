@@ -11,6 +11,7 @@ declStmts := (declStmt ";")+ ;
 declStmt := baseDeclStmt | accumDeclStmt | fileDeclStmt ;
 declExceptStmts := (declExceptStmt ";")+ ;
 queryBodyStmts := (queryBodyStmt ";")+ ;
+!book
 queryBodyStmt := assignStmt | vSetVarDeclStmt | declStmts | lAccumAssignStmt | gAccumAssignStmt | gAccumAccumStmt | funcCallStmt | selectStmt | queryBodyCaseStmt | queryBodyIfStmt | queryBodyWhileStmt | queryBodyForEachStmt | "BREAK" | "CONTINUE" | updateStmt | insertStmt | queryBodyDeleteStmt | printStmt | printlnStmt | logStmt | returnStmt | raiseStmt | tryStmt ;
 installQuery := "INSTALL" "QUERY" ( "*" | "ALL" | queryName ("," queryName)* ) ;
 runQuery := ("RUN" | "INTERPRET") "QUERY" queryName "(" parameterValueList ")" ;

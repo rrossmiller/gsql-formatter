@@ -2,7 +2,11 @@ file="../example.gsql"
 clear
 ./node_modules/.bin/tree-sitter generate
 # tree-sitter generate && clear
-if [[ $# -gt 0 ]]; then
+if [ $# -gt 0 ] && [ $1 == ]; then
+	echo 'hi'
+	tree-sitter parse $file
+
+elif [[ $# -gt 0 ]]; then
 	tree-sitter parse $file
 	cd ../ex/ &&
 		npm uninstall tree-sitter-gsql &&
