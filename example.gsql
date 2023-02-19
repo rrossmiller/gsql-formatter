@@ -1,3 +1,5 @@
 create QUERY queryName(INT total_partitions, floAt currentPart=1) FOR GRAPH mygraph SYNTAX V2 {
    TYPedEF tuple <int i, s string> tType;
+   
+   X = {_};
 }
