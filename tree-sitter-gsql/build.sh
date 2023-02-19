@@ -1,7 +1,17 @@
+file="../example.gsql"
 clear
 ./node_modules/.bin/tree-sitter generate
 # tree-sitter generate && clear
-tree-sitter parse example.gsql #&&
-cd ../ex/ &&
-	npm uninstall tree-sitter-gsql &&
-	npm i ../tree-sitter-gsql
+if [[ $# -gt 0 ]]; then
+	tree-sitter parse $file
+	cd ../ex/ &&
+		npm uninstall tree-sitter-gsql &&
+		npm i ../tree-sitter-gsql
+
+else
+	tree-sitter parse $file &&
+		cd ../ex/ &&
+		npm uninstall tree-sitter-gsql &&
+		npm i ../tree-sitter-gsql
+
+fi

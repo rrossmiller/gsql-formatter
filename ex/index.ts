@@ -6,7 +6,7 @@ import gsql from 'tree-sitter-gsql';
 const parser = new Parser();
 parser.setLanguage(gsql);
 
-let sourceCode = fs.readFileSync('example.gsql', 'utf8');
+let sourceCode = fs.readFileSync('../example.gsql', 'utf8');
 // sourceCode = sourceCode.toLowerCase();
 console.log(sourceCode);
 

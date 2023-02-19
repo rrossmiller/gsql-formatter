@@ -1,85 +1,112 @@
 module.exports = grammar({
-  name: 'gsql',
-  rules: {
-    source_file: $ => repeat($._definition),
+	name: 'gsql',
+	word: ($) => $.name,
 
-    _definition: $ => choice(
-      // $.function_definition
-      $.create_query
-      //$.interpretQuery
-    ),
+	rules: {
+		source_file: ($) => repeat($._definition),
 
-    create_query: $ => seq(
-      'CREATE',
-      optional(seq('OR', 'REPLACE')),
-      optional('DISTRIBUTED'),
-      'QUERY',
-      field('queryName', $.identifier),
-      $.parameter_list,
-      'FOR',
-      'GRAPH',
-      field('graphName', $.identifier),
-      optional(seq('SYNTAX', 'V2')),
-      $.block
-    ),
+		_definition: ($) =>
+			choice(
+				$.create_query
+				//$.interpretQuery
+			),
 
-    parameter_list: $ => seq(
-      '(',
-      // $._type,
-      // $.identifier,
-      ')'
-    ),
+		create_query: ($) => seq(
+			caseInsensitive('create'),
+			optional(
+				seq(caseInsensitive('or'), caseInsensitive('replace'))
+			),
+			optional(caseInsensitive('distributed')),
+			caseInsensitive('query'),
+			field('queryName', $.name),
+			$.parameter_list,
+			caseInsensitive('for'),
+			caseInsensitive('graph'),
+			field('graphName', $.name),
+			optional(
+				seq(caseInsensitive('syntax'), caseInsensitive('v2'))
+			),
+			$.query_body
+		),
 
-    block: $ => seq(
-      '{',
-      // repeat($._statement),
-      '}'
-    ),
+		parameter_list: ($) => seq(
+			'(',
+			optional(repeat($.query_params)),
+			')'
+		),
+		query_params: $ => seq(
+			$.query_param,
+			optional(
+				repeat(seq(',', $.query_param))
+			)
+		),
+		query_param: ($) => seq(
+			$._type,
+			$.name,
+			optional(seq('=', $.number))
+		),
 
-    // _statement: $ => choice(
-    //   $.return_statement,
-    //   $.if_statement,
-    //   $._expression
-    //   // TODO: other kinds of statements
-    // ),
+		query_body: ($) =>
+			seq(
+				'{',
+				optional(seq(repeat($.typedef), ';')),
+				// optional($.declaration_except_stmts),
+				// optional($.query_body_stmts),
+				'}'
+			),
 
-    // if_statement: $ => seq(
-    //   'if',
-    //   '(',
-    //   ')',
-    //   $.block,
-    // ),
-    // return_statement: $ => seq(
-    //   'return',
-    //   $._expression,
-    //   ';'
-    // ),
+		typedef: $ => seq(
+			caseInsensitive("typedef"),
+			caseInsensitive("tuple"),
+			"<",
+			repeat($.tuple_fields),
+			">",
+			field('tuple_type', $.name)
+		),
 
-    // _expression: $ => choice(
-    //   $.identifier,
-    //   field('num', $.number),
-    //   ';'
-    //   // TODO: other kinds of expressions
-    // ),
+		tuple_fields: $ => seq(
+			$.tuple_field,
+			optional(
+				repeat(
+					seq(',', $.tuple_field)
+				)
+			)
+		),
 
-    identifier: $ => /[a-z]+/,
+		tuple_field: $ => choice(
+			seq($.base_type, $.name),
+			seq($.name, $.base_type)
+		),
 
-    number: $ => /\d+/,
+		_type: $ => choice(
+			$.base_type,
+		),
 
-    // _type: $ => choice(
-    //   $.primitive_type,
-    //   $.array_type,
-    // ),
+		base_type: $ => choice(
+			caseInsensitive('bool'),
+			caseInsensitive('int'),
+			caseInsensitive('uint'),
+			caseInsensitive('float'),
+			caseInsensitive('double'),
+			caseInsensitive('string'),
+			caseInsensitive('bool'),
+			// caseInsensitive("VERTEX" ("<" vertexType ">")?,
+			caseInsensitive('edge'),
+			caseInsensitive('JSONOBJECT'),
+			caseInsensitive('JSONARRAY'),
+			caseInsensitive('DATETIME')
+		),
 
-    // primitive_type: $ => choice(
-    //   'bool',
-    //   'int'
-    // ),
-
-    // array_type: $ => seq(
-    //   '[',
-    //   ']',
-    //   $._type
-    // )
-  }
+		name: $ => /[\p{L}_$][\p{L}\p{Nd}_$]*/, // thanks, java --> https://github.com/tree-sitter/tree-sitter-java/blob/master/grammar.js#:~:text=%5B%5Cp%7BL%7D_%24%5D%5B%5Cp%7BL%7D%5Cp%7BNd%7D_%24%5D*
+		number: $ => /\d+/,
+	},
 });
+
+function caseInsensitive(keyword) {
+	return new RegExp(
+		keyword
+			.split('')
+			.map((letter) => `[${letter}${letter.toUpperCase()}]`)
+			.join('')
+	);
+}

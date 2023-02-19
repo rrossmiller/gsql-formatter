@@ -1,1 +1,0 @@
-CREATE QUERY queryname() FOR GRAPH mygraph SYNTAX V2 {}
