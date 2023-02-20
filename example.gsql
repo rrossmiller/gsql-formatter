@@ -1,5 +1,7 @@
 create QUERY queryName() FOR GRAPH mygraph {
    hello = {World.*};
-   h = select x fRom hello:h -(E:e)-> X:x;
+   h = select x fRom hello:h -(myEdge>:e)- X:x 
+   // -(<_:e1)-;
+   -(_:e1)-;
 
 }

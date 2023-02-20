@@ -223,13 +223,47 @@ module.exports = grammar({
 			caseInsensitive("from"),
 			choice(
 				$.step,
-				$.step_v2,
-				// seq($path_pattern, repeat(seq(",", $path_pattern))),
+				// $.step_v2,
+				seq($.path_pattern, repeat(seq(",", $.path_pattern))),
 			)
 		),
-		
-		step_v2: $ => seq(
+
+		path_pattern: $ => prec(1, seq(
+			$.step_source_set,
+			repeat(seq(
+				"-",
+				"(",
+				$.path_edge_pattern,
+				optional(seq(":", field("edgeAlias", $.name))),
+				")",
+				"-",
+				$.step_vertex_set
+			))
+		)),
+
+		path_edge_pattern: $ => prec(1, choice(
+			$.atomic_edge_pattern,
+			seq("(", $.path_edge_pattern, ")"),
+			prec.left(1, seq($.path_edge_pattern, ".", $.path_edge_pattern)),
+			$.disj_pattern,
+			// $.starPattern
+		)),
+
+		atomic_edge_pattern: $ => prec(1, choice(
+			$.atomic_edge_type,
+			seq($.atomic_edge_type, ">"),
+			seq("<", $.atomic_edge_type)
+		)),
+
+		disj_pattern: $ => seq(
+			$.atomic_edge_pattern,
+			repeat(seq(" | ", $.atomic_edge_pattern))
 		),
+
+		// step_v2: $ => seq(
+		// 	$.step_vertex_set,
+		// 	optional(seq("-", "(", $.step_edge_set, ")", "-", $.step_vertex_set))
+		// ),
 
 		step: $ => seq(
 			$.step_source_set,
@@ -243,20 +277,20 @@ module.exports = grammar({
 				$.step_vertex_set
 			))
 		),
-		step_source_set: $ => seq(
+		step_source_set: $ => prec(1, seq(
 			field('vertexSetName', $.name),
 			optional(seq(":", field("vertexAlias", $.name)))
-		),
+		)),
 
 		step_edge_set: $ => seq(
 			$.step_edge_types,
 			optional(seq(":", field("edgeAlias", $.name)))
 		),
 
-		step_edge_types: $ => choice(
+		step_edge_types: $ => prec(2, choice(
 			$.atomic_edge_type,
 			seq("(", $.edge_set_type, repeat(seq(" | ", $.edge_set_type)), ")")
-		),
+		)),
 
 		atomic_edge_type: $ => choice(
 			"_",

@@ -70,7 +70,7 @@ loadAccumParams := "(" filePath "," columnId ("," columnId* ","stringLiteral ","
 funcCallStmt := name ("<" type ("," type)* ">")? "(" (argList)? ")" | globalAccumName ("." funcName "(" (argList)? ")")+ ;
 argList := expr ("," expr)* ;
 selectStmt := gsqlSelectBlock | sqlSelectBlock ;
-!book2 fromClause
+!book2 whereClause
 gsqlSelectBlock := gsqlSelectClause fromClause (sampleClause)? (whereClause)? (accumClause)? (postAccumClause)* (havingClause)? (orderClause)? (limitClause)? ;
 sqlSelectBlock := fromClause (whereClause)? (groupByClause)? (havingClause)? (orderClause)? (limitClause)? ;
 gsqlSelectClause := vertexSetName "=" "SELECT" vertexAlias ;
@@ -79,7 +79,6 @@ columnExpr := expr ("AS" columnName)? | aggregator "(" ( "DISTINCT" )? expr ")" 
 columnName := name ;
 tableName := name ;
 fromClause := "FROM" (step | stepV2 | pathPattern ("," pathPattern)*) ;
-(* !book2 step *)
 step := stepSourceSet ("-" "(" stepEdgeSet ")" ("-" | "->") stepVertexSet)? ;
 stepV2 := stepVertexSet ("-" "(" stepEdgeSet ")" "-" stepVertexSet)? ;
 stepSourceSet := vertexSetName (":" vertexAlias)? ;
