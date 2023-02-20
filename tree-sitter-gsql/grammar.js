@@ -155,8 +155,7 @@ module.exports = grammar({
 		),
 
 		l_accum_assign_stmt: $ => seq(
-			// vertexAlias "." localAccumName ("+=" | "=") expr ;
-			$.name,
+			field('vertexAlias', $.name),
 			".",
 			$.local_accum_name,
 			choice("+=", "="),
@@ -224,9 +223,12 @@ module.exports = grammar({
 			caseInsensitive("from"),
 			choice(
 				$.step,
-				// $.step_v2,
+				$.step_v2,
 				// seq($path_pattern, repeat(seq(",", $path_pattern))),
 			)
+		),
+		
+		step_v2: $ => seq(
 		),
 
 		step: $ => seq(
@@ -234,37 +236,58 @@ module.exports = grammar({
 			optional(seq(
 				"-",
 				"(",
-				$.step_set,
+				$.step_edge_set,
 				")",
 				"-",
 				optional('>'),
-				$.step_set
+				$.step_vertex_set
 			))
 		),
 		step_source_set: $ => seq(
-			$.name,
-			optional(seq(":", $.name))
+			field('vertexSetName', $.name),
+			optional(seq(":", field("vertexAlias", $.name)))
 		),
 
-		step_set: $ => seq(
-			$.step_type,
-			optional(seq(":", field("alias", $.name)))
+		step_edge_set: $ => seq(
+			$.step_edge_types,
+			optional(seq(":", field("edgeAlias", $.name)))
 		),
-		step_type: $ => choice(
-			$.atomic_type,
-			seq("(", $.set_type, repeat(seq(" | ", $.set_type)), ")")
+
+		step_edge_types: $ => choice(
+			$.atomic_edge_type,
+			seq("(", $.edge_set_type, repeat(seq(" | ", $.edge_set_type)), ")")
 		),
-		atomic_type: $ => choice(
+
+		atomic_edge_type: $ => choice(
 			"_",
 			caseInsensitive("ANY"),
-			$.set_type
+			$.edge_set_type
 		),
-		set_type: $ => choice(
+
+		edge_set_type: $ => choice(
 			$.name,
 			$.global_accum_name
 		),
 
-		// !book bottom
+		step_vertex_set: $ => seq(
+			$.step_vertex_types,
+			optional(seq(":", field("vertexAlias", $.name)))
+		),
+
+		step_vertex_types: $ => choice(
+			$.atomic_vertex_type,
+			seq("(", $.vertex_set_type, repeat(seq(" | ", $.vertex_set_type)), ")")
+		),
+		atomic_vertex_type: $ => choice(
+			"_",
+			caseInsensitive("ANY"),
+			$.vertex_set_type
+		),
+		vertex_set_type: $ => choice(
+			$.name,
+			$.global_accum_name
+		),
+
 		//---
 		install_query: $ => seq(
 			caseInsensitive("INSTALL"),
@@ -439,7 +462,7 @@ module.exports = grammar({
 		// http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
 		comment: $ => choice(
 			$.line_comment,
-			// $.block_comment,
+			$.block_comment,
 		),
 		line_comment: $ => token(seq(
 			'//', /.*/

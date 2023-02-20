@@ -79,6 +79,7 @@ columnExpr := expr ("AS" columnName)? | aggregator "(" ( "DISTINCT" )? expr ")" 
 columnName := name ;
 tableName := name ;
 fromClause := "FROM" (step | stepV2 | pathPattern ("," pathPattern)*) ;
+(* !book2 step *)
 step := stepSourceSet ("-" "(" stepEdgeSet ")" ("-" | "->") stepVertexSet)? ;
 stepV2 := stepVertexSet ("-" "(" stepEdgeSet ")" "-" stepVertexSet)? ;
 stepSourceSet := vertexSetName (":" vertexAlias)? ;
