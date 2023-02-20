@@ -4,7 +4,7 @@ module.exports = grammar({
 	extras: $ => [
 		/\s/,
 		$.line_comment,
-		// $.block_comment,
+		$.block_comment,
 	],
 
 	conflicts: $ => [
@@ -437,21 +437,18 @@ module.exports = grammar({
 			" | "),
 
 		// http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
-
 		comment: $ => choice(
 			$.line_comment,
 			// $.block_comment,
 		),
-
 		line_comment: $ => token(seq(
 			'//', /.*/
 		)),
-
-		// block_comment: $ => token(seq(
-		// 	'/*',
-		// 	/[^*]*\*+([^/*][^*]*\*+)*/,
-		// 	'/'
-		// )),
+		block_comment: $ => token(seq(
+			'/*',
+			/[^*]*\*+([^/*][^*]*\*+)*/,
+			'/'
+		)),
 	},
 });
 

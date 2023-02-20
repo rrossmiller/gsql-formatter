@@ -1,4 +1,7 @@
 create QUERY queryName(INT total_partitions, floAt currentPart=1) FOR GRAPH mygraph {
+   /*
+   block comment  
+   */
    hello = {World.*};
    //comment
    h = select x fRom hello:h -(E:e)-> X:x;
