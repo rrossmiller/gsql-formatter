@@ -11,7 +11,7 @@ declStmts := (declStmt ";")+ ;
 declStmt := baseDeclStmt | accumDeclStmt | fileDeclStmt ;
 declExceptStmts := (declExceptStmt ";")+ ;
 queryBodyStmts := (queryBodyStmt ";")+ ;
-!book
+!book1
 queryBodyStmt := assignStmt | vSetVarDeclStmt | declStmts | lAccumAssignStmt | gAccumAssignStmt | gAccumAccumStmt | funcCallStmt | selectStmt | queryBodyCaseStmt | queryBodyIfStmt | queryBodyWhileStmt | queryBodyForEachStmt | "BREAK" | "CONTINUE" | updateStmt | insertStmt | queryBodyDeleteStmt | printStmt | printlnStmt | logStmt | returnStmt | raiseStmt | tryStmt ;
 installQuery := "INSTALL" "QUERY" ( "*" | "ALL" | queryName ("," queryName)* ) ;
 runQuery := ("RUN" | "INTERPRET") "QUERY" queryName "(" parameterValueList ")" ;
@@ -70,6 +70,7 @@ loadAccumParams := "(" filePath "," columnId ("," columnId* ","stringLiteral ","
 funcCallStmt := name ("<" type ("," type)* ">")? "(" (argList)? ")" | globalAccumName ("." funcName "(" (argList)? ")")+ ;
 argList := expr ("," expr)* ;
 selectStmt := gsqlSelectBlock | sqlSelectBlock ;
+!book2 fromClause
 gsqlSelectBlock := gsqlSelectClause fromClause (sampleClause)? (whereClause)? (accumClause)? (postAccumClause)* (havingClause)? (orderClause)? (limitClause)? ;
 sqlSelectBlock := fromClause (whereClause)? (groupByClause)? (havingClause)? (orderClause)? (limitClause)? ;
 gsqlSelectClause := vertexSetName "=" "SELECT" vertexAlias ;

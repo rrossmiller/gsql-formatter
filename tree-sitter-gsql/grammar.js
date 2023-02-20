@@ -198,6 +198,7 @@ module.exports = grammar({
 		),
 
 		gsql_select_block: $ => seq(
+			$.gsql_select_clause,
 			$.from_clause,
 			// optional($.sample_clause),
 			// optional($.where_clause),
@@ -207,8 +208,14 @@ module.exports = grammar({
 			// optional($.order_clause),
 			// optional($.limit_clause),
 		),
+		gsql_select_clause: $ => seq(
+			$.name,
+			"=",
+			caseInsensitive("select"),
+			$.name
+		),
+
 		from_clause: $ => seq(
-			// "FROM"(step | stepV2 | pathPattern("," pathPattern) *) ;
 			caseInsensitive("from"),
 			choice(
 				$.step,
@@ -218,19 +225,41 @@ module.exports = grammar({
 		),
 
 		step: $ => seq(
-			"h"
-			// $.step_source_set,
-			// optional(seq(
-			// 	"-",
-			// 	"(",
-			// 	$.step_edge_set,
-			// 	")",
-			// 	choice("-", "->"),
-			// 	$.step_vertex_set
-			// ))
+			$.step_source_set,
+			optional(seq(
+				"-",
+				"(",
+				$.step_set,
+				")",
+				"-",
+				optional('>'),
+				$.step_set
+			))
+		),
+		step_source_set: $ => seq(
+			$.name,
+			optional(seq(":", $.name))
 		),
 
-		// !book
+		step_set: $ => seq(
+			$.step_type,
+			optional(seq(":", field("alias", $.name)))
+		),
+		step_type: $ => choice(
+			$.atomic_type,
+			seq("(", $.set_type, repeat(seq(" | ", $.set_type)), ")")
+		),
+		atomic_type: $ => choice(
+			"_",
+			caseInsensitive("ANY"),
+			$.set_type
+		),
+		set_type: $ => choice(
+			$.name,
+			$.global_accum_name
+		),
+
+		// !book bottom
 		//---
 		install_query: $ => seq(
 			caseInsensitive("INSTALL"),
