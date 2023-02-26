@@ -94,7 +94,6 @@ module.exports = grammar({
 		),
 
 		query_body_stmt: $ => choice(
-			// !bookmark
 			// these need to be repeat 1 because if the pattern is chosen, it must complete at least once
 			repeat1($.assign_stmt),
 			repeat1($.v_set_var_decl_stmt),
@@ -133,7 +132,10 @@ module.exports = grammar({
 				seq("(", $.name, ")")
 			),
 			"=",
-			choice($.seed_set)//, $.simple_set, $.select_stmt)
+			choice($.seed_set,
+				//, $.simple_set, 
+				$.select_stmt
+			)
 		),
 
 		seed_set: $ => seq(
@@ -170,7 +172,7 @@ module.exports = grammar({
 
 		g_accum_accum_stmt: $ => seq(
 			$.global_accum_name,
-			"+=",
+			field("plus_equal","+="),
 			$.expr
 		),
 
@@ -201,12 +203,13 @@ module.exports = grammar({
 			// $.sqlSelectBlock 
 		),
 
+		//!book root
 		gsql_select_block: $ => seq(
 			$.gsql_select_clause,
 			$.from_clause,
 			// optional($.sample_clause),
-			// optional($.where_clause),
-			// optional($.accum_clause),
+			optional($.where_clause),
+			optional($.accum_clause),
 			// repeat($.post_accum_clause),
 			// optional($.having_clause),
 			// optional($.order_clause),
@@ -226,6 +229,59 @@ module.exports = grammar({
 				// $.step_v2,
 				seq($.path_pattern, repeat(seq(",", $.path_pattern))),
 			)
+		),
+
+		where_clause: $ => seq(
+			caseInsensitive("where"),
+			$.condition
+		),
+
+		//book! here
+		accum_clause: $ => seq(
+			// optinal(perClauseV2),
+			caseInsensitive("accum"),
+			$.dmlSubStmtList
+		),
+		dmlSubStmtList: $ => seq(
+			$.dmlSubStmt,
+			repeat(seq(",", $.dmlSubStmt))
+		),
+
+		dmlSubStmt: $ => choice(
+			$.assign_stmt,
+			$.func_call_stmt,
+			$.g_accum_accum_stmt,
+			$.l_accum_accum_stmt,
+			$.attr_accum_stmt,
+			todo below
+			// $.v_accum_func_fall, 
+			// $.local_var_decl_stmt,
+			// dmlSubCaseStmt,
+			// dmlSubIfStmt,
+			// dmlSubWhileStmt,
+			// dmlSubForEachStmt,
+			// caseInsensitive("BREAK"),
+			// caseInsensitive("CONTINUE"),
+			// insertStmt,
+			// dmlSubDeleteStmt,
+			// printlnStmt,
+			// logStmt
+		),
+
+		l_accum_accum_stmt: $ => seq(
+			$.name,
+			".",
+			$.local_accum_name,
+			field("plus_equal","+="),
+			$.expr
+		),
+
+		attr_accum_stmt: $ => seq(
+			$.name,
+			".",
+			$.name,
+			field("plus_equal","+="),
+			$.expr
 		),
 
 		path_pattern: $ => prec(1, seq(
@@ -426,13 +482,42 @@ module.exports = grammar({
 			// $.setBagExpr 
 			seq($.name, "(", $.arg_list, ")"),
 		)),
+
+		condition: $ => prec.left(1, choice(
+			$.expr,
+			seq($.expr, $.comparison_operator, $.expr),
+			seq($.expr, optional(caseInsensitive("NOT")), caseInsensitive("IN"), $.set_bag_expr),
+			seq($.expr, caseInsensitive("IS"), optional(caseInsensitive("NOT")), caseInsensitive("NULL")),
+			seq($.expr, caseInsensitive("BETWEEN"), $.expr, caseInsensitive("AND"), $.expr),
+			seq("(", $.condition, ")"),
+			seq(caseInsensitive("NOT"), $.condition),
+			seq($.condition, choice(caseInsensitive("AND"), caseInsensitive("OR")), $.condition),
+			choice(caseInsensitive("TRUE"), caseInsensitive("FALSE")),
+			seq($.expr, optional(caseInsensitive("NOT")), caseInsensitive("LIKE"), $.expr)
+		)),
+
+		set_bag_expr: $ => prec.left(0, choice(
+			$.name,
+			$.global_accum_name,
+			seq($.name, ".", $.name),
+			seq($.name, ".", $.local_accum_name),
+			seq($.name, ".", $.local_accum_name, repeat(seq(".", $.name, "(", optional($.arg_list), ")"))),
+			seq($.name, ".", $.name, "(", optional($.arg_list), ")", optional(seq(".", caseInsensitive("FILTER"), "(", $.condition, ")"))),
+			seq($.global_accum_name, repeat(seq(".", $.name, "(", optional($.arg_list), ")"))),
+			seq($.set_bag_expr, choice(caseInsensitive("UNION"), caseInsensitive("INTERSECT"), caseInsensitive("MINUS")), $.set_bag_expr),
+			seq("(", $.arg_list, ")"),
+			seq("(", $.set_bag_expr, ")")
+		)),
+
 		_type: $ => choice(
 			$.base_type
 		),
+
 		_element_type: $ => choice(
 			$.base_type,
 			$.name
 		),
+
 		base_type: $ => choice(
 			caseInsensitive("bool"),
 			caseInsensitive("int"),
@@ -492,7 +577,14 @@ module.exports = grammar({
 			">>",
 			"&",
 			" | "),
-
+		comparison_operator: $ => choice(
+			"<",
+			"<=",
+			">",
+			">=",
+			"==",
+			"!="
+		),
 		// http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
 		comment: $ => choice(
 			$.line_comment,
@@ -516,4 +608,4 @@ function caseInsensitive(keyword) {
 			.map((letter) => `[${letter}${letter.toUpperCase()}]`)
 			.join("")
 	);
-}
+}// 
