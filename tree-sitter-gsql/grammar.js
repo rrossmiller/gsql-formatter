@@ -53,7 +53,7 @@ module.exports = grammar({
 			),
 			$.query_body
 		),
-		
+
 		parameter_list: ($) => seq(
 			"(",
 			repeat($.query_params),
@@ -624,12 +624,12 @@ module.exports = grammar({
 			seq($.name, ".", $.name),
 			seq($.name, ".", $.local_accum_name),
 			seq($.name, ".", $.name, ".", $.name, "(", optional($.arg_list), ")"),
-			// seq($.name, ".", $.name, "(",optional(argList) , ")",optional(".", "FILTER", "(", condition, ")")  ), // todo condition
+			seq($.name, ".", $.name, "(", optional($.arg_list), ")", optional(seq(".", caseInsensitive("filter"), "(", $.condition, ")"))),
 			seq($.name, optional(seq("<", $._type, repeat(seq(",", $._type)), ">")), "(", optional(seq($.arg_list, ")"))),
 			seq($.name, ".", $.local_accum_name, repeat1(seq(".", $.name, "(", optional($.arg_list), ")")), optional(seq(".", $.name))),
 			seq($.global_accum_name, repeat1(seq(".", $.name, "(", optional($.arg_list), ")")), optional(seq(".", $.name))),
 			seq(caseInsensitive("coalesce"), "(", optional($.arg_list), ")"),
-			// seq(aggregator, "(", optional("DISTINCT"), $.setBagExpr, ")"), todo setbag
+			seq($.aggregator, "(", optional("DISTINCT"), $.set_bag_expr, ")"),
 			// seq("ISEMPTY", "(", $.setBagExpr, ")"),
 			prec.left(2, seq($.expr, $.math_operator, $.expr)),
 			prec.left(1, seq("-", $.expr)),
@@ -666,6 +666,13 @@ module.exports = grammar({
 			seq("(", $.arg_list, ")"),
 			seq("(", $.set_bag_expr, ")")
 		)),
+		aggregator: $ => seq(
+			caseInsensitive("count"),
+			caseInsensitive("max"),
+			caseInsensitive("min"),
+			caseInsensitive("avg"),
+			caseInsensitive("sum")
+		),
 		print_stmt: $ => prec(1, seq(
 			caseInsensitive("print"),
 			$.print_expr,
