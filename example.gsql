@@ -21,4 +21,5 @@ ELSE// if not x then
 x=0;
     END;
 
+PRINT friends[friends.a as A];
 }

@@ -17,11 +17,11 @@ module.exports = grammar({
 
 		_definition: ($) =>
 			choice(
-				$.create_query
-				//$.interpretQuery
+				$.create_query,
+				$.interpret_query
 			),
 
-		create_query: ($) => seq(
+		create_query: $ => seq(
 			caseInsensitive("create"),
 			optional(
 				seq(caseInsensitive("or"), caseInsensitive("replace"))
@@ -39,6 +39,21 @@ module.exports = grammar({
 			$.query_body
 		),
 
+
+		interpret_query: $ => seq(
+			caseInsensitive("interpret"),
+			caseInsensitive("query"),
+			field("queryName", $.name),
+			$.parameter_list,
+			caseInsensitive("for"),
+			caseInsensitive("graph"),
+			field("graphName", $.name),
+			optional(
+				seq(caseInsensitive("syntax"), caseInsensitive("v2"))
+			),
+			$.query_body
+		),
+		
 		parameter_list: ($) => seq(
 			"(",
 			repeat($.query_params),
@@ -95,25 +110,24 @@ module.exports = grammar({
 
 		query_body_stmt: $ => choice(
 			// these need to be repeat 1 because if the pattern is chosen, it must complete at least once
-			repeat1($.assign_stmt),
-			repeat1($.v_set_var_decl_stmt),
-			repeat1($.decl_stmt),
-			repeat1($.l_accum_assign_stmt),
-			repeat1($.g_accum_assign_stmt),
-			repeat1($.g_accum_accum_stmt),
-			repeat1($.func_call_stmt),
-			repeat1($.select_stmt),
-			repeat1($.query_body_case_stmt),
-			repeat1($.query_body_if_stmt),
-			// !book
-			// queryBodyWhileStmt, 
-			// queryBodyForEachStmt, 
-			// "BREAK" ,
-			// "CONTINUE", 
+			$.assign_stmt,
+			$.v_set_var_decl_stmt,
+			$.decl_stmt,
+			$.l_accum_assign_stmt,
+			$.g_accum_assign_stmt,
+			$.g_accum_accum_stmt,
+			$.func_call_stmt,
+			$.select_stmt,
+			$.query_body_case_stmt,
+			$.query_body_if_stmt,
+			$.query_body_while_stmt,
+			$.query_body_for_each_stmt,
+			"BREAK",
+			"CONTINUE",
 			// updateStmt ,
 			// insertStmt ,
 			// queryBodyDeleteStmt ,
-			// printStmt ,
+			$.print_stmt,
 			// printlnStmt ,
 			// logStmt ,
 			// returnStmt, 
@@ -504,6 +518,24 @@ module.exports = grammar({
 			optional(seq(caseInsensitive("else"), $.query_body_stmts)),
 			caseInsensitive("end")
 		)),
+
+		query_body_while_stmt: $ => seq(
+			caseInsensitive("while"),
+			$.condition,
+			optional(seq(caseInsensitive("limit"), $.simple_size)),
+			caseInsensitive("do"),
+			$.query_body_stmts,
+			caseInsensitive("end")
+		),
+
+		query_body_for_each_stmt: $ => seq(
+			caseInsensitive("foreach"),
+			$.for_each_control,
+			caseInsensitive("do"),
+			$.query_body_stmts,
+			caseInsensitive("end")
+		),
+
 		//---
 		install_query: $ => seq(
 			caseInsensitive("install"),
@@ -634,6 +666,38 @@ module.exports = grammar({
 			seq("(", $.arg_list, ")"),
 			seq("(", $.set_bag_expr, ")")
 		)),
+		print_stmt: $ => prec(1, seq(
+			caseInsensitive("print"),
+			$.print_expr,
+			repeat(seq(",", $.print_expr)),
+			optional(seq(caseInsensitive("where"), $.condition)),
+			optional(seq(caseInsensitive("to_csv"), choice($.file_path, $.name)))
+		)),
+
+		print_expr: $ => choice(
+			seq(
+				choice($.expr, $.v_expr_set),
+				optional(seq(caseInsensitive("as"), $.name))
+			),
+			// tableName
+		),
+
+		v_expr_set: $ => seq(
+			$.expr,
+			"[",
+			$.v_set_proj,
+			repeat(seq(",", $.v_set_proj)),
+			"]"
+		),
+
+		v_set_proj: $ => seq(
+			$.expr,
+			optional(seq(caseInsensitive("as"), $.name))
+		),
+
+		file_path: $ => choice(
+			$.name, $.string_literal
+		),
 
 		_type: $ => choice(
 			$.base_type
@@ -682,7 +746,7 @@ module.exports = grammar({
 		),
 		real: $ => choice(
 			seq(optional("-"), seq(".", repeat1($.digit))),
-			seq(optional("-"), repeat1($.digit), seq(".", repeat1($.digit))),// (* prev start paren is part of the lang?
+			seq(optional("-"), repeat1($.digit), seq(".", repeat1($.digit))),
 		),
 		digit: $ => /\d/,
 		// number: $ => /\d+/,
@@ -710,6 +774,7 @@ module.exports = grammar({
 			"==",
 			"!="
 		),
+
 		// http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
 		comment: $ => choice(
 			$.line_comment,
@@ -733,4 +798,4 @@ function caseInsensitive(keyword) {
 			.map((letter) => `[${letter}${letter.toUpperCase()}]`)
 			.join("")
 	);
-}// 
+}
