@@ -1,9 +1,11 @@
 create QUERY queryName() FOR GRAPH mygraph {
-   hello = {World.*};
-   h = select x fRom hello:h -(myEdge>:e)- X:x 
-   where 9<0 AND True
-   accum @@gaccum += "hi",
-         h.@lcl += 0
+   h = select x fRom hello:h
+   post-aCcum 
+   FOREACH x in @@a.size() DO
+        CASE WHEN (f.subject == x) THEN
+            f.@post_likes += 1
+            END
+        END
    ;
 
 }
