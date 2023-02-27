@@ -103,9 +103,9 @@ module.exports = grammar({
 			repeat1($.g_accum_accum_stmt),
 			repeat1($.func_call_stmt),
 			repeat1($.select_stmt),
-			// !book
 			repeat1($.query_body_case_stmt),
 			repeat1($.query_body_if_stmt),
+			// !book
 			// queryBodyWhileStmt, 
 			// queryBodyForEachStmt, 
 			// "BREAK" ,
