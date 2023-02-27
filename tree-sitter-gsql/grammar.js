@@ -103,8 +103,9 @@ module.exports = grammar({
 			repeat1($.g_accum_accum_stmt),
 			repeat1($.func_call_stmt),
 			repeat1($.select_stmt),
-			// queryBodyCaseStmt ,
-			// queryBodyIfStmt ,
+			// !book
+			repeat1($.query_body_case_stmt),
+			repeat1($.query_body_if_stmt),
 			// queryBodyWhileStmt, 
 			// queryBodyForEachStmt, 
 			// "BREAK" ,
@@ -377,7 +378,7 @@ module.exports = grammar({
 				seq($.expr, caseInsensitive("offset", $.expr))
 			)
 		),
-		//
+
 		path_pattern: $ => prec(1, seq(
 			$.step_source_set,
 			repeat(seq(
@@ -472,6 +473,37 @@ module.exports = grammar({
 			$.global_accum_name
 		),
 
+		query_body_case_stmt: $ => choice(
+			seq(
+				caseInsensitive("case"),
+				repeat1(seq(caseInsensitive("when"), $.condition, caseInsensitive("then"), $.query_body_stmts)),
+				optional(seq(caseInsensitive("else"), $.query_body_stmts)),
+				caseInsensitive("end")
+			),
+			seq(
+				caseInsensitive("case"),
+				$.expr,
+				repeat1(seq(caseInsensitive("when"), $.constant, caseInsensitive("then"), $.query_body_stmts)),
+				optional(seq(caseInsensitive("else"), $.query_body_stmts)),
+				caseInsensitive("end")
+			),
+		),
+
+		query_body_if_stmt: $ => prec.left(1, seq(
+			caseInsensitive("if"),
+			$.condition,
+			caseInsensitive("then"),
+			$.query_body_stmts,
+			repeat(seq(
+				caseInsensitive("else"),
+				caseInsensitive("if"),
+				$.condition,
+				caseInsensitive("then"),
+				$.query_body_stmts
+			)),
+			optional(seq(caseInsensitive("else"), $.query_body_stmts)),
+			caseInsensitive("end")
+		)),
 		//---
 		install_query: $ => seq(
 			caseInsensitive("install"),
@@ -620,7 +652,7 @@ module.exports = grammar({
 			caseInsensitive("double"),
 			caseInsensitive("string"),
 			caseInsensitive("bool"),
-			// caseInsensitive("VERTEX" ("<" vertexType ">")?,
+			seq(caseInsensitive("vertex"), optional(seq("<", $.name, ">"))),
 			caseInsensitive("edge"),
 			caseInsensitive("jsonobject"),
 			caseInsensitive("jsonarray"),

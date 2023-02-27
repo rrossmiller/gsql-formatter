@@ -1,11 +1,24 @@
-create QUERY queryName() FOR GRAPH mygraph {
-   h = select x fRom hello:h
-   post-aCcum 
-   FOREACH x in @@a.size() DO
-        CASE WHEN (f.subject == x) THEN
-            f.@post_likes += 1
-            END
-        END
-   ;
+// create QUERY queryName() FOR GRAPH mygraph {
+//    h = select x fRom hello:h
+//    post-aCcum 
+//    FOREACH x in @@a.size() DO
+//         CASE WHEN (f.subject == x) THEN
+//             f.@post_likes += 1
+//             END
+//         END
+//    ;
+
+// }
+CREATE QUERY count_friends_of2(VERTEX<Person> seed, BOOL include_coworkers) FOR GRAPH Friend_Net
+{
+    SumAccum<INT> @@num_friends = 0;
+    start = {seed};
+
+    IF include_coworkers THEN
+        friends = SELECT v FROM start -((Friend | Coworker):e)- E:v
+            ACCUM @@num_friends +=1;
+ELSE// if not x then
+x=0;
+    END;
 
 }
