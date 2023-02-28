@@ -1,5 +1,5 @@
 // This does not look nice
-create or Replace quERy myQuery() 
+creaTe or Replace quERy myQuery() 
 FOR GRAPH mygraph {
     MapAccum<INT,         String> @acc;
 Src = {V.*};
