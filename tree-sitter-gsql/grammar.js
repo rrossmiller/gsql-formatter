@@ -9,11 +9,10 @@ module.exports = grammar({
 
 	conflicts: $ => [
 		[$.integer],
-		[$.expr],
 		[$.real]
 	],
 	rules: {
-		source_file: ($) => repeat($._definition),
+		gsql: ($) => repeat($._definition),
 
 		_definition: ($) =>
 			choice(
@@ -618,7 +617,7 @@ module.exports = grammar({
 			$.name
 		),
 
-		expr: $ => prec(5, choice(
+		expr: $ => prec.left(5, choice(
 			$.name,
 			$.global_accum_name,
 			seq($.name, ".", $.name),
@@ -666,6 +665,7 @@ module.exports = grammar({
 			seq("(", $.arg_list, ")"),
 			seq("(", $.set_bag_expr, ")")
 		)),
+
 		aggregator: $ => seq(
 			caseInsensitive("count"),
 			caseInsensitive("max"),
@@ -673,6 +673,7 @@ module.exports = grammar({
 			caseInsensitive("avg"),
 			caseInsensitive("sum")
 		),
+
 		print_stmt: $ => prec(1, seq(
 			caseInsensitive("print"),
 			$.print_expr,
@@ -731,6 +732,7 @@ module.exports = grammar({
 		),
 
 		name: $ => /[\p{L}_$][\p{L}\p{Nd}_$]*/, // thanks, java --> https://github.com/tree-sitter/tree-sitter-java/blob/master/grammar.js#:~:text=%5B%5Cp%7BL%7D_%24%5D%5B%5Cp%7BL%7D%5Cp%7BNd%7D_%24%5D*
+
 		constant: $ => choice(
 			$.numeric,
 			$.string_literal,
@@ -787,9 +789,11 @@ module.exports = grammar({
 			$.line_comment,
 			$.block_comment,
 		),
+
 		line_comment: $ => token(seq(
 			'//', /.*/
 		)),
+
 		block_comment: $ => token(seq(
 			'/*',
 			/[^*]*\*+([^/*][^*]*\*+)*/,

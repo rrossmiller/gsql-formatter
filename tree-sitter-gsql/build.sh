@@ -14,13 +14,15 @@ if [ $# -gt 0 ] && [ $1 == 't' ]; then
 	fi
 elif [[ $# -gt 0 ]]; then
 	tree-sitter parse $file
-	cd ../ex/ &&
+	# cd ../ex/ &&
+	cd ../fmt/ &&
 		npm uninstall tree-sitter-gsql &&
 		npm i ../tree-sitter-gsql
 
 else
 	tree-sitter parse $file &&
-		cd ../ex/ &&
+		# cd ../ex/ &&
+		cd ../fmt/ &&
 		npm uninstall tree-sitter-gsql &&
 		npm i ../tree-sitter-gsql
 
