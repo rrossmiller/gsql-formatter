@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "tree-sitter": "^0.20.1",
-    "tree-sitter-gsql": "file:../tree-sitter-gsql"
+    "tree-sitter-gsql": "file:../../tree-sitter-gsql"
   },
   "scripts": {
     "test": "tree-sitter test",

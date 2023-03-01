@@ -11,6 +11,7 @@ out
 target
 Cargo.*
 binding*
+build/
 tree-sitter-gsql/src/
 
 # results

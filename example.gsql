@@ -1,6 +1,7 @@
-// This does not look nice
-creaTe or Replace quERy myQuery() 
-FOR GRAPH mygraph {
+// This does not look nice, but it's valid gsql
+creaTe
+ or Replace quERy myQuery() 
+For graph mygraph {
     MapAccum<INT,         String> @acc;
 Src = {V.*};
 
