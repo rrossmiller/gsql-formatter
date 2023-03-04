@@ -3,6 +3,7 @@ import Parser from 'tree-sitter';
 import {Tree} from 'tree-sitter';
 import gsql from 'tree-sitter-gsql';
 import {keywords} from './keywords';
+console.log('start');
 
 const parser = new Parser();
 parser.setLanguage(gsql);
@@ -50,7 +51,12 @@ console.log(srcCodeCaps);
     might make more sense just to have a switch statement for all the node types
 */
 const tree: Tree = parser.parse(srcCodeCaps);
-console.log(tree.rootNode.child(1).children);
+tree.rootNode.children.forEach((e) => {
+    if (e.type === 'create_query') {
+        console.log(e, '-->');
+        console.log(e.children);
+    }
+});
 
 // function traverse_tree(tree: Tree) {
 //     const cursor = tree.walk();
