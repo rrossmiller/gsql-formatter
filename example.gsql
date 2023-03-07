@@ -1,9 +1,10 @@
 // This does not look nice, but it's valid gsql
 creaTe
- or Replace quERy myQuery() 
+ or Replace quERy myQuery syntaX v2() 
 For graph mygraph {
-    MapAccum<INT,         String> @acc;
+    mapaccum<INT,         String> @acc;
 Src = {V.*};
+   
 
     Tgt = selecT t FROM Src:s -(E>:e)- T:t
     WHERE t.attr1 == s.attr1
@@ -11,3 +12,5 @@ Src = {V.*};
 
 print Tgt;
 }
+
+interpret quERy() {}
