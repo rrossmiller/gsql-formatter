@@ -3,7 +3,7 @@ CREATE
  OR REPLACE QUERY myQuery(INT i  , STRING j,DATETIME d) 
  
 FOR GRAPH MyGraph {
-    // This is usually where I'd put the description
+// This is usually where I'd put the description
     // of the query over multiple lines
     TYPEDEF TUPLE <INT i,STRING j  , DATETIME d> myType;
     TYPEDEF TUPLE <INT i, DATETIME j > myType2;

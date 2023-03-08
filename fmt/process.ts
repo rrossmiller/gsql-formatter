@@ -142,11 +142,36 @@ export class Postprocessor {
 
     scanToken(): void {
         let c = this.advance();
-        if (this.isAlpha(c)) {
-            this.identifier();
-        } else {
-            this.addToken();
+
+        switch (c) {
+            case '/':
+                // A comment goes to the end of the line
+                if (this.match('/')) {
+                    while (this.peek() != '\n' || this.isAtEnd()) {
+                        this.advance();
+                    }
+                } else if (this.match('*')) {
+                    // A block comment goes until '*/' termination
+                    while (!this.isAtEnd() && this.peek() != '*' && this.peekNext() != '/') this.advance();
+                    // consume */
+                    this.advanceN(2);
+                }
+                this.addToken();
+                break;
+            default:
+                if (this.isAlpha(c)) {
+                    this.identifier();
+                } else {
+                    this.addToken();
+                }
+                break;
         }
+
+        // if (this.isAlpha(c)) {
+        //     this.identifier();
+        // } else {
+        //     this.addToken();
+        // }
     }
 
     identifier() {
@@ -166,15 +191,35 @@ export class Postprocessor {
         this.addToken();
     }
 
+    match(expected: string): boolean {
+        if (this.isAtEnd()) return false;
+        if (this.sourceCode.charAt(this.current) != expected) return false;
+
+        this.current++;
+        return true;
+    }
+
     peek(): string {
         if (this.isAtEnd()) return '';
         return this.sourceCode.charAt(this.current);
+    }
+
+    peekNext(): string {
+        if (this.current + 1 >= this.sourceCode.length) return '';
+        return this.sourceCode.charAt(this.current + 1);
     }
 
     advance(): string {
         return this.sourceCode.charAt(this.current++);
     }
 
+    advanceN(n: number): string {
+        let rtn = '';
+        for (let i = 0; i < n; i++) {
+            rtn += this.advance();
+        }
+        return rtn;
+    }
     isAtEnd(): boolean {
         return this.current >= this.sourceCode.length;
     }

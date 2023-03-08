@@ -3,7 +3,7 @@ creaTe
  or Replace quERy myQuery(int i  , string j,Datetime d) 
  
 For graph MyGraph {
-    // This is usually where I'd put the description
+// This is usually where I'd put the description
     // of the query over multiple lines
     typedef tuple <int i,string j  , datetime d> myType;
     typedef tuple <int i, Datetime j > myType2;

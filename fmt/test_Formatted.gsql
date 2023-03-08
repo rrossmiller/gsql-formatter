@@ -1,29 +1,29 @@
-// This does NOT look nice, but it's valid gsql
+// This does not look nice, but it's valid gsql
 CREATE OR REPLACE QUERY myQuery(INT i, STRING j, DATETIME d) FOR GRAPH MyGraph {
-    // This IS usually WHERE I'd PUT the DESCRIPTION
-    // OF the QUERY over multiple lines
+    // This is usually where I'd put the description
+    // of the query over multiple lines
     TYPEDEF TUPLE<INT i, STRING j, DATETIME d> myType;
     TYPEDEF TUPLE<INT i, DATETIME j> myType2;
 
     //assign
     name = a+2+@@sumacc;
     name.x = a+2+@@sumacc;
-    // MapAccum<INT i,         STRING s> @acc;
+    // mapaccum<INT i,         String s> @acc;
     // Src = {V.*};
-    //     // here's a comment IN the QUERY body
-    //     Tgt = SELECT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
+    //     // here's a comment in the query body
+    //     Tgt = selecT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
     //     WHERE t.attr1 == s.attr1
     //                         ACCUM t.@acc += (0 -> "acc");
 }
 
-// CREATE
-//  OR REPLACE QUERY myQuery()
-// FOR GRAPH MyGraph {
-//     MapAccum<INT,         STRING> @acc;
+// creaTe
+//  or Replace quERy myQuery()
+// For graph MyGraph {
+//     mapaccum<INT,         String> @acc;
 // Src = {V.*};
-//     // here's a comment IN the QUERY body
-//     Tgt = SELECT t FROM Src:s -(E>:e)- T:t
+//     // here's a comment in the query body
+//     Tgt = selecT t FROM Src:s -(E>:e)- T:t
 //     WHERE t.attr1 == s.attr1
 //                         ACCUM t.@acc += (0 -> "acc");
-// PRINT Tgt;
+// print Tgt;
 // }
