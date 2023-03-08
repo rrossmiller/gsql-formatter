@@ -56,7 +56,10 @@ export class Formatter {
                         rtn += '\n';
                     }
                     break;
+                case 'query_body_stmts':
+                    console.log(node);
 
+                    break;
                 default:
                     rtn += this.getIndent() + node.text.trim() + '\n';
                     break;
@@ -76,7 +79,6 @@ export class Formatter {
 
         // handle tuple fields
         children[3].children.forEach((c: SyntaxNode, i: number) => {
-            console.log(c);
             rtn += c.text.trim();
             if (c.type == ',') {
                 rtn += ' ';
