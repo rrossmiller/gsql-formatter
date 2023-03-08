@@ -1,8 +1,8 @@
 import fs from 'fs';
 import Parser, {Tree} from 'tree-sitter';
 import gsql from 'tree-sitter-gsql';
-import {handleCreateQuery} from './nodeHandlers';
-import {preprocess} from './preprocess';
+import {Formatter} from './nodeHandlers';
+import {Preprocessor} from './preprocess';
 
 const parser = new Parser();
 parser.setLanguage(gsql);
@@ -10,7 +10,8 @@ parser.setLanguage(gsql);
 let sourceCode = fs.readFileSync('../example.gsql', 'utf8');
 
 /* Capitalize keywords for parser */
-let srcCodeCaps = preprocess(sourceCode);
+const preprocess = new Preprocessor(sourceCode);
+let srcCodeCaps = preprocess.scan();
 
 // testing... intermediate output
 fs.writeFileSync('test_Caps.gsql', srcCodeCaps);
@@ -18,6 +19,7 @@ fs.writeFileSync('test_Caps.gsql', srcCodeCaps);
 /* parse, and format*/
 function formatGSQL(tree: Tree): string {
     let rtn = '';
+    const formatter = new Formatter();
 
     tree.rootNode.children.forEach((node) => {
         // format parent node types: create_query or comment/error
@@ -25,12 +27,9 @@ function formatGSQL(tree: Tree): string {
             case 'create_query':
                 const cursor = node.walk();
                 if (cursor.gotoFirstChild()) {
-                    rtn += handleCreateQuery(cursor) + '\n\n';
+                    rtn += formatter.handleCreateQuery(cursor) + '\n\n';
                 }
                 break;
-            // case 'line_comment':
-            //     rtn += handleComment(node.text);
-            //     break;
             default:
                 rtn += node.text.trim() + '\n';
                 break;

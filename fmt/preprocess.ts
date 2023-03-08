@@ -1,15 +1,11 @@
 import {accumTypes, keywords} from './keywords';
 
-export function preprocess(sourceCode: string): string {
-    return new Preprocess(sourceCode).scan();
-}
-
 /**
  * Only need to capture some cases. No need to label all tokens like a normal lexer
  *
  * Thanks to https://craftinginterpreters.com
  */
-export class Preprocess {
+export class Preprocessor {
     tokens: string[] = [];
     sourceCode: string;
     start: number = 0;
