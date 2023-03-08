@@ -7,7 +7,11 @@ FOR GRAPH MyGraph {
     // of the query over multiple lines
     TYPEDEF TUPLE <INT i,STRING j  , DATETIME d> myType;
     TYPEDEF TUPLE <INT i, DATETIME j > myType2;
-//     mapaccum<INT,         String> @acc;
+
+    //assign
+name = a+2+@@sumacc;
+name.x = a+2+@@sumacc;
+    // mapaccum<INT i,         String s> @acc;
 // Src = {V.*};
     
 //     // here's a comment in the query body

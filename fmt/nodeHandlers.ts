@@ -56,11 +56,24 @@ export class Formatter {
                         rtn += '\n';
                     }
                     break;
+
                 case 'query_body_stmts':
+                    node.children.forEach((child) => {
+                        if (child.type === ';') {
+                            rtn += ';\n';
+                        } else {
+                            rtn += this.handleQueryBodyStmt(child.children);
+                        }
+                    });
+                    break;
+
+                case 'line_comment':
+                    rtn += this.getIndent() + node.text.trim() + '\n';
+                    break;
+
+                default:
                     console.log(node);
 
-                    break;
-                default:
                     rtn += this.getIndent() + node.text.trim() + '\n';
                     break;
             }
@@ -92,5 +105,51 @@ export class Formatter {
 
     getIndent(): string {
         return ' '.repeat(4 * this.indentLevel);
+    }
+
+    handleQueryBodyStmt(children: SyntaxNode[]): string {
+        let rtn = '';
+        children.forEach((c: SyntaxNode) => {
+            console.log(c);
+
+            switch (c.type) {
+                case 'assign_stmt':
+                    rtn += this.handleAssignStmt(c.children);
+                    break;
+
+                default:
+                    rtn += c.text;
+                    break;
+            }
+        });
+
+        return rtn;
+    }
+
+    handleAssignStmt(children: SyntaxNode[]): string {
+        let rtn = this.getIndent();
+        let child: SyntaxNode;
+        // two different types of assign according to the grammar
+        switch (children[1].type) {
+            case '.':
+                console.log('dot');
+                // name.name =
+                rtn += children[0].text.trim() + children[1].text.trim() + children[2].text.trim() + ' ' + children[3].text.trim() + ' ';
+                child = children[4];
+                break;
+            case '=':
+                console.log('eq');
+                // name =
+                rtn += children[0].text.trim() + ' ' + children[1].text.trim() + ' ';
+                child = children[2];
+                break;
+        }
+
+        // handle expression after =
+        console.log('---'.repeat(this.indentLevel), child);
+        rtn += child.text.trim();
+        // todo handle child --> it is an expr
+
+        return rtn;
     }
 }

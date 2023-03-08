@@ -2,7 +2,7 @@ import fs from 'fs';
 import Parser, {Tree} from 'tree-sitter';
 import gsql from 'tree-sitter-gsql';
 import {Formatter} from './nodeHandlers';
-import {Preprocessor} from './preprocess';
+import {Postprocessor, Preprocessor} from './process';
 
 const parser = new Parser();
 parser.setLanguage(gsql);
@@ -40,6 +40,8 @@ function formatGSQL(tree: Tree): string {
 }
 
 const tree: Tree = parser.parse(srcCodeCaps);
-const query = formatGSQL(tree);
 
-fs.writeFileSync('test_Formatted.gsql', query);
+const query = formatGSQL(tree);
+const postQuery = new Postprocessor(query).scan();
+fs.writeFileSync('test_Formatted.gsql', postQuery);
+// tree.printDotGraph();
