@@ -1,10 +1,6 @@
-import {SyntaxNode} from 'tree-sitter';
+import {SyntaxNode, TreeCursor} from 'tree-sitter';
 
 export function handleParameterList(children: SyntaxNode[]) {
-    console.log('**00');
-    console.log(children.join(''));
-    console.log('**00');
-
     let rtn = children[0].text.trim(); // start with open paren
     // query params
     children[1].children.forEach((c: SyntaxNode, i) => {
@@ -20,21 +16,21 @@ export function handleParameterList(children: SyntaxNode[]) {
     return rtn;
 }
 
-export function handleCreateQuery(children: SyntaxNode[]) {
+export function handleCreateQuery(cursor: TreeCursor) {
     console.log('********');
 
     let rtn = '';
-    children.forEach((c: SyntaxNode) => {
-        console.log(c);
-        if (c.type === 'parameter_list') {
+    do {
+        const c: SyntaxNode = cursor.currentNode;
+        if (cursor.currentFieldName === 'queryName') {
+            rtn += c.text.trim();
+        } else if (c.type === 'parameter_list') {
             rtn += handleParameterList(c.children);
             console.log(c.children);
-        } else if (c.type === 'name' && c.nextSibling.type === 'parameter_list') {
-            rtn += c.text.trim();
         } else {
             rtn += c.text.trim() + ' ';
         }
-    });
+    } while (cursor.gotoNextSibling());
 
     console.log();
     console.log(rtn);

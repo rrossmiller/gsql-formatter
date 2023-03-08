@@ -1,36 +1,14 @@
 import {accumTypes, keywords} from './keywords';
 
-function bracketHandler(line: string, seq: string): string {
-    if (line.includes(seq)) {
-        const idx = line.indexOf(seq);
-        // if the comment doesn't start the line
-        // and there isn't already a space before
-        if (seq === '//' && idx > 0 && line.charAt(idx - 1) !== ' ') {
-            line = line.replaceAll(seq, ` ${seq} `);
-        } else if (seq !== '//') {
-            line = line.replaceAll(seq, ` ${seq} `);
-        }
-    }
-    return line;
-}
-
-function handleBrackets(line: string): string {
-    // separate symbols to be able to find keywords before // with no space
-    line = bracketHandler(line, '//');
-    line = bracketHandler(line, '(');
-    line = bracketHandler(line, ')');
-    line = bracketHandler(line, '<');
-    line = bracketHandler(line, '>'); // causes and issue with MapAccums
-    line = bracketHandler(line, ',');
-    line = bracketHandler(line, '{');
-    line = bracketHandler(line, '}');
-    return line;
-}
-
 export function preprocess(sourceCode: string): string {
     return new Preprocess(sourceCode).scan();
 }
 
+/**
+ * Only need to capture some cases. No need to label all tokens like a normal lexer
+ *
+ * Thanks to https://craftinginterpreters.com
+ */
 export class Preprocess {
     tokens: string[] = [];
     sourceCode: string;
@@ -83,8 +61,6 @@ export class Preprocess {
         }
 
         const text = this.sourceCode.slice(this.start, this.current).trim().toUpperCase();
-        console.log(text);
-
         if (keywords.includes(text)) {
             this.tokens.push(text);
             return;

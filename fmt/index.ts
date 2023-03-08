@@ -1,7 +1,6 @@
 import fs from 'fs';
 import Parser, {Tree} from 'tree-sitter';
 import gsql from 'tree-sitter-gsql';
-import {accumTypes, keywords} from './keywords';
 import {handleCreateQuery} from './nodeHandlers';
 import {preprocess} from './preprocess';
 
@@ -14,7 +13,7 @@ let sourceCode = fs.readFileSync('../example.gsql', 'utf8');
 let srcCodeCaps = preprocess(sourceCode);
 
 // testing... intermediate output
-fs.writeFileSync('testOut.gsql', srcCodeCaps);
+fs.writeFileSync('test_Caps.gsql', srcCodeCaps);
 
 /* parse, and format*/
 function formatGSQL(tree: Tree): string {
@@ -24,7 +23,10 @@ function formatGSQL(tree: Tree): string {
         // format parent node types: create_query or comment/error
         switch (node.type) {
             case 'create_query':
-                rtn += handleCreateQuery(node.children) + '\n\n';
+                const cursor = node.walk();
+                if (cursor.gotoFirstChild()) {
+                    rtn += handleCreateQuery(cursor) + '\n\n';
+                }
                 break;
             // case 'line_comment':
             //     rtn += handleComment(node.text);
@@ -41,4 +43,4 @@ function formatGSQL(tree: Tree): string {
 const tree: Tree = parser.parse(srcCodeCaps);
 const query = formatGSQL(tree);
 
-fs.writeFileSync('testOutfrm.gsql', query);
+fs.writeFileSync('test_Formatted.gsql', query);
