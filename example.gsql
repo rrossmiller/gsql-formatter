@@ -1,16 +1,32 @@
 // This does not look nice, but it's valid gsql
 creaTe
- or Replace quERy myQuery syntaX v2() 
-For graph mygraph {
+ or Replace quERy myQuery(int i  , string j,Datetime d) 
+ 
+For graph MyGraph {
     mapaccum<INT,         String> @acc;
 Src = {V.*};
-   
-
-    Tgt = selecT t FROM Src:s -(E>:e)- T:t
+    
+    // here's a comment in the query body
+    Tgt = selecT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
     WHERE t.attr1 == s.attr1
                         ACCUM t.@acc += (0 -> "acc");
 
 print Tgt;
 }
 
-interpret quERy() {}
+
+
+creaTe
+ or Replace quERy myQuery() 
+ 
+For graph MyGraph {
+    mapaccum<INT,         String> @acc;
+Src = {V.*};
+    
+    // here's a comment in the query body
+    Tgt = selecT t FROM Src:s -(E>:e)- T:t
+    WHERE t.attr1 == s.attr1
+                        ACCUM t.@acc += (0 -> "acc");
+
+print Tgt;
+}
