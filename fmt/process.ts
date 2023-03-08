@@ -61,7 +61,7 @@ export class Preprocessor {
             this.tokens.push(text);
             return;
         } else if (Object.keys(accumTypes).includes(text)) {
-            this.tokens.push(accumTypes[text]);
+            this.tokens.push(text);
             return;
         }
 
@@ -96,6 +96,83 @@ export class Preprocessor {
             rtn += this.advance();
         }
         return rtn;
+    }
+
+    isAtEnd(): boolean {
+        return this.current >= this.sourceCode.length;
+    }
+
+    isAlpha(c: string): boolean {
+        return c.match(/[a-zA-Z]/) != null;
+    }
+
+    isDigit(c: string): boolean {
+        return c.match(/[0-9]/) != null;
+    }
+
+    isAlphaNumeric(): boolean {
+        return this.isAlpha(this.peek()) || this.isDigit(this.peek());
+    }
+
+    addToken() {
+        const text = this.sourceCode.slice(this.start, this.current);
+        this.tokens.push(text);
+    }
+}
+
+// post process to set accum names to be camel case
+export class Postprocessor {
+    tokens: string[] = [];
+    sourceCode: string;
+    start: number = 0;
+    current: number = 0;
+    constructor(sourceCode: string) {
+        this.sourceCode = sourceCode;
+    }
+
+    // run the scanner
+    scan(): string {
+        while (!this.isAtEnd()) {
+            this.start = this.current;
+            // scan token
+            this.scanToken();
+        }
+        return this.tokens.join('');
+    }
+
+    scanToken(): void {
+        let c = this.advance();
+        if (this.isAlpha(c)) {
+            this.identifier();
+        } else {
+            this.addToken();
+        }
+    }
+
+    identifier() {
+        while (this.isAlphaNumeric()) {
+            this.advance();
+        }
+
+        const text = this.sourceCode.slice(this.start, this.current).trim().toUpperCase();
+        if (keywords.includes(text)) {
+            this.tokens.push(text);
+            return;
+        } else if (Object.keys(accumTypes).includes(text)) {
+            this.tokens.push(accumTypes[text]); // reset accum names to be camel case
+            return;
+        }
+
+        this.addToken();
+    }
+
+    peek(): string {
+        if (this.isAtEnd()) return '';
+        return this.sourceCode.charAt(this.current);
+    }
+
+    advance(): string {
+        return this.sourceCode.charAt(this.current++);
     }
 
     isAtEnd(): boolean {
