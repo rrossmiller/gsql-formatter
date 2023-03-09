@@ -11,8 +11,9 @@ let sourceCode = fs.readFileSync('../example.gsql', 'utf8');
 
 /* Capitalize keywords for parser */
 console.log('preprocessing');
-
-let srcCodeCaps = new Preprocessor(sourceCode).scan();
+const preprocessor = new Preprocessor(sourceCode);
+let srcCodeCaps = preprocessor.scan();
+console.log(preprocessor.numStatements, preprocessor.blankLines);
 
 // testing... intermediate output
 fs.writeFileSync('test_Caps.gsql', srcCodeCaps);
@@ -28,7 +29,7 @@ function formatGSQL(tree: Tree): string {
             case 'create_query':
                 const cursor = node.walk();
                 if (cursor.gotoFirstChild()) {
-                    rtn += formatter.handleCreateQuery(cursor) + '\n\n';
+                    rtn += formatter.handleCreateQuery(cursor);
                 }
                 break;
             default:
@@ -36,17 +37,24 @@ function formatGSQL(tree: Tree): string {
                 break;
         }
     });
-
+    if (rtn[rtn.length - 1] !== '\n') {
+        rtn += '\n';
+    }
     return rtn;
 }
 
 console.log('parsing');
 const tree: Tree = parser.parse(srcCodeCaps);
-
 console.log('formatting');
-const query = formatGSQL(tree);
-const postQuery = new Postprocessor(query).scan();
-fs.writeFileSync('test_Formatted.gsql', postQuery);
+let query = formatGSQL(tree);
 
-// console.log(tree.rootNode.toString());
-// tree.printDotGraph();
+query = query.replaceAll('<_-_-_>', '');
+const postprocessor = new Postprocessor(query);
+query = postprocessor.scan();
+fs.writeFileSync('test_Formatted.gsql', query);
+
+if (process.env.tree === 'yes') {
+    console.log('_-_-_');
+    // console.log(tree.rootNode.toString());
+    tree.printDotGraph();
+}

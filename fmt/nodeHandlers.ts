@@ -53,13 +53,13 @@ export class Formatter {
             middleChildren = [children[1]];
         }
 
-        middleChildren.forEach((node: SyntaxNode, i: number) => {
+        middleChildren.forEach((node: SyntaxNode, idx: number) => {
             switch (node.type) {
                 case 'typedef':
                     rtn += this.handleTypeDef(node.children) + '\n';
 
                     // if the next node isn't a typedef, we've reached the end of the typedef section, add a new line
-                    if (children[i + 2].type !== 'typedef') {
+                    if (children[idx + 2].type !== 'typedef') {
                         rtn += '\n';
                     }
                     break;
@@ -79,7 +79,7 @@ export class Formatter {
                     break;
 
                 default:
-                    console.log(node);
+                    console.log('default', node);
 
                     rtn += this.getIndent() + node.text.trim() + '\n';
                     break;
@@ -111,13 +111,24 @@ export class Formatter {
 
     handleQueryBodyStmt(children: SyntaxNode[]): string {
         let rtn = this.getIndent();
-        children.forEach((c: SyntaxNode) => {
+        console.log('$$$$', children);
+        children.forEach((c: SyntaxNode, idx) => {
+            let res = '';
+            console.log('x', c);
+
             switch (c.type) {
                 case 'assign_stmt':
-                    const res = this.handleAssignStmt(c.children);
+                    res = this.handleAssignStmt(c.children);
                     rtn += res.slice(0, res.length - 1); // slice to remove space before semicolon
-                    break;
 
+                    break;
+                case 'v_set_var_decl_stmt':
+                    // !book;
+                    console.log('v_set_var_decl_stmt');
+                    console.log(c);
+
+                    rtn += this.handleVSetVarDeclaration(c.children);
+                    break;
                 default:
                     rtn += c.text;
                     break;
@@ -200,6 +211,18 @@ export class Formatter {
             });
         });
         rtn += ')';
+        return rtn;
+    }
+
+    handleVSetVarDeclaration(children: SyntaxNode[]): string {
+        // start with "name = "
+        let rtn = children[0].text.trim() + ' ' + children[1].text.trim() + ' ';
+
+        children.slice(2).forEach((c: SyntaxNode) => {
+            console.log(c);
+            rtn += c.text.trim();
+        });
+
         return rtn;
     }
 

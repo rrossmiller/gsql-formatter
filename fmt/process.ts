@@ -10,6 +10,8 @@ export class Preprocessor {
     sourceCode: string;
     start: number = 0;
     current: number = 0;
+    numStatements = 0;
+    blankLines = [];
     constructor(sourceCode: string) {
         this.sourceCode = sourceCode;
     }
@@ -39,6 +41,7 @@ export class Preprocessor {
                     // consume */
                     this.advanceN(2);
                 }
+                // this.numStatements++;
                 this.addToken();
                 break;
 
@@ -46,7 +49,8 @@ export class Preprocessor {
                 this.sourceCode = this.sourceCode.slice(0, this.current - 1) + '"' + this.sourceCode.slice(this.current);
                 this.addToken();
                 break;
-
+            case '\n':
+                this.newline();
             default:
                 if (this.isAlpha(c)) {
                     this.identifier();
@@ -54,6 +58,15 @@ export class Preprocessor {
                     this.addToken();
                 }
                 break;
+        }
+    }
+
+    newline() {
+        const prevTkn = this.tokens[this.tokens.length - 2];
+        const prevEOL = this.tokens[this.tokens.length - 1];
+
+        if (prevTkn !== undefined && prevTkn[prevTkn.length - 1] === ';' && prevEOL === '\n') {
+            this.tokens.push('<_-_-_>');
         }
     }
 
@@ -134,6 +147,8 @@ export class Postprocessor extends Preprocessor {
     constructor(sourceCode: string) {
         super(sourceCode);
     }
+
+    newline(): void {}
 
     identifier() {
         while (this.isAlphaNumeric()) {
