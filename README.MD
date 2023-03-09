@@ -1,22 +1,31 @@
 # GSQL formatter
 
-```
-// This does not look nice, but it's valid gsql
+```// This does not look nice, but it's valid gsql
 creaTe
  or Replace quERy myQuery(int i  , string j,Datetime d)
 
 For graph MyGraph {
-    // typedef tuple <int i,string j  , datetime d, list l> myType;
-    mapaccum<INT,         String> @acc;
-Src = {V.*};
+// This is usually where I'd put the description
+    // of the query over multiple lines
+typedef tuple <int i,string j  , datetime d> myType;
+    typedef tuple <int i, Datetime j > myType2;
 
-    // here's a comment in the query body
-    Tgt = selecT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
-    WHERE t.attr1 == s.attr1
-                        ACCUM t.@acc += (0 -> "acc");
+    TypeDef Tuple <INT from_id, INT to_id, STRING to_type> Edges;
+    //assign
+name = a/(@@sumacc+1);
+name.x = a+2+@@sumacc;
+        x = @@accm.get(asdf,@@accm.get(a,b),    v.@sumacc.size());
+    // mapaccum<INT i,         String s> @acc;
+// Src = {V.*};
+
+//     // here's a comment in the query body
+//     Tgt = selecT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
+//     WHERE t.attr1 == s.attr1
+//                         ACCUM t.@acc += (0 -> "acc");
 
 print Tgt;
 }
+
 
 ```
 
@@ -25,15 +34,22 @@ Is formatted to (still WIP)
 ```
 // This does not look nice, but it's valid gsql
 CREATE OR REPLACE QUERY myQuery(INT i, STRING j, DATETIME d) FOR GRAPH MyGraph {
-    // typedef tuple <int i,string j  , datetime d, list l> myType;
-    MapAccum<INT,         STRING> @acc;
-Src = {V.*};
+    // This is usually where I'd put the description
+    // of the query over multiple lines
+    TYPEDEF TUPLE<INT i, STRING j, DATETIME d> myType;
+    TYPEDEF TUPLE<INT i, DATETIME j> myType2;
+    TYPEDEF TUPLE<INT from_id, INT to_id, STRING to_type> Edges;
 
-    // here's a comment in the query body
-    Tgt = SELECT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
-    WHERE t.attr1 == s.attr1
-                        ACCUM t.@acc += (0 -> "acc");
-
-PRINT Tgt;
+    //assign
+    name = a / (@@sumacc + 1);
+    name.x = a + 2 + @@sumacc;
+    x = @@accm.get(asdf, @@accm.get(a, b), v.@sumacc.size());
+    // mapaccum<INT i,         String s> @acc;
+    // Src = {V.*};
+    //     // here's a comment in the query body
+    //     Tgt = selecT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
+    //     WHERE t.attr1 == s.attr1
+    //                         ACCUM t.@acc += (0 -> "acc");
+    PRINT Tgt;
 }
 ```

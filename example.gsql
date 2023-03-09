@@ -21,22 +21,5 @@ name.x = a+2+@@sumacc;
 //     WHERE t.attr1 == s.attr1
 //                         ACCUM t.@acc += (0 -> "acc");
 
-// print Tgt;
+print Tgt;
 }
-
-
-
-// creaTe
-//  or Replace quERy myQuery() 
- 
-// For graph MyGraph {
-//     mapaccum<INT,         String> @acc;
-// Src = {V.*};
-    
-//     // here's a comment in the query body
-//     Tgt = selecT t FROM Src:s -(E>:e)- T:t
-//     WHERE t.attr1 == s.attr1
-//                         ACCUM t.@acc += (0 -> "acc");
-
-// print Tgt;
-// }

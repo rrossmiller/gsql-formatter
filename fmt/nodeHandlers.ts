@@ -110,7 +110,7 @@ export class Formatter {
     }
 
     handleQueryBodyStmt(children: SyntaxNode[]): string {
-        let rtn = '';
+        let rtn = this.getIndent();
         children.forEach((c: SyntaxNode) => {
             switch (c.type) {
                 case 'assign_stmt':
@@ -128,7 +128,7 @@ export class Formatter {
     }
 
     handleAssignStmt(children: SyntaxNode[]): string {
-        let rtn = this.getIndent();
+        let rtn = '';
         let child: SyntaxNode;
         // two different types of assign according to the grammar
         switch (children[1].type) {
