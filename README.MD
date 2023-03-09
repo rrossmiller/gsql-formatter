@@ -1,6 +1,7 @@
 # GSQL formatter
 
-```// This does not look nice, but it's valid gsql
+```
+// This does not look nice, but it's valid gsql
 creaTe
  or Replace quERy myQuery(int i  , string j,Datetime d)
 
