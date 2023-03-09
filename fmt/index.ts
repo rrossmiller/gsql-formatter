@@ -10,8 +10,9 @@ parser.setLanguage(gsql);
 let sourceCode = fs.readFileSync('../example.gsql', 'utf8');
 
 /* Capitalize keywords for parser */
-const preprocess = new Preprocessor(sourceCode);
-let srcCodeCaps = preprocess.scan();
+console.log('preprocessing');
+
+let srcCodeCaps = new Preprocessor(sourceCode).scan();
 
 // testing... intermediate output
 fs.writeFileSync('test_Caps.gsql', srcCodeCaps);
@@ -39,9 +40,13 @@ function formatGSQL(tree: Tree): string {
     return rtn;
 }
 
+console.log('parsing');
 const tree: Tree = parser.parse(srcCodeCaps);
 
+console.log('formatting');
 const query = formatGSQL(tree);
 const postQuery = new Postprocessor(query).scan();
 fs.writeFileSync('test_Formatted.gsql', postQuery);
+
+// console.log(tree.rootNode.toString());
 // tree.printDotGraph();

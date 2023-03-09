@@ -226,7 +226,7 @@ export const keywords = [
     'FLATTEN',
     'FLATTEN_JSON_ARRAY',
     'GEN-DATA',
-    'GET',
+    // 'GET',
     'GRANT',
     'HELP',
     'ICON',

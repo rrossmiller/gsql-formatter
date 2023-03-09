@@ -5,12 +5,14 @@ CREATE
 FOR GRAPH MyGraph {
 // This is usually where I'd put the description
     // of the query over multiple lines
-    TYPEDEF TUPLE <INT i,STRING j  , DATETIME d> myType;
+TYPEDEF TUPLE <INT i,STRING j  , DATETIME d> myType;
     TYPEDEF TUPLE <INT i, DATETIME j > myType2;
 
+    TYPEDEF TUPLE <INT from_id, INT to_id, STRING to_type> Edges;
     //assign
-name = a+2+@@sumacc;
+name = a/(@@sumacc+1);
 name.x = a+2+@@sumacc;
+        x = @@accm.get(asdf,@@accm.get(a,b),    v.@sumacc.size());
     // mapaccum<INT i,         String s> @acc;
 // Src = {V.*};
     

@@ -46,7 +46,14 @@ export class Formatter {
     handleQueryBody(children: SyntaxNode[]): string {
         let rtn = children[0].text.trim() + '\n'; // start with open brackets
         this.indentLevel++;
-        children.slice(1, children.length - 2).forEach((node: SyntaxNode, i: number) => {
+        let middleChildren: SyntaxNode[];
+        if (children.length > 3) {
+            middleChildren = children.slice(1, children.length - 1);
+        } else {
+            middleChildren = [children[1]];
+        }
+
+        middleChildren.forEach((node: SyntaxNode, i: number) => {
             switch (node.type) {
                 case 'typedef':
                     rtn += this.handleTypeDef(node.children) + '\n';
@@ -85,7 +92,6 @@ export class Formatter {
     }
 
     handleTypeDef(children: SyntaxNode[]): string {
-        // set indentation TODO make 4 a config variable
         let rtn = this.getIndent();
         // start with "TYPDEF TUPLE<"
         rtn += children[0].text.trim() + ' ' + children[1].text.trim() + children[2].text.trim();
@@ -103,18 +109,13 @@ export class Formatter {
         return rtn;
     }
 
-    getIndent(): string {
-        return ' '.repeat(4 * this.indentLevel);
-    }
-
     handleQueryBodyStmt(children: SyntaxNode[]): string {
         let rtn = '';
         children.forEach((c: SyntaxNode) => {
-            console.log(c);
-
             switch (c.type) {
                 case 'assign_stmt':
-                    rtn += this.handleAssignStmt(c.children);
+                    const res = this.handleAssignStmt(c.children);
+                    rtn += res.slice(0, res.length - 1); // slice to remove space before semicolon
                     break;
 
                 default:
@@ -132,13 +133,11 @@ export class Formatter {
         // two different types of assign according to the grammar
         switch (children[1].type) {
             case '.':
-                console.log('dot');
                 // name.name =
                 rtn += children[0].text.trim() + children[1].text.trim() + children[2].text.trim() + ' ' + children[3].text.trim() + ' ';
                 child = children[4];
                 break;
             case '=':
-                console.log('eq');
                 // name =
                 rtn += children[0].text.trim() + ' ' + children[1].text.trim() + ' ';
                 child = children[2];
@@ -146,10 +145,65 @@ export class Formatter {
         }
 
         // handle expression after =
-        console.log('---'.repeat(this.indentLevel), child);
-        rtn += child.text.trim();
-        // todo handle child --> it is an expr
+        rtn += this.handleExpr(child.children);
+        return rtn;
+    }
+
+    handleExpr(children: SyntaxNode[]): string {
+        let rtn = '';
+        children.forEach((c: SyntaxNode) => {
+            switch (c.type) {
+                case 'expr':
+                    rtn += this.handleExpr(c.children);
+                    break;
+
+                case 'func_call_stmt':
+                    rtn += this.handleFuncCall(c.children) + ' ';
+                    break;
+
+                default:
+                    console.log(c.text, c.type);
+                    if (c.type === '(') {
+                        rtn += c.text.trim();
+                    } else if (c.type === ')' && rtn[rtn.length - 1] === ' ') {
+                        rtn = rtn.slice(0, rtn.length - 1);
+                        rtn += c.text.trim() + ' ';
+                    } else {
+                        rtn += c.text.trim() + ' ';
+                    }
+                    break;
+            }
+        });
 
         return rtn;
+    }
+
+    handleFuncCall(children: SyntaxNode[]): string {
+        let i = 0;
+        let rtn = '';
+        while (children[i].type !== '(') {
+            rtn += children[i].text.trim();
+            i++;
+        }
+        rtn += '(';
+        // args
+        children.slice(i).forEach((c: SyntaxNode) => {
+            c.children.forEach((node) => {
+                if (node.type === 'expr') {
+                    rtn += this.handleExpr(node.children).trimEnd();
+                } else if (node.type === ',') {
+                    // comma space
+                    rtn += node.text + ' ';
+                } else {
+                    rtn += node.text;
+                }
+            });
+        });
+        rtn += ')';
+        return rtn;
+    }
+
+    getIndent(): string {
+        return ' '.repeat(4 * this.indentLevel);
     }
 }

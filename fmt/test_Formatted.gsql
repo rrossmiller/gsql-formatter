@@ -4,16 +4,19 @@ CREATE OR REPLACE QUERY myQuery(INT i, STRING j, DATETIME d) FOR GRAPH MyGraph {
     // of the query over multiple lines
     TYPEDEF TUPLE<INT i, STRING j, DATETIME d> myType;
     TYPEDEF TUPLE<INT i, DATETIME j> myType2;
+    TYPEDEF TUPLE<INT from_id, INT to_id, STRING to_type> Edges;
 
     //assign
-    name = a+2+@@sumacc;
-    name.x = a+2+@@sumacc;
+    name = a / (@@sumacc + 1);
+    name.x = a + 2 + @@sumacc;
+    x = @@accm.get(asdf, @@accm.get(a, b), v.@sumacc.size());
     // mapaccum<INT i,         String s> @acc;
     // Src = {V.*};
     //     // here's a comment in the query body
     //     Tgt = selecT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
     //     WHERE t.attr1 == s.attr1
     //                         ACCUM t.@acc += (0 -> "acc");
+    // print Tgt;
 }
 
 // creaTe
