@@ -2,22 +2,23 @@
 CREATE OR REPLACE QUERY myQuery(INT i, STRING j, DATETIME d) FOR GRAPH MyGraph {
     // This is usually where I'd put the description
     // of the query over multiple lines
-    TYPEDEF TUPLE<INT i, STRING j, DATETIME d> myType;
-    TYPEDEF TUPLE<INT i, DATETIME j> myType2;
-    TYPEDEF TUPLE<INT from_id, INT to_id, STRING to_type> Edges;
+    // typedef tuple <int i,string j  , datetime d> myType;
+    //     typedef tuple <int i, Datetime j > myType2;
 
-    
-    //assign
-    name = a / (@@sumacc + 1);
-    name.x = a + 2 + @@sumacc;
-    
-    x = @@accm.get(asdf, @@accm.get(a, b), v.@sumacc.size());
+    //     TypeDef Tuple <INT from_id, INT to_id, STRING to_type> Edges;
+
+    //     //assign
+    // name = a/(@@sumacc+1);
+    // name.x = a+2+@@sumacc;
+
+    //         x = @@accm.get(asdf,@@accm.get(a,b),    v.@sumacc.size());
     Src = {V.*};
+
     // mapaccum<INT i,         String s> @acc;
     //     // here's a comment in the query body
     //     Tgt = selecT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
     //     WHERE t.attr1 == s.attr1
     //                         ACCUM t.@acc += (0 -> "acc");
-    
+
     PRINT Tgt;
 }

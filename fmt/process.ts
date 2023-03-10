@@ -10,8 +10,6 @@ export class Preprocessor {
     sourceCode: string;
     start: number = 0;
     current: number = 0;
-    numStatements = 0;
-    blankLines = [];
     constructor(sourceCode: string) {
         this.sourceCode = sourceCode;
     }
@@ -31,11 +29,11 @@ export class Preprocessor {
         switch (c) {
             case '/':
                 // A comment goes to the end of the line
-                if (this.match('/')) {
+                if (this.findMatch('/')) {
                     while (this.peek() !== '\n' || this.isAtEnd()) {
                         this.advance();
                     }
-                } else if (this.match('*')) {
+                } else if (this.findMatch('*')) {
                     // A block comment goes until '*/' termination
                     while (!this.isAtEnd() && this.peek() != '*' && this.peekNext() != '/') this.advance();
                     // consume */
@@ -49,6 +47,10 @@ export class Preprocessor {
                 this.sourceCode = this.sourceCode.slice(0, this.current - 1) + '"' + this.sourceCode.slice(this.current);
                 this.addToken();
                 break;
+            case ' ':
+            case '\t':
+                this.whiteSpace();
+                break;
             case '\n':
                 this.newline();
             default:
@@ -61,12 +63,19 @@ export class Preprocessor {
         }
     }
 
+    whiteSpace() {
+        if (!this.tokens[this.tokens.length - 1].match(/^[\ \t\n]$/)) {
+            this.addToken();
+        }
+    }
     newline() {
         const prevTkn = this.tokens[this.tokens.length - 2];
         const prevEOL = this.tokens[this.tokens.length - 1];
 
         if (prevTkn !== undefined && prevTkn[prevTkn.length - 1] === ';' && prevEOL === '\n') {
             this.tokens.push('<_-_-_>');
+        } else if (prevTkn !== undefined && prevTkn[prevTkn.length - 1] === ';' && prevEOL !== '\n') {
+            console.log(prevTkn[prevTkn.length - 1], '-', prevEOL);
         }
     }
 
@@ -87,7 +96,7 @@ export class Preprocessor {
         this.addToken();
     }
 
-    match(expected: string): boolean {
+    findMatch(expected: string): boolean {
         if (this.isAtEnd()) return false;
         if (this.sourceCode.charAt(this.current) != expected) return false;
 
@@ -106,6 +115,7 @@ export class Preprocessor {
     }
 
     advance(): string {
+        // return current, then advance current
         return this.sourceCode.charAt(this.current++);
     }
 
@@ -150,6 +160,9 @@ export class Postprocessor extends Preprocessor {
 
     newline(): void {}
 
+    whiteSpace() {
+        this.addToken();
+    }
     identifier() {
         while (this.isAlphaNumeric()) {
             this.advance();

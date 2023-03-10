@@ -5,16 +5,16 @@ creaTe
 For graph MyGraph {
 // This is usually where I'd put the description
     // of the query over multiple lines
-typedef tuple <int i,string j  , datetime d> myType;
-    typedef tuple <int i, Datetime j > myType2;
+// typedef tuple <int i,string j  , datetime d> myType;
+//     typedef tuple <int i, Datetime j > myType2;
     
-    TypeDef Tuple <INT from_id, INT to_id, STRING to_type> Edges;
+//     TypeDef Tuple <INT from_id, INT to_id, STRING to_type> Edges;
 
-    //assign
-name = a/(@@sumacc+1);
-name.x = a+2+@@sumacc;
+//     //assign
+// name = a/(@@sumacc+1);
+// name.x = a+2+@@sumacc;
 
-        x = @@accm.get(asdf,@@accm.get(a,b),    v.@sumacc.size());
+//         x = @@accm.get(asdf,@@accm.get(a,b),    v.@sumacc.size());
 Src={V.*};
     
     // mapaccum<INT i,         String s> @acc;

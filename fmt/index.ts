@@ -13,7 +13,6 @@ let sourceCode = fs.readFileSync('../example.gsql', 'utf8');
 console.log('preprocessing');
 const preprocessor = new Preprocessor(sourceCode);
 let srcCodeCaps = preprocessor.scan();
-console.log(preprocessor.numStatements, preprocessor.blankLines);
 
 // testing... intermediate output
 fs.writeFileSync('test_Caps.gsql', srcCodeCaps);
@@ -37,24 +36,25 @@ function formatGSQL(tree: Tree): string {
                 break;
         }
     });
+
     if (rtn[rtn.length - 1] !== '\n') {
         rtn += '\n';
     }
+    
     return rtn;
 }
 
 console.log('parsing');
-const tree: Tree = parser.parse(srcCodeCaps);
+const tree = parser.parse(srcCodeCaps);
 console.log('formatting');
 let query = formatGSQL(tree);
 
-query = query.replaceAll('<_-_-_>', '');
 const postprocessor = new Postprocessor(query);
 query = postprocessor.scan();
 fs.writeFileSync('test_Formatted.gsql', query);
 
 if (process.env.tree === 'yes') {
-    console.log('_-_-_');
+    console.log('_*_*_');
     // console.log(tree.rootNode.toString());
     tree.printDotGraph();
 }

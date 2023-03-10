@@ -21,7 +21,7 @@ export class Formatter {
         } while (cursor.gotoNextSibling());
 
         console.log();
-        console.log(rtn);
+        // console.log(rtn);
         console.log('********');
 
         return rtn;
@@ -77,9 +77,12 @@ export class Formatter {
                 case 'line_comment':
                     rtn += this.getIndent() + node.text.trim() + '\n';
                     break;
+                case 'newline':
+                    rtn += '\n';
+                    break;
 
                 default:
-                    console.log('default', node);
+                    console.log('**DEFAULT QBS***', node);
 
                     rtn += this.getIndent() + node.text.trim() + '\n';
                     break;
@@ -111,11 +114,8 @@ export class Formatter {
 
     handleQueryBodyStmt(children: SyntaxNode[]): string {
         let rtn = this.getIndent();
-        console.log('$$$$', children);
         children.forEach((c: SyntaxNode, idx) => {
             let res = '';
-            console.log('x', c);
-
             switch (c.type) {
                 case 'assign_stmt':
                     res = this.handleAssignStmt(c.children);
@@ -173,7 +173,6 @@ export class Formatter {
                     break;
 
                 default:
-                    console.log(c.text, c.type);
                     if (c.type === '(') {
                         rtn += c.text.trim();
                     } else if (c.type === ')' && rtn[rtn.length - 1] === ' ') {
@@ -219,9 +218,11 @@ export class Formatter {
         let rtn = children[0].text.trim() + ' ' + children[1].text.trim() + ' ';
 
         children.slice(2).forEach((c: SyntaxNode) => {
-            console.log(c);
+            console.log('**', c);
             rtn += c.text.trim();
         });
+
+        console.log(rtn);
 
         return rtn;
     }
