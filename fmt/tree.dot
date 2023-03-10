@@ -1,0 +1,571 @@
+
+digraph tree {
+edge [arrowhead=none]
+tree_0x16fae5c28 [label="gsql", tooltip="range: 0 - 1614
+state: 0
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8150 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 0 - 94
+state: 1
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x16fae5c28 -> tree_0x6000019e8150 [tooltip=0]
+tree_0x6000019e8158 [label="create_query", tooltip="range: 94 - 1612
+state: 1
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0000 [label="CREATE", shape=plaintext, tooltip="range: 94 - 108
+state: 1
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8158 -> tree_0x6000003e0000 [tooltip=0]
+tree_0x6000003e0008 [label="OR", shape=plaintext, tooltip="range: 108 - 116
+state: 1061
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8158 -> tree_0x6000003e0008 [tooltip=1]
+tree_0x6000003e0010 [label="REPLACE", shape=plaintext, tooltip="range: 116 - 132
+state: 1487
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8158 -> tree_0x6000003e0010 [tooltip=2]
+tree_0x6000003e0018 [label="QUERY", shape=plaintext, tooltip="range: 132 - 144
+state: 1174
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8158 -> tree_0x6000003e0018 [tooltip=3]
+tree_0x6000003e0020 [label="name", shape=plaintext, tooltip="range: 144 - 160
+state: 1468
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8158 -> tree_0x6000003e0020 [tooltip=4]
+tree_0x6000003e0028 [label="parameter_list", tooltip="range: 160 - 220
+state: 1188
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8000 [label="(", shape=plaintext, tooltip="range: 160 - 162
+state: 1188
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0028 -> tree_0x6000019e8000 [tooltip=0]
+tree_0x6000019e8008 [label="query_params", tooltip="range: 162 - 218
+state: 546
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e84e0 [label="query_param", tooltip="range: 162 - 172
+state: 546
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e81e0 [label="base_type", tooltip="range: 162 - 168
+state: 546
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8180 [label="INT", shape=plaintext, tooltip="range: 162 - 168
+state: 546
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e81e0 -> tree_0x6000016e8180 [tooltip=0]
+tree_0x6000016e84e0 -> tree_0x6000016e81e0 [tooltip=0]
+tree_0x6000016e81e8 [label="name", shape=plaintext, tooltip="range: 168 - 172
+state: 982
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e84e0 -> tree_0x6000016e81e8 [tooltip=1]
+tree_0x6000019e8008 -> tree_0x6000016e84e0 [tooltip=0]
+tree_0x6000016e84e8 [label="query_params_repeat1", tooltip="range: 172 - 218
+state: 642
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 1
+lookahead-bytes: 1"]
+tree_0x6000016e8480 [label="query_params_repeat1", tooltip="range: 172 - 196
+state: 642
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8300 [label=",", shape=plaintext, tooltip="range: 172 - 178
+state: 610
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8480 -> tree_0x6000016e8300 [tooltip=0]
+tree_0x6000016e8308 [label="query_param", tooltip="range: 178 - 196
+state: 605
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e82a0 [label="base_type", tooltip="range: 178 - 192
+state: 605
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8240 [label="STRING", shape=plaintext, tooltip="range: 178 - 192
+state: 605
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e82a0 -> tree_0x6000016e8240 [tooltip=0]
+tree_0x6000016e8308 -> tree_0x6000016e82a0 [tooltip=0]
+tree_0x6000016e82a8 [label="name", shape=plaintext, tooltip="range: 192 - 196
+state: 982
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8308 -> tree_0x6000016e82a8 [tooltip=1]
+tree_0x6000016e8480 -> tree_0x6000016e8308 [tooltip=1]
+tree_0x6000016e84e8 -> tree_0x6000016e8480 [tooltip=0]
+tree_0x6000016e8488 [label="query_params_repeat1", tooltip="range: 196 - 218
+state: 608
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8420 [label=",", shape=plaintext, tooltip="range: 196 - 198
+state: 610
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8488 -> tree_0x6000016e8420 [tooltip=0]
+tree_0x6000016e8428 [label="query_param", tooltip="range: 198 - 218
+state: 605
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e83c0 [label="base_type", tooltip="range: 198 - 214
+state: 605
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8360 [label="DATETIME", shape=plaintext, tooltip="range: 198 - 214
+state: 605
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e83c0 -> tree_0x6000016e8360 [tooltip=0]
+tree_0x6000016e8428 -> tree_0x6000016e83c0 [tooltip=0]
+tree_0x6000016e83c8 [label="name", shape=plaintext, tooltip="range: 214 - 218
+state: 982
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8428 -> tree_0x6000016e83c8 [tooltip=1]
+tree_0x6000016e8488 -> tree_0x6000016e8428 [tooltip=1]
+tree_0x6000016e84e8 -> tree_0x6000016e8488 [tooltip=1]
+tree_0x6000019e8008 -> tree_0x6000016e84e8 [tooltip=1]
+tree_0x6000003e0028 -> tree_0x6000019e8008 [tooltip=1]
+tree_0x6000019e8010 [label=")", shape=plaintext, tooltip="range: 218 - 220
+state: 610
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0028 -> tree_0x6000019e8010 [tooltip=2]
+tree_0x6000019e8158 -> tree_0x6000003e0028 [tooltip=5]
+tree_0x6000003e0030 [label="FOR", shape=plaintext, tooltip="range: 220 - 234
+state: 1421
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8158 -> tree_0x6000003e0030 [tooltip=6]
+tree_0x6000003e0038 [label="GRAPH", shape=plaintext, tooltip="range: 234 - 246
+state: 1413
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8158 -> tree_0x6000003e0038 [tooltip=7]
+tree_0x6000003e0040 [label="name", shape=plaintext, tooltip="range: 246 - 262
+state: 1404
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8158 -> tree_0x6000003e0040 [tooltip=8]
+tree_0x6000003e0048 [label="query_body", tooltip="range: 262 - 1612
+state: 1137
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000007e0180 [label="{", shape=plaintext, tooltip="range: 262 - 266
+state: 1137
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e0180 [tooltip=0]
+tree_0x6000007e0188 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 266 - 364
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e0188 [tooltip=1]
+tree_0x6000007e0190 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 364 - 444
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e0190 [tooltip=2]
+tree_0x6000007e0198 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 444 - 556
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e0198 [tooltip=3]
+tree_0x6000007e01a0 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 556 - 658
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e01a0 [tooltip=4]
+tree_0x6000007e01a8 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 658 - 798
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e01a8 [tooltip=5]
+tree_0x6000007e01b0 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 798 - 830
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e01b0 [tooltip=6]
+tree_0x6000007e01b8 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 830 - 882
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e01b8 [tooltip=7]
+tree_0x6000007e01c0 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 882 - 934
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e01c0 [tooltip=8]
+tree_0x6000007e01c8 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 934 - 1074
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e01c8 [tooltip=9]
+tree_0x6000007e01d0 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 1074 - 1168
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e01d0 [tooltip=10]
+tree_0x6000007e01d8 [label="query_body_repeat2", tooltip="range: 1168 - 1608
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x600001ce0f00 [label="query_body_stmts", tooltip="range: 1168 - 1194
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8600 [label="query_body_stmt", tooltip="range: 1168 - 1192
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e85a0 [label="v_set_var_decl_stmt", tooltip="range: 1168 - 1192
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e80e0 [label="name", shape=plaintext, tooltip="range: 1168 - 1176
+state: 2
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e85a0 -> tree_0x6000019e80e0 [tooltip=0]
+tree_0x6000019e80e8 [label="=", shape=plaintext, tooltip="range: 1176 - 1180
+state: 886
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e85a0 -> tree_0x6000019e80e8 [tooltip=1]
+tree_0x6000019e80f0 [label="seed_set", tooltip="range: 1180 - 1192
+state: 53
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8070 [label="{", shape=plaintext, tooltip="range: 1180 - 1184
+state: 53
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e80f0 -> tree_0x6000019e8070 [tooltip=0]
+tree_0x6000019e8078 [label="seed", tooltip="range: 1184 - 1190
+state: 770
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8540 [label="name", shape=plaintext, tooltip="range: 1184 - 1186
+state: 770
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8078 -> tree_0x6000016e8540 [tooltip=0]
+tree_0x6000016e8548 [label=".*", shape=plaintext, tooltip="range: 1186 - 1190
+state: 1101
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e8078 -> tree_0x6000016e8548 [tooltip=1]
+tree_0x6000019e80f0 -> tree_0x6000019e8078 [tooltip=1]
+tree_0x6000019e8080 [label="}", shape=plaintext, tooltip="range: 1190 - 1192
+state: 1218
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000019e80f0 -> tree_0x6000019e8080 [tooltip=2]
+tree_0x6000016e85a0 -> tree_0x6000019e80f0 [tooltip=2]
+tree_0x6000016e8600 -> tree_0x6000016e85a0 [tooltip=0]
+tree_0x600001ce0f00 -> tree_0x6000016e8600 [tooltip=0]
+tree_0x6000016e8608 [label=";", shape=plaintext, tooltip="range: 1192 - 1194
+state: 1297
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x600001ce0f00 -> tree_0x6000016e8608 [tooltip=1]
+tree_0x6000007e01d8 -> tree_0x600001ce0f00 [tooltip=0]
+tree_0x600001ce0f08 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 1194 - 1294
+state: 63
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000007e01d8 -> tree_0x600001ce0f08 [tooltip=1]
+tree_0x600001ce0f10 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 1294 - 1406
+state: 63
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000007e01d8 -> tree_0x600001ce0f10 [tooltip=2]
+tree_0x600001ce0f18 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 1406 - 1470
+state: 63
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000007e01d8 -> tree_0x600001ce0f18 [tooltip=3]
+tree_0x600001ce0f20 [label="line_comment", shape=plaintext, fontcolor=gray, tooltip="range: 1470 - 1584
+state: 63
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000007e01d8 -> tree_0x600001ce0f20 [tooltip=4]
+tree_0x600001ce0f28 [label="query_body_stmts", tooltip="range: 1584 - 1608
+state: 6
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e87e0 [label="query_body_stmt", tooltip="range: 1584 - 1606
+state: 6
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8780 [label="print_stmt", tooltip="range: 1584 - 1606
+state: 6
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8720 [label="PRINT", shape=plaintext, tooltip="range: 1584 - 1598
+state: 63
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8780 -> tree_0x6000016e8720 [tooltip=0]
+tree_0x6000016e8728 [label="print_expr", tooltip="range: 1598 - 1606
+state: 96
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e86c0 [label="expr", tooltip="range: 1598 - 1606
+state: 96
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e8660 [label="name", shape=plaintext, tooltip="range: 1598 - 1606
+state: 96
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000016e86c0 -> tree_0x6000016e8660 [tooltip=0]
+tree_0x6000016e8728 -> tree_0x6000016e86c0 [tooltip=0]
+tree_0x6000016e8780 -> tree_0x6000016e8728 [tooltip=1]
+tree_0x6000016e87e0 -> tree_0x6000016e8780 [tooltip=0]
+tree_0x600001ce0f28 -> tree_0x6000016e87e0 [tooltip=0]
+tree_0x6000016e87e8 [label=";", shape=plaintext, tooltip="range: 1606 - 1608
+state: 425
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x600001ce0f28 -> tree_0x6000016e87e8 [tooltip=1]
+tree_0x6000007e01d8 -> tree_0x600001ce0f28 [tooltip=5]
+tree_0x6000003e0048 -> tree_0x6000007e01d8 [tooltip=11]
+tree_0x6000007e01e0 [label="}", shape=plaintext, tooltip="range: 1608 - 1612
+state: 63
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x6000003e0048 -> tree_0x6000007e01e0 [tooltip=12]
+tree_0x6000019e8158 -> tree_0x6000003e0048 [tooltip=9]
+tree_0x16fae5c28 -> tree_0x6000019e8158 [tooltip=1]
+tree_0x6000019e8160 [label="end", shape=plaintext, fontcolor=gray, tooltip="range: 1612 - 1614
+state: 975
+error-cost: 0
+has-changes: 0
+depends-on-column: 0
+repeat-depth: 0
+lookahead-bytes: 1"]
+tree_0x16fae5c28 -> tree_0x6000019e8160 [tooltip=2]
+}
