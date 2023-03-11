@@ -49,6 +49,10 @@ export class Formatter {
         let middleChildren: SyntaxNode[];
         if (children.length > 3) {
             middleChildren = children.slice(1, children.length - 1);
+        } else if (children[1].type === '}') {
+            //closing brackets
+            rtn += children[1].text.trim();
+            return rtn;
         } else {
             middleChildren = [children[1]];
         }
@@ -57,11 +61,6 @@ export class Formatter {
             switch (node.type) {
                 case 'typedef':
                     rtn += this.handleTypeDef(node.children) + '\n';
-
-                    // if the next node isn't a typedef, we've reached the end of the typedef section, add a new line
-                    if (children[idx + 2].type !== 'typedef') {
-                        rtn += '\n';
-                    }
                     break;
 
                 case 'query_body_stmts':
@@ -119,17 +118,17 @@ export class Formatter {
             switch (c.type) {
                 case 'assign_stmt':
                     res = this.handleAssignStmt(c.children);
-                    rtn += res.slice(0, res.length - 1); // slice to remove space before semicolon
+                    rtn += res.trimEnd(); // slice to remove space before semicolon
 
                     break;
                 case 'v_set_var_decl_stmt':
-                    // !book;
-                    console.log('v_set_var_decl_stmt');
-                    console.log(c);
-
                     rtn += this.handleVSetVarDeclaration(c.children);
                     break;
+                case 'decl_stmt':
+                    !book;
+                    break;
                 default:
+                    // console.log('DEFAULT --',c.type, c.text);
                     rtn += c.text;
                     break;
             }
@@ -141,6 +140,7 @@ export class Formatter {
     handleAssignStmt(children: SyntaxNode[]): string {
         let rtn = '';
         let child: SyntaxNode;
+
         // two different types of assign according to the grammar
         switch (children[1].type) {
             case '.':
@@ -171,7 +171,9 @@ export class Formatter {
                 case 'func_call_stmt':
                     rtn += this.handleFuncCall(c.children) + ' ';
                     break;
-
+                case 'set_bag_expr':
+                    rtn += this.handleSetBagExpr(c.children);
+                    break;
                 default:
                     if (c.type === '(') {
                         rtn += c.text.trim();
@@ -213,20 +215,96 @@ export class Formatter {
         return rtn;
     }
 
+    handleSetBagExpr(children: SyntaxNode[]): string {
+        let rtn = '';
+
+        // if it's simple, return the trimmed text
+        if (children.length == 1) {
+            return children[0].text.trim();
+        }
+        // otherwise, find the case
+        children.forEach((c: SyntaxNode) => {
+            switch (c.type) {
+                case 'set_bag_expr':
+                    rtn += this.handleSetBagExpr(c.children);
+                    break;
+                case 'arg_list':
+                    // args
+                    c.children.forEach((node) => {
+                        if (node.type === 'expr') {
+                            rtn += this.handleExpr(node.children).trimEnd();
+                        } else if (node.type === ',') {
+                            // comma space
+                            rtn += node.text + ' ';
+                        } else {
+                            rtn += node.text;
+                        }
+                    });
+
+                    break;
+                case 'name_dot':
+
+                default:
+                    rtn += c.text.trim();
+                    break;
+            }
+        });
+
+        return rtn;
+    }
+
     handleVSetVarDeclaration(children: SyntaxNode[]): string {
         // start with "name = "
         let rtn = children[0].text.trim() + ' ' + children[1].text.trim() + ' ';
 
         children.slice(2).forEach((c: SyntaxNode) => {
-            console.log('**', c);
-            rtn += c.text.trim();
-        });
+            switch (c.type) {
+                case 'simple_set':
+                    if (c.children[0].type === 'simple_set') {
+                        rtn += c.text;
+                        break;
+                    }
 
-        console.log(rtn);
+                case 'seed_set':
+                    // open brackets
+                    rtn += c.children[0].text.trim();
+                    c.children.slice(1, c.children.length - 1).forEach((x) => {
+                        if (x.type === ',') {
+                            rtn += x.text.trim() + ' ';
+                        } else {
+                            rtn += x.text.trim();
+                        }
+                    });
+                    // close brackets
+                    rtn += c.children[c.children.length - 1].text.trim();
+                    break;
+                case 'select_stmt':
+                    rtn += this.handleSelectStmt(c.children);
+                    break;
+                default:
+                    rtn += c.text.trim();
+                    break;
+            }
+            // if (c.children.length > 0) {
+            //     c.children.forEach((x) => {
+            //         rtn += x.text.trim();
+            //     });
+            // } else {
+            // }
+        });
 
         return rtn;
     }
 
+    handleSelectStmt(children: SyntaxNode[]): string {
+        let rtn = '';
+        children.forEach((c: SyntaxNode) => {
+            console.log(c);
+            rtn += c.text.trim();
+        });
+
+        return rtn;
+    }
     getIndent(): string {
         return ' '.repeat(4 * this.indentLevel);
     }

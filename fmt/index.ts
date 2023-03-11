@@ -28,7 +28,7 @@ function formatGSQL(tree: Tree): string {
             case 'create_query':
                 const cursor = node.walk();
                 if (cursor.gotoFirstChild()) {
-                    rtn += formatter.handleCreateQuery(cursor);
+                    rtn += formatter.handleCreateQuery(cursor) + '\n\n';
                 }
                 break;
             default:
@@ -40,7 +40,11 @@ function formatGSQL(tree: Tree): string {
     if (rtn[rtn.length - 1] !== '\n') {
         rtn += '\n';
     }
-    
+
+    if (rtn.slice(rtn.length - 2) === '\n\n') {
+        rtn = rtn.slice(0, rtn.length - 1);
+    }
+
     return rtn;
 }
 
@@ -53,8 +57,11 @@ const postprocessor = new Postprocessor(query);
 query = postprocessor.scan();
 fs.writeFileSync('test_Formatted.gsql', query);
 
+
+if (process.env.lisp === 'yes') {
+    console.log(tree.rootNode.toString());
+}
 if (process.env.tree === 'yes') {
     console.log('_*_*_');
-    // console.log(tree.rootNode.toString());
     tree.printDotGraph();
 }

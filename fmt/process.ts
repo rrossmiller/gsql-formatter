@@ -26,6 +26,8 @@ export class Preprocessor {
 
     scanToken(): void {
         let c = this.advance();
+        // console.log('--', c);
+
         switch (c) {
             case '/':
                 // A comment goes to the end of the line
@@ -35,7 +37,9 @@ export class Preprocessor {
                     }
                 } else if (this.findMatch('*')) {
                     // A block comment goes until '*/' termination
-                    while (!this.isAtEnd() && this.peek() != '*' && this.peekNext() != '/') this.advance();
+                    while (!this.isAtEnd() && this.peek() != '*' && this.peekNext() != '/') {
+                        this.advance();
+                    }
                     // consume */
                     this.advanceN(2);
                 }
@@ -49,6 +53,8 @@ export class Preprocessor {
                 break;
             case ' ':
             case '\t':
+                // console.log(this.tokens);
+
                 this.whiteSpace();
                 break;
             case '\n':
@@ -68,11 +74,12 @@ export class Preprocessor {
             this.addToken();
         }
     }
+
     newline() {
         const prevTkn = this.tokens[this.tokens.length - 2];
         const prevEOL = this.tokens[this.tokens.length - 1];
 
-        if (prevTkn !== undefined && prevTkn[prevTkn.length - 1] === ';' && prevEOL === '\n') {
+        if (prevTkn !== undefined && prevEOL === '\n') {
             this.tokens.push('<_-_-_>');
         } else if (prevTkn !== undefined && prevTkn[prevTkn.length - 1] === ';' && prevEOL !== '\n') {
             console.log(prevTkn[prevTkn.length - 1], '-', prevEOL);
@@ -156,6 +163,15 @@ export class Postprocessor extends Preprocessor {
     current: number = 0;
     constructor(sourceCode: string) {
         super(sourceCode);
+    }
+
+    scan(): string {
+        while (!this.isAtEnd()) {
+            this.start = this.current;
+            // scan token
+            this.scanToken();
+        }
+        return this.tokens.join('').replaceAll('<_-_-_>', '');
     }
 
     newline(): void {}
