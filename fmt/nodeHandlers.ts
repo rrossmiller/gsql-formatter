@@ -119,14 +119,19 @@ export class Formatter {
                 case 'assign_stmt':
                     res = this.handleAssignStmt(c.children);
                     rtn += res.trimEnd(); // slice to remove space before semicolon
-
                     break;
                 case 'v_set_var_decl_stmt':
                     rtn += this.handleVSetVarDeclaration(c.children);
                     break;
                 case 'decl_stmt':
-                    // !book;
                     rtn += this.handleDeclStmt(c.children);
+                    break;
+                case 'l_accum_assign_stmt':
+                    rtn += c.children[0].text.trim() + c.children[1].text.trim();
+                    rtn += this.handleAccumAssign(c.children.slice(2));
+                    break;
+                case 'g_accum_assign_stmt':
+                    rtn += this.handleAccumAssign(c.children);
                     break;
                 default:
                     // console.log('DEFAULT --',c.type, c.text);
@@ -198,6 +203,14 @@ export class Formatter {
 
         return rtn.trimEnd();
     }
+
+    handleAccumAssign(children: SyntaxNode[]): string {
+        let rtn = children[0].text.trim() + ' ' + children[1].text.trim() + ' ';
+
+        rtn += this.handleExpr(children[2].children).trimEnd();
+        return rtn;
+    }
+
     handleAccumType(children: SyntaxNode[]): string {
         let rtn = '';
         let i = 0;
@@ -238,6 +251,7 @@ export class Formatter {
 
         return rtn;
     }
+
     handleExpr(children: SyntaxNode[]): string {
         let rtn = '';
         children.forEach((c: SyntaxNode) => {
@@ -245,7 +259,6 @@ export class Formatter {
                 case 'expr':
                     rtn += this.handleExpr(c.children);
                     break;
-
                 case 'func_call_stmt':
                     rtn += this.handleFuncCall(c.children) + ' ';
                     break;
@@ -254,7 +267,7 @@ export class Formatter {
                     break;
                 default:
                     if (c.type === '(') {
-                        rtn += c.text.trim();
+                        rtn = rtn.trimEnd() + c.text.trim();
                     } else if (c.type === ')' && rtn[rtn.length - 1] === ' ') {
                         rtn = rtn.slice(0, rtn.length - 1);
                         rtn += c.text.trim() + ' ';

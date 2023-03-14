@@ -31,14 +31,14 @@ fs.writeFileSync('test_Formatted.gsql', query); // this is the output
 const t = pprintTree(tree.rootNode.toString());
 let err = false;
 if (t.includes('ERR')) {
-    fs.writeFileSync('ppTree.txt', t);
-    console.log('error in ppTree.txt');
+    fs.writeFileSync('pprintTree.txt', t);
+    console.log('error in pprintTree.txt');
     err = true;
 }
 if (process.env.lisp === 'yes' && !err) {
     // console.log(tree.rootNode.toString());
-    fs.writeFileSync('ppringTree.txt', t);
-    console.log('wrote ppringTree.txt');
+    fs.writeFileSync('pprintTree.txt', t);
+    console.log('wrote pprintTree.txt');
 }
 if (process.env.tree === 'yes') {
     console.log('_*_*_');
