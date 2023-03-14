@@ -1,25 +1,6 @@
-CREATE QUERY myQuery() FOR GRAPH MyGraph {
-    SumAccum<INT> @ac1;
-    SumAccum<FLOAT> @a, @@b;
-    SumAccum<DOUBLE> @ac1;
-    SumAccum<STRING> @ac1;
-    MaxAccum<INT> @ac1 = 3;
-    MaxAccum<INT> @ac1 = 3;
-    MaxAccum<FLOAT> @@ac1;
-    MinAccum<DOUBLE> @@ac1;
-    AvgAccum @ac1 = 0;
-    AvgAccum @ac1 = 1;
-    AvgAccum @ac1, @@b, @@c;
-    OrAccum @ac1;
-    AndAccum @@ac1;
-    BitwiseOrAccum @ac1;
-    BitwiseAndAccum @ac1;
-    ListAccum<STRING> @ac1;
-    SetAccum<Name> @ac1, @@b;
-    BagAccum<FLOAT> @ac1;
-    MapAccum<INT, STRING> @acc;
-    MapAccum<INT, STRING> @@acc;
-    HeapAccum<T> (150, attr1 ASC, attr2 DESC) @@ac1;
-    GroupByAccum<STRING k, INT i, ListAccum<STRING> l, SumAccum<STRING> x> @ac1;
-    ArrayAccum<X> @ac1;
+creaTe
+ or Replace quERy myQuery() 
+ 
+For graph MyGraph {
+V = seleCt v     From          V  : v -(E:e)-> T:t;
 }

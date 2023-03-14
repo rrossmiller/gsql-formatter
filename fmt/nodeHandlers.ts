@@ -72,14 +72,12 @@ export class Formatter {
                         }
                     });
                     break;
-
                 case 'line_comment':
                     rtn += this.getIndent() + node.text.trim() + '\n';
                     break;
                 case 'newline':
                     rtn += '\n';
                     break;
-
                 default:
                     console.log('**DEFAULT QBS***', node);
 
@@ -133,8 +131,14 @@ export class Formatter {
                 case 'g_accum_assign_stmt':
                     rtn += this.handleAccumAssign(c.children);
                     break;
+                case 'func_call_stmt':
+                    rtn += this.handleFuncCall(c.children);
+                    break;
+                case 'gsql_select_block':
+                    rtn += this.handleSelectStmt(c.children);
+                    break;
                 default:
-                    // console.log('DEFAULT --',c.type, c.text);
+                    console.log('DEFAULT --', c.type, c.text);
                     rtn += c.text;
                     break;
             }
@@ -296,9 +300,9 @@ export class Formatter {
                     rtn += this.handleExpr(node.children).trimEnd();
                 } else if (node.type === ',') {
                     // comma space
-                    rtn += node.text + ' ';
+                    rtn += node.text.trim() + ' ';
                 } else {
-                    rtn += node.text;
+                    rtn += node.text.trim();
                 }
             });
         });
@@ -369,7 +373,7 @@ export class Formatter {
                     // close brackets
                     rtn += c.children[c.children.length - 1].text.trim();
                     break;
-                case 'select_stmt':
+                case 'gsql_select_block':
                     rtn += this.handleSelectStmt(c.children);
                     break;
                 default:
@@ -388,14 +392,35 @@ export class Formatter {
     }
 
     handleSelectStmt(children: SyntaxNode[]): string {
-        let rtn = '';
-        children.forEach((c: SyntaxNode) => {
+        const select = children[0].children;
+        //           name                           =                             SELECT                     name
+        let rtn = select[0].text.trim() + ' ' + select[1].text.trim() + ' ' + select[2].text.trim() + ' ' + select[3].text.trim() + ' ';
+
+        const from = children[1].children;
+        //           FROM
+        rtn += from[0].text.trim() + ' ';
+        switch (from[1].type) {
+            case 'step':
+                console.log('step');
+            case 'path_pattern':
+                console.log('path pattern');
+                break;
+            default:
+                rtn += from[1].text.trim();
+                break;
+        }
+
+        children.slice(1).forEach((c: SyntaxNode) => {
             console.log('SELECT', c);
-            rtn += c.text.trim();
+            console.log(c.children);
+            console.log();
+
+            rtn += c.text.trim() + ' ';
         });
 
         return rtn;
     }
+
     getIndent(): string {
         return ' '.repeat(4 * this.indentLevel);
     }
