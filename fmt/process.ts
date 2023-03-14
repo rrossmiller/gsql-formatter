@@ -10,6 +10,7 @@ export class Preprocessor {
     sourceCode: string;
     start: number = 0;
     current: number = 0;
+    isEnd = true;
     constructor(sourceCode: string) {
         this.sourceCode = sourceCode;
     }
@@ -32,7 +33,7 @@ export class Preprocessor {
             case '/':
                 // A comment goes to the end of the line
                 if (this.findMatch('/')) {
-                    while (this.peek() !== '\n' || this.isAtEnd()) {
+                    while (this.peek() !== '\n' && !this.isAtEnd()) {
                         this.advance();
                     }
                 } else if (this.findMatch('*')) {
@@ -43,7 +44,6 @@ export class Preprocessor {
                     // consume */
                     this.advanceN(2);
                 }
-                // this.numStatements++;
                 this.addToken();
                 break;
 
@@ -81,8 +81,8 @@ export class Preprocessor {
 
         if (prevTkn !== undefined && prevEOL === '\n') {
             this.tokens.push('<_-_-_>');
-        } else if (prevTkn !== undefined && prevTkn[prevTkn.length - 1] === ';' && prevEOL !== '\n') {
-            console.log(prevTkn[prevTkn.length - 1], '-', prevEOL);
+            // } else if (prevTkn !== undefined && prevTkn[prevTkn.length - 1] === ';' && prevEOL !== '\n') {
+            //     console.log(prevTkn[prevTkn.length - 1], '-', prevEOL);
         }
     }
 
@@ -92,7 +92,17 @@ export class Preprocessor {
         }
 
         const text = this.sourceCode.slice(this.start, this.current).trim().toUpperCase();
-        if (keywords.includes(text) && (this.peek() === ' ' || this.peek() === '\n' || this.isAtEnd())) {
+        if (
+            keywords.includes(text) &&
+            (this.peek() === ' ' ||
+                this.peek() === '\n' ||
+                this.peek() === '>' ||
+                this.peek() === '<' ||
+                this.peek() === ')' ||
+                this.peek() === '(' ||
+                this.peek() === ',' ||
+                this.isAtEnd())
+        ) {
             this.tokens.push(text);
             return;
         } else if (Object.keys(accumTypes).includes(text)) {
@@ -135,6 +145,10 @@ export class Preprocessor {
     }
 
     isAtEnd(): boolean {
+        // if (this.current >= this.sourceCode.length && this.isEnd) {
+        //     this.isEnd = false;
+        //     console.log('END', this.sourceCode[this.current]);
+        // }
         return this.current >= this.sourceCode.length;
     }
 
@@ -185,7 +199,16 @@ export class Postprocessor extends Preprocessor {
         }
 
         const text = this.sourceCode.slice(this.start, this.current).trim().toUpperCase();
-        if (keywords.includes(text) && (this.peek() === ' ' || this.peek() === '\n' || this.isAtEnd())) {
+        if (
+            keywords.includes(text) &&
+            (this.peek() === ' ' ||
+                this.peek() === '\n' ||
+                this.peek() === '>' ||
+                this.peekNext() === '<' ||
+                this.peek() === ')' ||
+                this.peekNext() === '(' ||
+                this.isAtEnd())
+        ) {
             this.tokens.push(text);
             return;
         } else if (Object.keys(accumTypes).includes(text)) {

@@ -125,7 +125,8 @@ export class Formatter {
                     rtn += this.handleVSetVarDeclaration(c.children);
                     break;
                 case 'decl_stmt':
-                    !book;
+                    // !book;
+                    rtn += this.handleDeclStmt(c.children);
                     break;
                 default:
                     // console.log('DEFAULT --',c.type, c.text);
@@ -160,6 +161,83 @@ export class Formatter {
         return rtn;
     }
 
+    handleDeclStmt(children: SyntaxNode[]): string {
+        let rtn = '';
+        children.forEach((c: SyntaxNode) => {
+            switch (c.type) {
+                case 'base_decl_stmt':
+                    //                  base name             =
+                    rtn += c.children[0].text.trim() + ' ' + c.children[1].text.trim() + ' ';
+                    c.children.slice(2).forEach((node) => {
+                        if (node.type === ',') {
+                            rtn = rtn.trimEnd() + node.text.trim() + ' ';
+                        } else if (node.type === '=') {
+                            rtn += node.text.trim() + ' ';
+                        } else if (node.type === 'expr') {
+                            rtn += this.handleExpr(node.children);
+                        } else {
+                            rtn += node.text.trim() + ' ';
+                        }
+                    });
+                    break;
+                case 'accum_decl_stmt':
+                    // console.log(c.children);
+                    console.log();
+                    console.log();
+
+                    // accum type
+                    rtn += this.handleAccumType(c.children);
+                    // rtn += c.text.trim();
+                    break;
+                default:
+                    console.log(c);
+                    rtn += c.text.trim();
+                    break;
+            }
+        });
+
+        return rtn.trimEnd();
+    }
+    handleAccumType(children: SyntaxNode[]): string {
+        let rtn = '';
+        let i = 0;
+        if (children[0].childCount > 0) {
+            i = 1;
+
+            // accum type
+            children[0].children.forEach((c, i) => {
+                if (c.type === 'accum_type') {
+                    console.log('*', c, c.children);
+                    rtn += this.handleAccumType(c.children) + ' ';
+                } else if (c.type === ',' || c.type === '>' || c.type === ')') {
+                    rtn += c.text.trim() + ' ';
+                } else if (c.type === 'ASC' || c.type === 'DESC') {
+                    rtn += ' ' + c.text.trim();
+                } else if (c.type === 'base_type' && children[0].child(i + 1).type === 'name') {
+                    rtn += c.text + ' ';
+                } else {
+                    rtn += c.text.trim();
+                }
+            });
+            if (!rtn.endsWith(' ')) {
+                rtn += ' ';
+            }
+        }
+        // name, optional = and optional repeated names
+        children.slice(i).forEach((c: SyntaxNode) => {
+            console.log('-----', c);
+            if (c.type === ',') {
+                rtn += ', ';
+            } else if (c.type === '=') {
+                rtn += ' = ';
+            } else {
+                // problem with avg accum
+                rtn += c.text.trim();
+            }
+        });
+
+        return rtn;
+    }
     handleExpr(children: SyntaxNode[]): string {
         let rtn = '';
         children.forEach((c: SyntaxNode) => {
@@ -299,7 +377,7 @@ export class Formatter {
     handleSelectStmt(children: SyntaxNode[]): string {
         let rtn = '';
         children.forEach((c: SyntaxNode) => {
-            console.log(c);
+            console.log('SELECT', c);
             rtn += c.text.trim();
         });
 

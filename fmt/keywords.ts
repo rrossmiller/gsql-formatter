@@ -7,6 +7,7 @@ export const accumTypes = {
     BAGACCUM: 'BagAccum',
     HEAPACCUM: 'HeapAccum',
     ARRAYACCUM: 'ArrayAccum',
+    GROUPBYACCUM: 'GroupByAccum',
     MAPACCUM: 'MapAccum',
     AVGACCUM: 'AvgAccum',
     ORACCUM: 'OrAccum',

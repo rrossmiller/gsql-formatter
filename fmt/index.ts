@@ -14,10 +14,38 @@ console.log('preprocessing');
 const preprocessor = new Preprocessor(sourceCode);
 let srcCodeCaps = preprocessor.scan();
 
-// testing... intermediate output
+// testing... catch intermediate output
 fs.writeFileSync('test_Caps.gsql', srcCodeCaps);
 
-/* parse, and format*/
+console.log('parsing');
+const tree = parser.parse(srcCodeCaps);
+
+console.log('formatting');
+let query = formatGSQL(tree);
+
+// make accum names camel case instead of all caps
+const postprocessor = new Postprocessor(query);
+query = postprocessor.scan();
+fs.writeFileSync('test_Formatted.gsql', query); // this is the output
+
+const t = pprintTree(tree.rootNode.toString());
+let err = false;
+if (t.includes('ERR')) {
+    fs.writeFileSync('ppTree.txt', t);
+    console.log('error in ppTree.txt');
+    err = true;
+}
+if (process.env.lisp === 'yes' && !err) {
+    // console.log(tree.rootNode.toString());
+    fs.writeFileSync('ppringTree.txt', t);
+    console.log('wrote ppringTree.txt');
+}
+if (process.env.tree === 'yes') {
+    console.log('_*_*_');
+    tree.printDotGraph();
+    // todo rewrite python file splitting code here (get_tree.py)
+}
+
 function formatGSQL(tree: Tree): string {
     let rtn = '';
     const formatter = new Formatter();
@@ -48,20 +76,24 @@ function formatGSQL(tree: Tree): string {
     return rtn;
 }
 
-console.log('parsing');
-const tree = parser.parse(srcCodeCaps);
-console.log('formatting');
-let query = formatGSQL(tree);
+function pprintTree(lispTree: string): string {
+    const LB = '(';
+    const RB = ')';
+    const TAB = ' '.repeat(2);
+    let formattedClips = '';
+    let tabCount = 0;
 
-const postprocessor = new Postprocessor(query);
-query = postprocessor.scan();
-fs.writeFileSync('test_Formatted.gsql', query);
+    lispTree.split('').forEach((c) => {
+        if (c === LB) {
+            formattedClips += '\n';
+            formattedClips += TAB.repeat(tabCount);
+            tabCount++;
+        } else if (c === RB) {
+            tabCount--;
+        }
 
+        formattedClips += c;
+    });
 
-if (process.env.lisp === 'yes') {
-    console.log(tree.rootNode.toString());
-}
-if (process.env.tree === 'yes') {
-    console.log('_*_*_');
-    tree.printDotGraph();
+    return formattedClips;
 }

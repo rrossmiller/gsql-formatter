@@ -6,6 +6,8 @@ if [[ $1 = 'g' ]]; then
     python3 get_tree.py
 
     dot -Tpng tree.dot >tree.png && open tree.png
+elif [[ $1 = 't' ]]; then
+   lisp=yes npm run start 
 else
-    tree=no npm run start
+     npm run start
 fi

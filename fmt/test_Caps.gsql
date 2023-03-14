@@ -1,38 +1,25 @@
-// This does not look nice, but it's valid gsql
-CREATE
-OR REPLACE QUERY myQuery(INT i , STRING j,DATETIME d) 
-<_-_-_>
-FOR GRAPH MyGraph {
-// This is usually where I'd put the description
-// of the query over multiple lines
-TYPEDEF TUPLE <INT i,STRING j , DATETIME d> myType;
-TYPEDEF TUPLE <INT i, DATETIME j > myType2;
-TYPEDEF TUPLE <INT from_id, INT to_id, STRING to_type> Edges;
-<_-_-_>
-MAPACCUM<INT i, STRING s> @acc;
-<_-_-_>
-//     //assign
-// name = a/(@@sumacc+1);
-// name.x = a+2+@@sumacc;
-//         x = @@accm.get(asdf,@@accm.get(a,b),    v.@sumacc.size());
-src=( x);
-src=( x,y);
-<_-_-_>
-//seed set
-Src={_};
-Src={ANY};
-Src={@@glbl };
-Src={ V.*};
-Src={a,b};
-// simple_set
-Src=x;
-Src=(A UNION B);
-Src=A UNION B INTERSECT C MINUS D ;
-<_-_-_>
-// select_stmt
-// here's a comment in the query body
-Tgt = SELECT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
-WHERE t.attr1 == s.attr1
-ACCUM t.@acc += (0 -> "acc");
-<_-_-_>
-PRINT Tgt;}
+CREATE QUERY myQuery() FOR GRAPH MyGraph {
+SUMACCUM<INT> @ac1;
+SUMACCUM<FLOAT> @a, @@b;
+SUMACCUM<DOUBLE> @ac1;
+SUMACCUM<STRING> @ac1;
+MAXACCUM<INT> @ac1 = 3;
+MAXACCUM<INT> @ac1 = 3;
+MAXACCUM<FLOAT> @@ac1;
+MINACCUM<DOUBLE> @@ac1;
+AVGACCUM @ac1 = 0;
+AVGACCUM @ac1 = 1;
+AVGACCUM @ac1, @@b, @@c;
+ORACCUM @ac1;
+ANDACCUM @@ac1;
+BITWISEORACCUM @ac1;
+BITWISEANDACCUM @ac1;
+LISTACCUM<STRING> @ac1;
+SETACCUM<Name> @ac1, @@b;
+BAGACCUM<FLOAT> @ac1;
+MAPACCUM<INT, STRING> @acc;
+MAPACCUM<INT, STRING> @@acc;
+HEAPACCUM<T> (150, attr1 ASC, attr2 DESC) @@ac1;
+GROUPBYACCUM<STRING k, INT i, LISTACCUM<STRING> l, SUMACCUM<STRING> x> @ac1;
+ARRAYACCUM<X> @ac1;
+}

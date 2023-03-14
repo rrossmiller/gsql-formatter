@@ -1,36 +1,25 @@
-// This does not look nice, but it's valid gsql
-CREATE OR REPLACE QUERY myQuery(INT i, STRING j, DATETIME d)  FOR GRAPH MyGraph {
-    // This is usually where I'd put the description
-    // of the query over multiple lines
-    TYPEDEF TUPLE<INT i, STRING j, DATETIME d> myType;
-    TYPEDEF TUPLE<INT i, DATETIME j> myType2;
-    TYPEDEF TUPLE<INT from_id, INT to_id, STRING to_type> Edges;
-
-    ;
-
-    //     //assign
-    // name = a/(@@sumacc+1);
-    // name.x = a+2+@@sumacc;
-    //         x = @@accm.get(asdf,@@accm.get(a,b),    v.@sumacc.size());
-    src = (x);
-    src = (x, y);
-
-    //seed set
-    Src = {_};
-    Src = {ANY};
-    Src = {@@glbl};
-    Src = {V.*};
-    Src = {a, b};
-    // simple_set
-    Src = x;
-    Src = (A UNION B);
-    Src = A UNION B INTERSECT C MINUS D;
-
-    // select_stmt
-    // here's a comment in the query body
-    Tgt = SELECT t FROM Src:s -(_>)-V:v -(E>:e)- T:t
-WHERE t.attr1 == s.attr1
-ACCUM t.@acc += (0 -> "acc");
-
-    PRINT Tgt;
+CREATE QUERY myQuery() FOR GRAPH MyGraph {
+    SumAccum<INT> @ac1;
+    SumAccum<FLOAT> @a, @@b;
+    SumAccum<DOUBLE> @ac1;
+    SumAccum<STRING> @ac1;
+    MaxAccum<INT> @ac1 = 3;
+    MaxAccum<INT> @ac1 = 3;
+    MaxAccum<FLOAT> @@ac1;
+    MinAccum<DOUBLE> @@ac1;
+    AvgAccum @ac1 = 0;
+    AvgAccum @ac1 = 1;
+    AvgAccum @ac1, @@b, @@c;
+    OrAccum @ac1;
+    AndAccum @@ac1;
+    BitwiseOrAccum @ac1;
+    BitwiseAndAccum @ac1;
+    ListAccum<STRING> @ac1;
+    SetAccum<Name> @ac1, @@b;
+    BagAccum<FLOAT> @ac1;
+    MapAccum<INT, STRING> @acc;
+    MapAccum<INT, STRING> @@acc;
+    HeapAccum<T> (150, attr1 ASC, attr2 DESC) @@ac1;
+    GroupByAccum<STRING k, INT i, ListAccum<STRING> l, SumAccum<STRING> x> @ac1;
+    ArrayAccum<X> @ac1;
 }
