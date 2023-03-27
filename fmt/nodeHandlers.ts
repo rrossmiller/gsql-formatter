@@ -44,6 +44,7 @@ export class Formatter {
     }
 
     handleQueryBody(children: SyntaxNode[]): string {
+        let eol_comment = false;
         let rtn = children[0].text.trim() + '\n'; // start with open brackets
         this.indentLevel++;
         let middleChildren: SyntaxNode[];
@@ -66,14 +67,27 @@ export class Formatter {
                 case 'query_body_stmts':
                     node.children.forEach((child) => {
                         if (child.type === ';') {
-                            rtn += ';\n';
+                            // handle comments on the end of the line
+                            const n = middleChildren[idx + 1];
+
+                            if (n !== undefined && n.type === 'line_comment') {
+                                eol_comment = true;
+                                rtn += '; ';
+                            } else {
+                                rtn += ';\n';
+                            }
                         } else {
                             rtn += this.handleQueryBodyStmt(child.children);
                         }
                     });
                     break;
                 case 'line_comment':
-                    rtn += this.getIndent() + node.text.trim() + '\n';
+                    if (eol_comment) {
+                        rtn += node.text.trim() + '\n';
+                        eol_comment = false;
+                    } else {
+                        rtn += this.getIndent() + node.text.trim() + '\n';
+                    }
                     break;
                 case 'newline':
                     rtn += '\n';
@@ -400,23 +414,57 @@ export class Formatter {
         //           FROM
         rtn += from[0].text.trim() + ' ';
         switch (from[1].type) {
-            case 'step':
-                console.log('step');
             case 'path_pattern':
                 console.log('path pattern');
+                console.log(from[1].children);
+                break;
+            case 'step':
+                console.log('step');
+                console.log(from[1].children);
+                const step = from[1];
+                const stepSrc = step.children[0].children;
+                stepSrc.forEach((c) => {
+                    rtn += c.text.trim();
+                });
+
+                if (step.childCount > 1) {
+                    // open edge arrow
+                    const openEdgeArrow = step.children
+                        .slice(1, 3)
+                        .map((x) => {
+                            return x.text.trim();
+                        })
+                        .join('');
+                    // step_edge_set
+
+                    const stepEdgeSet = step.child(3); // todo something to the children
+
+                    // close edge arrow
+                    const closeEdgeArrow = step.children
+                        .slice(4, step.childCount - 1)
+                        .map((x) => {
+                            return x.text.trim();
+                        })
+                        .join('');
+
+                    // tgt
+                    const tgt = step.lastChild; // todo something to the children
+
+                    rtn += ' ' + openEdgeArrow + stepEdgeSet.text.trim() + closeEdgeArrow + ' ' + tgt.text.trim();
+                }
                 break;
             default:
                 rtn += from[1].text.trim();
                 break;
         }
 
-        children.slice(1).forEach((c: SyntaxNode) => {
-            console.log('SELECT', c);
-            console.log(c.children);
-            console.log();
+        // children.slice(1).forEach((c: SyntaxNode) => {
+        //     console.log('SELECT', c);
+        //     console.log(c.children);
+        //     console.log();
 
-            rtn += c.text.trim() + ' ';
-        });
+        //     rtn += c.text.trim() + ' ';
+        // });
 
         return rtn;
     }

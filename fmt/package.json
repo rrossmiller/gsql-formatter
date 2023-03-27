@@ -1,7 +1,7 @@
 {
-    "name": "tree-sitter-gsql",
+    "name": "grommet",
     "version": "0.0.1",
-    "description": "gsql grammar for tree-sitter",
+    "description": "gsql formatter",
     "main": "index.js",
     "type": "commonjs",
     "keywords": [
@@ -10,7 +10,7 @@
     ],
     "dependencies": {
         "tree-sitter": "^0.20.1",
-        "tree-sitter-gsql": "file:../../tree-sitter-gsql"
+        "tree-sitter-gsql": "file:../../../projects/tree-sitter-gsql"
     },
     "scripts": {
         "test": "tree-sitter test",

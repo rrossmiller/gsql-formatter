@@ -1,3 +1,5 @@
 CREATE OR REPLACE QUERY myQuery()  FOR GRAPH MyGraph {
-    V = SELECT v FROM FROM V : v -(E:e)-> T:t ;
+    // V    =    seleCt v     From          V  : v;
+    V = SELECT v FROM V:v -(E : e)-> T : t;
+    V = SELECT v FROM V -(E : e)-> T : t;
 }
