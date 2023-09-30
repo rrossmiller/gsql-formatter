@@ -5,4 +5,5 @@ For graph MyGraph {
 // V    =    seleCt v     From          V  : v;
 V    =    seleCt v     From          V  : v -(  E : e  )-> T :  t     ;
 V    =    seleCt v     From          V  -(  E : e  )-> T :  t     ;
+//V    =    seleCt v     From          V  -(  E  >: e> )- T :  t     ;
 }
