@@ -1,0 +1,23 @@
+{
+    "name": "grommet",
+    "version": "0.0.1",
+    "description": "gsql formatter",
+    "main": "index.js",
+    "type": "commonjs",
+    "keywords": [
+        "parsing",
+        "incremental"
+    ],
+    "dependencies": {
+        "tree-sitter": "^0.20.1",
+        "tree-sitter-gsql": "file:../../../projects/tree-sitter-gsql"
+    },
+    "scripts": {
+        "test": "tree-sitter test",
+        "start": "tsc && node dist"
+    },
+    "devDependencies": {
+        "@types/node": "^18.13.0",
+        "typescript": "^4.9.5"
+    }
+}
