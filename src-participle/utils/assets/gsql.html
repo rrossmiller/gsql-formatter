@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<style>
+body {
+	background-color: hsl(30,20%, 95%);
+}
+h1 {
+	font-family: sans-serif;
+	font-size: 1em;
+}
+</style>
+<!-- From https://github.com/tabatkins/railroad-diagrams -->
+<link rel='stylesheet' href='railroad-diagrams.css'>
+<script src='railroad-diagrams.js'></script>
+<body>
+<h1 id="GsqlRoot">GsqlRoot</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("QueryBody", {href:"#QueryBody"})))).addTo();
+</script>
+
+<h1 id="QueryBody">QueryBody</h1>
+<script>
+Diagram(Choice(0, Sequence(ZeroOrMore(NonTerminal("QueryBodyStmt", {href:"#QueryBodyStmt"}))))).addTo();
+</script>
+
+<h1 id="QueryBodyStmt">QueryBodyStmt</h1>
+<script>
+Diagram(Choice(0, Sequence(Choice(0, Sequence(NonTerminal("AssignStmt", {href:"#AssignStmt"}), Terminal(";")))), Sequence(Choice(0, Sequence(NonTerminal("VSetVarDeclStmt", {href:"#VSetVarDeclStmt"}), Terminal(";")))), Sequence(Choice(0, Sequence(NonTerminal("SelectStmt", {href:"#SelectStmt"}), Terminal(";")))))).addTo();
+</script>
+
+<h1 id="AssignStmt">AssignStmt</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("ident"), Terminal(":"), Terminal("="), NonTerminal("Expr", {href:"#Expr"})))).addTo();
+</script>
+
+<h1 id="Expr">Expr</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("string")), Sequence(NonTerminal("GlobalAccumName", {href:"#GlobalAccumName"})), Sequence(NonTerminal("LocalAccumName", {href:"#LocalAccumName"})), Sequence(NonTerminal("float")), Sequence(NonTerminal("int")))).addTo();
+</script>
+
+<h1 id="GlobalAccumName">GlobalAccumName</h1>
+<script>
+Diagram(Choice(0, Sequence(Terminal("@"), Terminal("@"), NonTerminal("ident")))).addTo();
+</script>
+
+<h1 id="LocalAccumName">LocalAccumName</h1>
+<script>
+Diagram(Choice(0, Sequence(Optional(Choice(0, Sequence(NonTerminal("ident"), Terminal(".")))), Choice(0, Sequence(Terminal("@"), NonTerminal("ident")))))).addTo();
+</script>
+
+<h1 id="VSetVarDeclStmt">VSetVarDeclStmt</h1>
+<script>
+Diagram(Choice(0, Sequence(Choice(0, Sequence(NonTerminal("ident"), Optional(Choice(0, Sequence(Terminal("("), NonTerminal("ident"), Terminal(")")))), Optional(Choice(0, Sequence(Terminal("="), NonTerminal("SeedSet", {href:"#SeedSet"}))))))), Sequence(Optional(Choice(0, Sequence(Terminal("="), NonTerminal("SimpleSet", {href:"#SimpleSet"}))))), Sequence(Optional(Choice(0, Sequence(Terminal("="), NonTerminal("SelectStmt", {href:"#SelectStmt"}))))))).addTo();
+</script>
+
+<h1 id="SeedSet">SeedSet</h1>
+<script>
+Diagram(Choice(0, Sequence(Terminal("{"), Optional(NonTerminal("Seed", {href:"#Seed"})), Terminal("}")))).addTo();
+</script>
+
+<h1 id="Seed">Seed</h1>
+<script>
+Diagram(Choice(0, Sequence(Terminal("_")), Sequence(Terminal("ANY")), Sequence(NonTerminal("GlobalAccumName", {href:"#GlobalAccumName"})), Sequence(Choice(0, Sequence(NonTerminal("ident"), Optional(Choice(0, Sequence(Terminal("."), Terminal("*"))))))))).addTo();
+</script>
+
+<h1 id="SimpleSet">SimpleSet</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("ident")))).addTo();
+</script>
+
+<h1 id="SelectStmt">SelectStmt</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("GsqlSelectClause", {href:"#GsqlSelectClause"}), NonTerminal("FromClause", {href:"#FromClause"})))).addTo();
+</script>
+
+<h1 id="GsqlSelectClause">GsqlSelectClause</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("ident"), Terminal("="), Terminal("SELECT"), NonTerminal("ident")))).addTo();
+</script>
+
+<h1 id="FromClause">FromClause</h1>
+<script>
+Diagram(Choice(0, Sequence(Terminal("FROM"), NonTerminal("StepSourceSet", {href:"#StepSourceSet"}), ZeroOrMore(NonTerminal("Step", {href:"#Step"}))))).addTo();
+</script>
+
+<h1 id="StepSourceSet">StepSourceSet</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("ident"), Optional(NonTerminal("Alias", {href:"#Alias"}))))).addTo();
+</script>
+
+<h1 id="Alias">Alias</h1>
+<script>
+Diagram(Choice(0, Sequence(Terminal(":"), NonTerminal("ident")))).addTo();
+</script>
+
+<h1 id="Step">Step</h1>
+<script>
+Diagram(Choice(0, Sequence(Choice(0, Sequence(Terminal("-"), Terminal("("), NonTerminal("StepEdgeSet", {href:"#StepEdgeSet"}), Terminal(")"), Terminal("-"), Optional(Terminal(">")))), Optional(NonTerminal("StepVertexSet", {href:"#StepVertexSet"}))))).addTo();
+</script>
+
+<h1 id="StepEdgeSet">StepEdgeSet</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("StepEdgeTypes", {href:"#StepEdgeTypes"}), Terminal(":"), NonTerminal("ident")))).addTo();
+</script>
+
+<h1 id="StepEdgeTypes">StepEdgeTypes</h1>
+<script>
+Diagram(Choice(0, Sequence(Choice(0, Sequence(NonTerminal("ident"), Terminal(">")))), Sequence(Choice(0, Sequence(Terminal("_"), Terminal(">")))), Sequence(Choice(0, Sequence(Terminal("ANY"), Terminal(">")))), Sequence(Choice(0, Sequence(Terminal("<"), NonTerminal("ident")))), Sequence(Choice(0, Sequence(Terminal("<"), Terminal("_")))), Sequence(Choice(0, Sequence(Terminal("<"), Terminal("ANY")))), Sequence(NonTerminal("ident")), Sequence(Terminal("_")), Sequence(Terminal("ANY")))).addTo();
+</script>
+
+<h1 id="StepVertexSet">StepVertexSet</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("StepVertexTypes", {href:"#StepVertexTypes"}), Optional(NonTerminal("Alias", {href:"#Alias"}))))).addTo();
+</script>
+
+<h1 id="StepVertexTypes">StepVertexTypes</h1>
+<script>
+Diagram(Choice(0, Sequence(NonTerminal("ident")), Sequence(Terminal("_")), Sequence(Terminal("ANY")))).addTo();
+</script>
+
+</body>
