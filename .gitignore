@@ -1,3 +1,7 @@
 gourmet
 .vscode
 .safe
+
+# Added by cargo
+
+/target
