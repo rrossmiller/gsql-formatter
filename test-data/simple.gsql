@@ -1,17 +1,22 @@
-	fName := "Users = SELECT s FROM Users:s"
+    create QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
+		TypeDef    TUPLE   <age INT, name String > SECRET_INFO;
+		/*
+		block comment!
+		*/
 
-
-//     create QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
-// Users = {User.*};
-// 	Users = SELECT s FROM Users:s 
-// 			             WHERE vertex_to_int(s) % total_partitions == current_partition
-// 						 And testCondition
+		// This is a comment
+    // Users = {User.*};
+Users = {User.*};
+	Users = SELECT s FROM Users:s 
+			             WHERE vertex_to_int(s) % total_partitions == current_partition
+						 And s.testCondition ==   1
+						 OR s.attr == "stringy"
             
-// 			  Accum s.@id += s.id,
-//               @@anotheraccum += 0;
+			  Accum s.@id += s.id,
+              @@anotheraccum += 0;
 
-// if (condition) then 
-// 	Users = SELECT s FROM Users:s ;
-// 	end
-// PRINT Users;
-// }
+if (condition) then 
+	Users = SELECT s FROM Users:s ;
+	end
+PRINT Users;
+}
