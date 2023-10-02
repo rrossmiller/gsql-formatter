@@ -1,18 +1,15 @@
-#! /bin/bash
-rm gourmet
-clear
-cd src
-echo building
-go build
-mv gourmet ..
-cd ..
-#echo running
+# rm gourmet
+# clear
+# cd src
+# echo building
+# go build
+# echo running
 # echo
-
-./gourmet $@
-
-
-FILE=gsql.html
-if [[ -f "$FILE" ]]; then
-    mv $FILE src/utils/assets
-fi
+# mv gourmet ..
+# cd ..
+# ./gourmet
+# echo "run this:
+#   ./gourmet -dev path/to/query.gsql"
+cd src
+clear
+go run .

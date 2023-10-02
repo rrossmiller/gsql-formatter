@@ -1,0 +1,9 @@
+CREATE
+OR REPLACE QUERY myQuery() 
+<_-_-_>
+FOR GRAPH MyGraph {
+// V    =    seleCt v     From          V  : v;
+V = SELECT v FROM V : v -( E : e )-> T : t ;
+V = SELECT v FROM V -( E : e )-> T : t ;
+//V    =    seleCt v     From          V  -(  E  >: e> )- T :  t     ;
+}
