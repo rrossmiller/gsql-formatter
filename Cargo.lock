@@ -24,7 +24,6 @@ dependencies = [
 name = "grommet"
 version = "0.1.0"
 dependencies = [
- "cc",
  "tree-sitter",
  "tree-sitter-gsql",
 ]

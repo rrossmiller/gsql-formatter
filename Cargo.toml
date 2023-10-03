@@ -9,6 +9,3 @@ edition = "2021"
 tree-sitter = "0.20.10"
 tree-sitter-gsql = {path="../tree-sitter-gsql/"}
 
-
-[build-dependencies]
-cc="*"
