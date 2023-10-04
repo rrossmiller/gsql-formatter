@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 tree-sitter = "0.20.10"
-tree-sitter-gsql = {path="../tree-sitter-gsql/"}
+tree-sitter-gsql = {git="https://github.com/Optum/tree-sitter-gsql"}
 

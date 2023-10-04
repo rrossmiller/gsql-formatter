@@ -82,6 +82,7 @@ dependencies = [
 [[package]]
 name = "tree-sitter-gsql"
 version = "0.0.1"
+source = "git+https://github.com/Optum/tree-sitter-gsql#e8206b97c4be5ff3a64c967e74e1930e8b6216c3"
 dependencies = [
  "cc",
  "tree-sitter",
