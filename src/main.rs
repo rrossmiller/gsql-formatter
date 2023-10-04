@@ -2,6 +2,7 @@ use std::fs;
 
 use tree_sitter::Point;
 use tree_sitter_gsql;
+mod pprint_tree;
 fn main() {
     // let code = "CREATE QUERY myQuery() FOR GRAPH MyGraph {}";
     let code = fs::read_to_string("test-data/complex.gsql").unwrap();
@@ -14,6 +15,7 @@ fn main() {
 
     // println!("{}",tree.root_node().to_sexp());
     println!("****");
+    pprint_tree::pprint_tree(&tree, true);
 
     let mut cursor = tree.walk();
     while cursor.goto_first_child() || cursor.goto_next_sibling() {

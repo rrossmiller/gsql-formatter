@@ -1,4 +1,7 @@
 CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
+    /*
+        this is a query description
+    */
 	TypeDef Tuple <INT from_id, INT to_id> Edges; // GNN train type
 	TypeDef Tuple <INT id, STRING t> Vert; // GNN train type
 
