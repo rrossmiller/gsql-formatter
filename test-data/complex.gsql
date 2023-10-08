@@ -1,4 +1,4 @@
-create QUerY graph2gnn_train(INT current_partition=0,InT total_partitions= 100) FOR GRAPH TwitchEgos SYNTaX V2{
+create QUerY graph2gnn_train(INT current_partition=0,InT total_partitions= 100) FOR GRAPH TwitchEgos {
     /* 
      * this is a query description
     */

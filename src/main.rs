@@ -5,19 +5,18 @@ use tree_sitter::Tree;
 use tree_sitter_gsql;
 
 use crate::node_handlers::create_query::fmt_create_query;
+mod keywords;
 mod node_handlers;
 mod pprint_tree;
 mod preprocess;
 mod utils;
-mod keywords;
 
 fn main() {
     // load the query
-    // let query = fs::read_to_string("test-data/simple.gsql").unwrap();
-    let query = fs::read_to_string("test-data/complex.gsql").unwrap();
-    // fix any caps errors so the case-sensitive parser works
+    let query = fs::read_to_string("test-data/simple.gsql").unwrap();
+    // let query = fs::read_to_string("test-data/complex.gsql").unwrap();
 
-    println!("{}", query);
+    // fix any caps errors so the case-sensitive parser works
     let mut preprocessor = Processor::new(&query);
     let query = match preprocessor.preprocess() {
         Ok(v) => v,
@@ -35,8 +34,7 @@ fn main() {
     println!("****");
     let mut file = fs::File::create("fmt1.gsql").unwrap();
     write!(file, "{}", query).unwrap();
-    panic!("stop");
-    let query = query;
+    // panic!("stop");
 
     let mut parser = tree_sitter::Parser::new();
     parser

@@ -6,3 +6,4 @@ tree.txt
 # Added by cargo
 
 /target
+fmt*.gsql

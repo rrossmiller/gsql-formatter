@@ -116,9 +116,15 @@ impl Processor {
                 || self.peek() == ','
                 || self.is_at_end())
         {
+            // if text == "TYPEDEF" {
+            //     self.tokens.push("TypeDef".to_string())
+            // } else if text == "TUPLE" {
+            //     self.tokens.push("Tuple".to_string())
+            // } else {
             self.tokens.push(text);
+            // }
             return true;
-        } else if let Some(v) = contains_accum_type(text) {
+        } else if let Some(v) = contains_accum_type(text, true) {
             self.tokens.push(v);
             return true;
         }

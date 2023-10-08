@@ -15,9 +15,12 @@ pub const ACCUM_TYPES: [(&str, &str); 15] = [
     ("BITWISEORACCUM", "BitwiseOrAccum"),
     ("BITWISEANDACCUM", "BitwiseAndAccum"),
 ];
-pub fn contains_accum_type(key: String) -> Option<String> {
+pub fn contains_accum_type(key: String, return_key: bool) -> Option<String> {
     for (k, v) in ACCUM_TYPES.iter() {
         if key == *k {
+            if return_key {
+                return Some(k.to_string());
+            }
             return Some(v.to_string());
         }
     }
@@ -25,7 +28,7 @@ pub fn contains_accum_type(key: String) -> Option<String> {
 }
 //
 // export const keywords = [
-pub static KEYWORDS: [&str; 274] = [
+pub static KEYWORDS: [&str; 272] = [
     "ACCUM",
     "ADD",
     "ALL",
@@ -292,8 +295,8 @@ pub static KEYWORDS: [&str; 274] = [
     "TO_INT",
     "UNDIRECTED",
     "USE",
-    "USER",
-    "USERS",
+    // "USER",
+    // "USERS",
     "VAL",
     "VECTOR",
     "VERSION",
