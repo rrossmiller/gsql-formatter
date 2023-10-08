@@ -1,49 +1,94 @@
+use preprocess::Processor;
 use std::fs;
-
-use tree_sitter::Point;
+use std::io::Write;
+use tree_sitter::Tree;
 use tree_sitter_gsql;
+
+use crate::node_handlers::create_query::fmt_create_query;
+mod node_handlers;
 mod pprint_tree;
+mod preprocess;
+mod utils;
+mod keywords;
+
 fn main() {
-    // let code = "CREATE QUERY myQuery() FOR GRAPH MyGraph {}";
-    let code = fs::read_to_string("test-data/complex.gsql").unwrap();
-    let code_rows: Vec<String> = code.lines().map(|x| x.to_string()).collect();
+    // load the query
+    // let query = fs::read_to_string("test-data/simple.gsql").unwrap();
+    let query = fs::read_to_string("test-data/complex.gsql").unwrap();
+    // fix any caps errors so the case-sensitive parser works
+
+    println!("{}", query);
+    let mut preprocessor = Processor::new(&query);
+    let query = match preprocessor.preprocess() {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("Error: {:#?}", e);
+            std::process::exit(1)
+        }
+    };
+
+    println!("****");
+    println!("");
+    println!("{}", query);
+    println!("");
+    println!("");
+    println!("****");
+    let mut file = fs::File::create("fmt1.gsql").unwrap();
+    write!(file, "{}", query).unwrap();
+    panic!("stop");
+    let query = query;
+
     let mut parser = tree_sitter::Parser::new();
     parser
         .set_language(tree_sitter_gsql::language())
         .expect("Error loading gsql grammar");
-    let tree = parser.parse(code, None).unwrap();
-
-    // println!("{}",tree.root_node().to_sexp());
-    println!("****");
+    let tree = parser
+        .parse(&query, None)
+        .expect("There was an error parsing the query");
+    let mut formatter = Formatter {};
     pprint_tree::pprint_tree(&tree, true);
-
-    let mut cursor = tree.walk();
-    while cursor.goto_first_child() || cursor.goto_next_sibling() {
-        println!("{:?}: {}", cursor.node(), cursor.node().kind());
-        let sp = cursor.node().start_position();
-        let ep = cursor.node().end_position();
-        let txt = get_text(&code_rows, sp, ep);
-        println!("{:?}", txt);
-        println!("");
-
-        // cursor.goto_first_child();
-    }
+    formatter.fmt(tree, query);
+    // t(query);
 }
 
-fn get_text(code_rows: &Vec<String>, start_point: Point, end_point: Point) -> String {
-    if start_point.row == end_point.row {
-        let txt = &code_rows[start_point.row][start_point.column..end_point.column];
-        return txt.to_string();
-    }
-    let mut txt = "".to_string();
-    for r in start_point.row..end_point.row {
-        if r == end_point.row {
-            txt.push_str(&code_rows[r][0..end_point.column]);
-        } else if r == start_point.row {
-            txt.push_str(&code_rows[r][start_point.column..code_rows[r].len()]);
-        } else {
-            txt.push_str(&code_rows[r][0..code_rows[r].len()]);
+struct Formatter {
+    // indent_level: i8,
+}
+impl Formatter {
+    fn fmt(&mut self, ast: Tree, src: String) {
+        let mut cursor = ast.walk();
+        debug_assert_eq!(cursor.node().kind(), "gsql");
+        cursor.goto_first_child();
+
+        match cursor.node().kind() {
+            "create_query" => fmt_create_query(cursor.node(), src),
+            _ => println!("done"),
         }
     }
-    txt
 }
+
+// fn t(code: &String) {
+//     // let code = "CREATE QUERY myQuery() FOR GRAPH MyGraph {}";
+//     // let code_rows: Vec<String> = code.lines().map(|x| x.to_string()).collect();
+//     let mut parser = tree_sitter::Parser::new();
+//     parser
+//         .set_language(tree_sitter_gsql::language())
+//         .expect("Error loading gsql grammar");
+//     let tree = parser.parse(code, None).unwrap();
+//
+//     // println!("{}",tree.root_node().to_sexp());
+//     println!("****");
+//     pprint_tree::pprint_tree(&tree, true);
+//
+//     let mut cursor = tree.walk();
+//     while cursor.goto_first_child() || cursor.goto_next_sibling() {
+//         println!("{:?}: {}", cursor.node(), cursor.node().kind());
+//         let sp = cursor.node().start_position();
+//         let ep = cursor.node().end_position();
+//         let txt = get_text(&code, sp, ep);
+//         println!("{:?}", txt);
+//         println!("");
+//
+//         // cursor.goto_first_child();
+//     }
+// }
