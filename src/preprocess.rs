@@ -62,7 +62,7 @@ impl Processor {
                 self.add_token();
             }
             _ => {
-                if c.is_alphabetic() {
+                if c.is_alphabetic() || c == '_' {
                     self.identifier();
                 } else {
                     self.add_token();

@@ -1,4 +1,4 @@
-create QUerY graph2gnn_train(INT current_partition=0,InT total_partitions= 100) FOR GRAPH TwitchEgos {
+create QUerY graph2gnn_train(INT current_partition=0,InT total_partitions= 100) FOR GRAPH TwitchEgos Syntax v2{
     /* 
      * this is a query description
     */
@@ -22,7 +22,8 @@ create QUerY graph2gnn_train(INT current_partition=0,InT total_partitions= 100) 
             tgt.@id += tgt.id,
                 // gnn stuff
                 @@edges += (s.id-> Edges(s.id, u.id)),
-                @@edges += (s.id -> Edges(u.id, tgt.id)),
+                @@edges += (s.id -> Edges(u.id, tgt.id));
+
     PRINT @@edges as _edges; 
     PRINT Users;
 }

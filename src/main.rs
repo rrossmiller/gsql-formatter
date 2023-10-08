@@ -13,8 +13,8 @@ mod utils;
 
 fn main() {
     // load the query
-    let query = fs::read_to_string("test-data/simple.gsql").unwrap();
-    // let query = fs::read_to_string("test-data/complex.gsql").unwrap();
+    // let query = fs::read_to_string("test-data/simple.gsql").unwrap();
+    let query = fs::read_to_string("test-data/complex.gsql").unwrap();
 
     // fix any caps errors so the case-sensitive parser works
     let mut preprocessor = Processor::new(&query);
