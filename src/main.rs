@@ -13,8 +13,8 @@ mod utils;
 
 fn main() {
     // load the query
-    // let query = fs::read_to_string("test-data/simple.gsql").unwrap();
-    let query = fs::read_to_string("test-data/complex.gsql").unwrap();
+    let query = fs::read_to_string("test-data/simple.gsql").unwrap();
+    // let query = fs::read_to_string("test-data/complex.gsql").unwrap();
 
     // fix any caps errors so the case-sensitive parser works
     let mut preprocessor = Processor::new(&query);
@@ -34,8 +34,8 @@ fn main() {
     println!("****");
     let mut file = fs::File::create("fmt1.gsql").unwrap();
     write!(file, "{}", query).unwrap();
-    // panic!("stop");
 
+    // parse the query
     let mut parser = tree_sitter::Parser::new();
     parser
         .set_language(tree_sitter_gsql::language())
@@ -43,7 +43,10 @@ fn main() {
     let tree = parser
         .parse(&query, None)
         .expect("There was an error parsing the query");
-    let mut formatter = Formatter {};
+
+    // format the query
+    start formatting
+    let mut formatter = Formatter::new();
     pprint_tree::pprint_tree(&tree, true);
     formatter.fmt(tree, query);
     // t(query);
@@ -53,6 +56,9 @@ struct Formatter {
     // indent_level: i8,
 }
 impl Formatter {
+    pub fn new() -> Formatter {
+        Formatter {}
+    }
     fn fmt(&mut self, ast: Tree, src: String) {
         let mut cursor = ast.walk();
         debug_assert_eq!(cursor.node().kind(), "gsql");
