@@ -1,14 +1,15 @@
-use preprocess::Processor;
+use process::Processor;
 use std::fs;
 use std::io::Write;
 use tree_sitter::Tree;
 use tree_sitter_gsql;
 
 use crate::node_handlers::create_query::fmt_create_query;
+use crate::utils::get_text;
 mod keywords;
 mod node_handlers;
 mod pprint_tree;
-mod preprocess;
+mod process;
 mod utils;
 
 fn main() {
@@ -17,8 +18,8 @@ fn main() {
     // let query = fs::read_to_string("test-data/complex.gsql").unwrap();
 
     // fix any caps errors so the case-sensitive parser works
-    let mut preprocessor = Processor::new(&query);
-    let query = match preprocessor.preprocess() {
+    let mut processor = Processor::new(&query, true);
+    let query = match processor.process() {
         Ok(v) => v,
         Err(e) => {
             eprintln!("Error: {:#?}", e);
@@ -26,49 +27,63 @@ fn main() {
         }
     };
 
-    println!("****");
-    println!("");
-    println!("{}", query);
-    println!("");
-    println!("");
-    println!("****");
     let mut file = fs::File::create("fmt1.gsql").unwrap();
     write!(file, "{}", query).unwrap();
 
-    // parse the query
     let mut parser = tree_sitter::Parser::new();
     parser
         .set_language(tree_sitter_gsql::language())
         .expect("Error loading gsql grammar");
+
+    // parse the query
     let tree = parser
         .parse(&query, None)
         .expect("There was an error parsing the query");
 
     // format the query
-    start formatting
-    let mut formatter = Formatter::new();
     pprint_tree::pprint_tree(&tree, true);
-    formatter.fmt(tree, query);
-    // t(query);
-}
+    let query = fmt(tree, query);
 
-struct Formatter {
-    // indent_level: i8,
-}
-impl Formatter {
-    pub fn new() -> Formatter {
-        Formatter {}
-    }
-    fn fmt(&mut self, ast: Tree, src: String) {
-        let mut cursor = ast.walk();
-        debug_assert_eq!(cursor.node().kind(), "gsql");
-        cursor.goto_first_child();
+    // post process to make accums ThisCase instead of all caps
+    let mut processor = Processor::new(&query, false);
+    let query = match processor.process() {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("Error: {:#?}", e);
+            std::process::exit(1)
+        }
+    };
 
+    // write fully-formated query
+    let mut file = fs::File::create("fmt2.gsql").unwrap();
+    write!(file, "{}", query).unwrap();
+}
+fn fmt(ast: Tree, src: String) -> String {
+    let mut cursor = ast.walk();
+    debug_assert_eq!(cursor.node().kind(), "gsql");
+
+    // go to the query
+    cursor.goto_first_child();
+    let mut query = String::new();
+    loop {
         match cursor.node().kind() {
-            "create_query" => fmt_create_query(cursor.node(), src),
-            _ => println!("done"),
+            "create_query" => {
+                cursor.goto_first_child();
+                query.push_str(&fmt_create_query(&src, &mut cursor));
+            }
+            _ => {
+                println!("TODO: {}", cursor.node().kind());
+                println!("query body fmt function will keep track of indent level");
+                query.push_str(&get_text(&src, cursor.node()))
+            }
+        };
+
+        if !cursor.goto_next_sibling() {
+            break;
         }
     }
+
+    query
 }
 
 // fn t(code: &String) {

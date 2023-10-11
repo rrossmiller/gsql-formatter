@@ -1,6 +1,8 @@
-use tree_sitter::Point;
+use tree_sitter::Node;
 
-pub fn get_text(code: &String, start_point: Point, end_point: Point) -> String {
+pub fn get_text(code: &String, node: Node) -> String {
+    let start_point = node.start_position();
+    let end_point = node.end_position();
     let code_rows: Vec<String> = code.lines().map(|x| x.to_string()).collect();
     if start_point.row == end_point.row {
         let txt = &code_rows[start_point.row][start_point.column..end_point.column];

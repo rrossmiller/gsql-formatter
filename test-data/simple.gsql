@@ -1,11 +1,13 @@
 
-creAte QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
+creAte 
+or replace distRibuted QUERY TwitchEgosData( inT      current_partition =   0 , INT total_partitions=100)FOR GRAPH   TwitchEgos SYNTAX V2{
 	/*
 	* block comment
 	/ block comment
 	*/
 
 listAccum<String> @s;
+Maxaccum<float> @m;
 
 
 	    //comment

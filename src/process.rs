@@ -9,18 +9,20 @@ pub struct Processor {
     src_chars: Vec<char>,
     current: usize,
     start: usize,
+    pre: bool,
 }
 impl Processor {
-    pub fn new(src: &String) -> Processor {
+    pub fn new(src: &String, pre: bool) -> Processor {
         Processor {
             tokens: Vec::new(),
             src_chars: src.chars().collect(),
             current: 0,
             start: 0,
+            pre,
         }
     }
 
-    pub fn preprocess(&mut self) -> Result<String, String> {
+    pub fn process(&mut self) -> Result<String, String> {
         // run the scanner
         while !self.is_at_end() {
             self.start = self.current;
@@ -124,7 +126,7 @@ impl Processor {
             self.tokens.push(text);
             // }
             return true;
-        } else if let Some(v) = contains_accum_type(text, true) {
+        } else if let Some(v) = contains_accum_type(text, self.pre) {
             self.tokens.push(v);
             return true;
         }
