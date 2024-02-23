@@ -1,6 +1,6 @@
 
 creAte 
-or replace distRibuted QUERY TwitchEgosData( inT      current_partition =   0 , INT total_partitions=100)FOR GRAPH   TwitchEgos SYNTAX V2{
+or replace distRibuted QUERY TwitchEgosData( inT      current_partition =   0 , INT total_partitions=100) FOR GRAPH   TwitchEgos SYNTAX V2{
 	/*
 	* block comment line 1
 	/ block comment line 2
