@@ -2,8 +2,8 @@
 creAte 
 or replace distRibuted QUERY TwitchEgosData( inT      current_partition =   0 , INT total_partitions=100)FOR GRAPH   TwitchEgos SYNTAX V2{
 	/*
-	* block comment
-	/ block comment
+	* block comment line 1
+	/ block comment line 2
 	*/
 
 listAccum<String> @s;
@@ -21,6 +21,6 @@ Users = {User.*};
 
 if (condition) then 
 	Users = SELECT s FROM Users:s ;
-	end
+	end;
 PRINT Users;
 }
