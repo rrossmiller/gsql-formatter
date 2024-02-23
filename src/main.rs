@@ -5,6 +5,7 @@ use tree_sitter::Tree;
 use tree_sitter_gsql;
 
 use crate::node_handlers::create_query::fmt_create_query;
+use crate::node_handlers::query_body;
 use crate::utils::get_text;
 mod keywords;
 mod node_handlers;
@@ -58,6 +59,7 @@ fn main() {
     let mut file = fs::File::create("fmt2.gsql").unwrap();
     write!(file, "{}", query).unwrap();
 }
+
 fn fmt(ast: Tree, src: String) -> String {
     let mut cursor = ast.walk();
     debug_assert_eq!(cursor.node().kind(), "gsql");
@@ -71,9 +73,11 @@ fn fmt(ast: Tree, src: String) -> String {
                 cursor.goto_first_child();
                 query.push_str(&fmt_create_query(&src, &mut cursor));
             }
+            "query_body" => {
+                query.push_str(&query_body::fmt_query_body(&src, &mut cursor));
+            }
             _ => {
-                println!("TODO: {}", cursor.node().kind());
-                println!("query body fmt function will keep track of indent level");
+                // default
                 query.push_str(&get_text(&src, cursor.node()))
             }
         };
