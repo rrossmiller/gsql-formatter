@@ -12,20 +12,25 @@ func QueryBody(node *sitter.Node, src []byte) string {
 	fmt.Println(node.ChildCount())
 	fmt.Println()
 
-	if node.Child(0).Type() == "{" {
-		sb.WriteString("{\n")
-	}
-	fmt.Println(node.Child(0).Type())
-	for i := 1; i < int(node.ChildCount()); i++ {
+	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		fmt.Println(child.Type())
+		fmt.Println("QB:", child.Type())
 		var txt string
 		switch child.Type() {
+		case "{":
+			txt = "{\n"
+			break
 		case "typedef":
 			txt = GetNodeText(child, src)
+			txt += "\n"
+			// separate typedefs
+			if child.NextSibling().Type() != "typedef" {
+				txt += "\n"
+			}
 			break
 		case "query_body_stmts":
 			txt = GetNodeText(child, src)
+			txt += "\n"
 			break
 		case "block_comment":
 			txt = BlockComment(child, src, 0)

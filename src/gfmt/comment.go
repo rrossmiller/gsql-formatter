@@ -1,26 +1,30 @@
 package gfmt
 
 import (
-	"fmt"
 	sitter "github.com/smacker/go-tree-sitter"
-	"os"
 	"strings"
 )
 
 func BlockComment(node *sitter.Node, src []byte, indentLevel uint) string {
 	var sb strings.Builder
-	txt := GetNodeText(node, src)
+	defer sb.Reset()
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		fmt.Println(child)
+		txt := GetNodeText(child, src)
+		if child.Type() != "/*" && child.Type() != "*/" {
+			sb.WriteString("    ") //TODO: configureable space indenting
+		}
+		sb.WriteString(txt)
+		sb.WriteString("\n")
 	}
-	os.Exit(0)
-	sb.WriteString(txt)
 	return sb.String()
 }
 
 func LineComment(node *sitter.Node, src []byte, indentLevel uint) string {
 	var sb strings.Builder
-
+	defer sb.Reset()
+	txt := GetNodeText(node, src)
+	sb.WriteString(txt)
+	sb.WriteString("\n")
 	return sb.String()
 }
