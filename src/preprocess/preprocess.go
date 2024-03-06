@@ -1,7 +1,7 @@
 package preprocess
 
 import (
-	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -12,9 +12,19 @@ func Preprocess(b []byte) ([]byte, error) {
 
 	for _, w := range src {
 		w = strings.TrimSpace(w)
-		w = strings.ToLower(w)
-		if v, prs := words[w]; prs {
-			w = v
+		w = strings.ReplaceAll(w, "\n", "")
+	}
+	for _, w := range src {
+		for _, k := range keywordRegexes {
+			r, err := regexp.Compile(k)
+			if err != nil {
+				return nil, err
+			}
+			if match := r.FindString(w); len(match) > 0 {
+				v := words[strings.ToLower(match)]
+				w = strings.ReplaceAll(w, match, v)
+			}
+
 		}
 		w += " "
 		_, err := sb.WriteString(w)
@@ -22,8 +32,6 @@ func Preprocess(b []byte) ([]byte, error) {
 			return []byte(sb.String()), err
 		}
 	}
-
-	fmt.Println(sb.String())
 
 	return []byte(sb.String()), nil
 }
