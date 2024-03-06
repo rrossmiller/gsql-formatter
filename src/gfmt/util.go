@@ -7,7 +7,6 @@ import (
 )
 
 func GetNodeText(node *sitter.Node, src []byte) string {
-
 	stb := node.StartByte()
 	eb := node.EndByte()
 	txt := string(src[stb:eb])

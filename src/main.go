@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"grommet/gfmt"
 	"grommet/preprocess"
@@ -12,18 +13,10 @@ import (
 	sitter "github.com/smacker/go-tree-sitter"
 )
 
-type treeError struct {
-	msg string
-}
-
-func (e *treeError) Error() string {
-	return e.msg
-}
-
 func main() {
 	fmt.Println("*******")
-	// pth := "../test-data/simple.gsql"
-	pth := "../test-data/hello.gsql"
+	pth := "../test-data/simple.gsql"
+	// pth := "../test-data/hello.gsql"
 	if len(os.Args) > 1 {
 		pth = os.Args[1]
 	}
@@ -55,25 +48,32 @@ func format(sourceCode []byte) (string, error) {
 	fmt.Println(root)
 	fmt.Println("error:", root.HasError())
 	if root.HasError() {
-		return "", &treeError{msg: "there was an error in the syntax tree"}
+		errPoint := findErr(root)
+		return "", errors.New(fmt.Sprintf("There's an error at row: %d col: %d", errPoint.Row+1, errPoint.Column+1))
 	}
 
 	var sb strings.Builder
 	for i := 0; i < int(root.ChildCount()); i++ {
 		child := root.Child(i)
-		fmt.Println(child.Type())
+		fmt.Println("root children:", child.Type())
 
+		var txt string
 		switch child.Type() {
 		case "create_query":
-			s := gfmt.CreateQuery(child, sourceCode)
-			sb.WriteString(s)
+			txt = gfmt.CreateQuery(child, sourceCode)
 			break
 		case "interpret_query":
 			panic("not done yet")
 		case "query_body":
-			txt := gfmt.QueryBody(child, sourceCode)
-			sb.WriteString(txt)
+			txt = gfmt.QueryBody(child, sourceCode)
+		case "block_comment":
+			txt = gfmt.BlockComment(child, sourceCode, 0)
+			break
+		case "line_comment":
+			txt = gfmt.LineComment(child, sourceCode, 0)
+			break
 		}
+		sb.WriteString(txt)
 	}
 
 	return sb.String(), nil
@@ -90,4 +90,17 @@ func readFile(pth string) []byte {
 func writeFormattedQuery(q, pth string) error {
 	err := os.WriteFile(pth, []byte(q), 0644)
 	return err
+}
+
+func findErr(node *sitter.Node) sitter.Point {
+	for i := 0; i < int(node.ChildCount()); i++ {
+		child := node.Child(i)
+		if child.IsError() {
+			return child.StartPoint()
+		}
+		if child.HasError() {
+			return findErr(child)
+		}
+	}
+	return sitter.Point{}
 }
