@@ -21,9 +21,10 @@ func QueryBody(node *sitter.Node, src []byte) string {
 			txt = "{\n"
 			break
 		case "typedef":
-			txt = GetNodeText(child, src)
-			txt += "\n"
-			// separate typedefs
+			txt = typeDef(child, src)
+			// txt = GetNodeText(child, src)
+			// txt += "\n"
+			// separate typedefs from rest of query
 			if child.NextSibling().Type() != "typedef" {
 				txt += "\n"
 			}
@@ -43,3 +44,51 @@ func QueryBody(node *sitter.Node, src []byte) string {
 	}
 	return sb.String()
 }
+
+func typeDef(node *sitter.Node, src []byte) string {
+	var sb strings.Builder
+
+	for i := 0; i < int(node.ChildCount()); i++ {
+		child := node.Child(i)
+		var txt string
+		if child.Type() == "tuple_fields" {
+			var fields strings.Builder
+			for i := 0; i < int(child.ChildCount()); i++ {
+				fieldNode := child.Child(i)
+				if fieldNode.Type() == "," {
+					fields.WriteString(", ")
+				} else {
+					fieldTxt := tupleField(fieldNode, src)
+					fields.WriteString(fieldTxt)
+				}
+			}
+			txt = fields.String()
+		} else {
+			// get type or field name and switch on that
+			switch child.Type() {
+			case "<", "name":
+				txt = GetNodeText(child, src)
+				break
+			default:
+				txt = GetNodeText(child, src) + " "
+				break
+			}
+		}
+		sb.WriteString(txt)
+	}
+	return sb.String()
+}
+
+func tupleField(node *sitter.Node, src []byte) string {
+	var sb strings.Builder
+	for i := 0; i < int(node.ChildCount()); i++ {
+		child := node.Child(i)
+		sb.WriteString(GetNodeText(child, src))
+		if i < int(node.ChildCount())-1 {
+			sb.WriteString(" ")
+		}
+	}
+
+	return sb.String()
+}
+

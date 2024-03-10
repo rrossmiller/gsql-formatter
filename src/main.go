@@ -66,6 +66,7 @@ func format(sourceCode []byte) (string, error) {
 			panic("not done yet")
 		case "query_body":
 			txt = gfmt.QueryBody(child, sourceCode)
+			break
 		case "block_comment":
 			txt = gfmt.BlockComment(child, sourceCode, 0)
 			break
@@ -81,7 +82,6 @@ func format(sourceCode []byte) (string, error) {
 
 func readFile(pth string) []byte {
 	b, err := os.ReadFile(pth)
-	// b, err := os.ReadFile("../test-data/hello.gsql")
 	if err != nil {
 		panic(err)
 	}

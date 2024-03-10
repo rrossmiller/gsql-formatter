@@ -53,7 +53,6 @@ func queryParam(node *sitter.Node, src []byte) string {
 			txt := setParam(child, src)
 			sb.WriteString(txt)
 		} else {
-
 			txt := GetNodeText(child, src)
 			if i < int(node.ChildCount())-1 {
 				txt += " "

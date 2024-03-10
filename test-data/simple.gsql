@@ -1,13 +1,17 @@
 
 creAte 
-or replace distRibuted QUERY TwitchEgosData( inT      current_partition =   0 , INT total_partitions=100) FOR GRAPH   TwitchEgos SYNTAX V2{
+or replace distRibuted QUERY TwitchEgosData( inT  
+current_partition =   0 , INT total_partitions=100, set <string >   myList) FOR GRAPH   TwitchEgos SYNTAX V2{
     /*
  block comment line 1
 	 block comment line 2
 	*/
 
        //line comment
-typedef tuple<>a;
+typedef   TUPlE<VeRTeX indv      , InT age, string name, float x , datetime day, uint 
+
+u>indv_age     ;
+
 
 sumaccum<int> @a;
 /*
