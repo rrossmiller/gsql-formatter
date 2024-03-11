@@ -1,8 +1,10 @@
 package gfmt
 
 import (
-	sitter "github.com/smacker/go-tree-sitter"
+	"grommet/gfmt/util"
 	"strings"
+
+	sitter "github.com/smacker/go-tree-sitter"
 )
 
 func CreateQuery(node *sitter.Node, src []byte) string {
@@ -13,7 +15,7 @@ func CreateQuery(node *sitter.Node, src []byte) string {
 		if child.Type() == "parameter_list" {
 			txt = parameterList(child, src)
 		} else {
-			txt = GetNodeText(child, src)
+			txt = util.GetNodeText(child, src)
 		}
 		sb.WriteString(txt + " ")
 	}
@@ -53,7 +55,7 @@ func queryParam(node *sitter.Node, src []byte) string {
 			txt := setParam(child, src)
 			sb.WriteString(txt)
 		} else {
-			txt := GetNodeText(child, src)
+			txt := util.GetNodeText(child, src)
 			if i < int(node.ChildCount())-1 {
 				txt += " "
 			}
@@ -68,7 +70,7 @@ func setParam(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		sb.WriteString(GetNodeText(child, src))
+		sb.WriteString(util.GetNodeText(child, src))
 	}
 
 	sb.WriteString(" ")

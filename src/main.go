@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"grommet/gfmt"
+	"grommet/gfmt/util"
 	"grommet/preprocess"
 	gsql "grommet/sitterLang"
 	"os"
@@ -16,7 +17,6 @@ import (
 func main() {
 	fmt.Println("*******")
 	pth := "../test-data/simple.gsql"
-	// pth := "../test-data/hello.gsql"
 	if len(os.Args) > 1 {
 		pth = os.Args[1]
 	}
@@ -26,6 +26,12 @@ func main() {
 		panic(err)
 	}
 	writeFormattedQuery(string(src), "../test-data/pre.gsql")
+
+	err = util.GetConfig()
+	if err != nil {
+		panic(err)
+	}
+
 	formatted, err := format(src)
 	if err != nil {
 		panic(err)

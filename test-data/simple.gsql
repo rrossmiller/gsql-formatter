@@ -2,32 +2,10 @@
 creAte 
 or replace distRibuted QUERY TwitchEgosData( inT  
 current_partition =   0 , INT total_partitions=100, set <string >   myList) FOR GRAPH   TwitchEgos SYNTAX V2{
-    /*
- block comment line 1
-	 block comment line 2
-	*/
-
-       //line comment
-typedef   TUPlE<VeRTeX indv      , InT age, string name, float x , datetime day, uint 
-
-u>indv_age     ;
 
 
-sumaccum<int> @a;
-/*
-Maxaccum<float> @m;
-	    //comment
-Users = {User.*};
-	Users = SELECT s FROM Users:s 
-			             WHERE vertex_to_int(s) % total_partitions == current_partition
-						 And 'testCondition'
-            
-			  Accum s.@id += s.id,
-              @@anotheraccum += 0;
+sumaccum<
+int     > 
+@a   ;
 
-if (condition) then 
-	Users = SELECT s FROM Users:s ;
-	end;
-PRINT Users;
-*/
 }

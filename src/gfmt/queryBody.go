@@ -2,8 +2,10 @@ package gfmt
 
 import (
 	"fmt"
-	sitter "github.com/smacker/go-tree-sitter"
+	querybodystmts "grommet/gfmt/queryBodyStmts"
 	"strings"
+
+	sitter "github.com/smacker/go-tree-sitter"
 )
 
 func QueryBody(node *sitter.Node, src []byte) string {
@@ -20,75 +22,29 @@ func QueryBody(node *sitter.Node, src []byte) string {
 		case "{":
 			txt = "{\n"
 			break
+		case "}":
+			txt = "}\n"
+			break
 		case "typedef":
-			txt = typeDef(child, src)
-			// txt = GetNodeText(child, src)
-			// txt += "\n"
+			txt = TypeDef(child, src)
 			// separate typedefs from rest of query
 			if child.NextSibling().Type() != "typedef" {
 				txt += "\n"
 			}
 			break
-		case "query_body_stmts":
-			txt = GetNodeText(child, src)
-			txt += "\n"
+		case "query_body_stmt":
+			txt = querybodystmts.QueryBodyStmts(child, src)
+			// txt = GetNodeText(child, src)
+			// txt += "\n"
 			break
 		case "block_comment":
-			txt = BlockComment(child, src, 0)
+			txt = BlockComment(child, src, 1)
 			break
 		case "line_comment":
-			txt = LineComment(child, src, 0)
+			txt = LineComment(child, src, 1)
 			break
-		}
-		sb.WriteString(txt + " ")
-	}
-	return sb.String()
-}
-
-func typeDef(node *sitter.Node, src []byte) string {
-	var sb strings.Builder
-
-	for i := 0; i < int(node.ChildCount()); i++ {
-		child := node.Child(i)
-		var txt string
-		if child.Type() == "tuple_fields" {
-			var fields strings.Builder
-			for i := 0; i < int(child.ChildCount()); i++ {
-				fieldNode := child.Child(i)
-				if fieldNode.Type() == "," {
-					fields.WriteString(", ")
-				} else {
-					fieldTxt := tupleField(fieldNode, src)
-					fields.WriteString(fieldTxt)
-				}
-			}
-			txt = fields.String()
-		} else {
-			// get type or field name and switch on that
-			switch child.Type() {
-			case "<", "name":
-				txt = GetNodeText(child, src)
-				break
-			default:
-				txt = GetNodeText(child, src) + " "
-				break
-			}
 		}
 		sb.WriteString(txt)
 	}
 	return sb.String()
 }
-
-func tupleField(node *sitter.Node, src []byte) string {
-	var sb strings.Builder
-	for i := 0; i < int(node.ChildCount()); i++ {
-		child := node.Child(i)
-		sb.WriteString(GetNodeText(child, src))
-		if i < int(node.ChildCount())-1 {
-			sb.WriteString(" ")
-		}
-	}
-
-	return sb.String()
-}
-
