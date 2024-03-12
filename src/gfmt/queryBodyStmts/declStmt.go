@@ -1,7 +1,6 @@
 package querybodystmts
 
 import (
-	"fmt"
 	"grommet/gfmt/util"
 	"strings"
 
@@ -10,13 +9,8 @@ import (
 
 func declStmt(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
-	fmt.Println()
-	fmt.Println("****")
-	fmt.Println(node)
-	fmt.Println(node.ChildCount())
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		fmt.Println(child.Type(), child.ChildCount())
 		var txt string
 		switch child.Type() {
 		case "base_decl_stmt":
@@ -30,8 +24,6 @@ func declStmt(node *sitter.Node, src []byte) string {
 		sb.WriteString(util.GetIndent(1))
 		sb.WriteString(txt)
 	}
-	fmt.Println("****")
-	fmt.Println()
 
 	return sb.String()
 }
@@ -40,8 +32,6 @@ func baseDecl(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		fmt.Println(child, child.Type(), child.ChildCount())
-
 		var txt string
 		if child.ChildCount() > 0 {
 			txt = util.GetNodeText(child.Child(0), src)
@@ -59,13 +49,8 @@ func baseDecl(node *sitter.Node, src []byte) string {
 
 func accumDecl(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
-	fmt.Println(">>>")
-	// fmt.Println(node)
-	// fmt.Println(node.ChildCount())
-
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		fmt.Println(child, child.Type(), child.ChildCount())
 		var txt string
 		switch child.Type() {
 		case "accum_type":
@@ -83,18 +68,14 @@ func accumDecl(node *sitter.Node, src []byte) string {
 		}
 		sb.WriteString(txt)
 	}
-	fmt.Println(">>>")
 
 	return sb.String()
 }
 
 func accumType(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
-
-	fmt.Println("type info...")
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		fmt.Println(child.Type())
 		var txt string
 		switch child.Type() {
 		case "accum_type":
@@ -116,7 +97,6 @@ func accumType(node *sitter.Node, src []byte) string {
 		sb.WriteString(txt)
 	}
 
-	fmt.Println("accum type func done")
 	sb.WriteString(" ")
 	return sb.String()
 }

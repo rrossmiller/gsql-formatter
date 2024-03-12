@@ -34,8 +34,6 @@ func QueryBody(node *sitter.Node, src []byte) string {
 			break
 		case "query_body_stmt":
 			txt = querybodystmts.QueryBodyStmts(child, src)
-			// txt = GetNodeText(child, src)
-			// txt += "\n"
 			break
 		case "block_comment":
 			txt = BlockComment(child, src, 1)

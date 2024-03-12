@@ -47,6 +47,11 @@ int     >
     <       STRING k       , INT i, ListAccum<STRING> l, SumAccum<STRING         > x   ,
     GroupbyAccum<STRING k, INT i, ListAccum<STRING > l,  SumAccum<STRING   > x>      gb> @ac1;
 
+   int i 
+;
+i=100;
+i. attr  =100  ;
+
 Users = {User.*};
 /*
 Maxaccum<float> @m;

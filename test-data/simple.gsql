@@ -2,5 +2,7 @@
 creAte 
 or replace distRibuted QUERY TwitchEgosData     (int i=0) FOR GRAPH   TwitchEgos SYNTAX V2{
    int i 
-   =     0  , y=     300;
+;
+i=100;
+i. attr  =100  ;
 }
