@@ -7,9 +7,6 @@ import (
 
 // preprocess the words in the query to abide by the caps rules
 func Preprocess(b []byte) ([]byte, error) {
-	// blankLines := regexp.MustCompile(`(?m)^\n`)
-	// b = blankLines.ReplaceAll(b, []byte("<_-_-_>\n"))
-
 	spl := regexp.MustCompile(`\b`)
 	src := spl.Split(string(b), -1)
 	var sb strings.Builder

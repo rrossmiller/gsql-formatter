@@ -1,6 +1,7 @@
 package querybodystmts
 
 import (
+	"fmt"
 	"grommet/gfmt/util"
 	"strings"
 
@@ -76,13 +77,14 @@ func accumType(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
+		fmt.Println(">",child.Type())
 		var txt string
 		switch child.Type() {
 		case "accum_type":
 			txt = accumType(child, src)
 			break
 		case "base_type":
-			txt = util.GetNodeText(child, src) + " "
+			txt = util.GetNodeText(child, src) 
 			break
 		case ",":
 			txt = ", "

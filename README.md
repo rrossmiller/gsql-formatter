@@ -66,7 +66,7 @@ CREATE OR REPLACE DISTRIBUTED QUERY TwitchEgosData(INT current_partition = 0, IN
     INT x = 90;
     FLOAT x = 90.0, y, z = 1.0;
     SumAccum<INT> @a;
-    MapAccum<INT , STRING > @acc;
+    MapAccum<INT, STRING> @acc;
 
     HeapAccum<T>(150, attr1 ASC, attr2 DESC) @@ac1;
 
