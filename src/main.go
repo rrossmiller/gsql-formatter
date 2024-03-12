@@ -61,7 +61,7 @@ func format(sourceCode []byte) (string, error) {
 	var sb strings.Builder
 	for i := 0; i < int(root.ChildCount()); i++ {
 		child := root.Child(i)
-		fmt.Println("root children:", child.Type())
+		// fmt.Println("root children:", child.Type())
 
 		var txt string
 		switch child.Type() {

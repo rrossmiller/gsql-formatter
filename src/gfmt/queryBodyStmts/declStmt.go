@@ -60,16 +60,63 @@ func baseDecl(node *sitter.Node, src []byte) string {
 func accumDecl(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
 	fmt.Println(">>>")
-	fmt.Println(node)
-	fmt.Println(node.ChildCount())
+	// fmt.Println(node)
+	// fmt.Println(node.ChildCount())
 
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
 		fmt.Println(child, child.Type(), child.ChildCount())
-		sb.WriteString(util.GetNodeText(child, src))
+		var txt string
+		switch child.Type() {
+		case "accum_type":
+			txt = accumType(child, src)
+			break
+		case ",":
+			txt = ", "
+			break
+		case "=":
+			txt = " = "
+			break
+		default:
+			txt = util.GetNodeText(child, src)
+			break
+		}
+		sb.WriteString(txt)
 	}
 	fmt.Println(">>>")
 
-	sb.WriteString("\n// you're here. you just started accum declaration")
+	return sb.String()
+}
+
+func accumType(node *sitter.Node, src []byte) string {
+	var sb strings.Builder
+
+	fmt.Println("type info...")
+	for i := 0; i < int(node.ChildCount()); i++ {
+		child := node.Child(i)
+		fmt.Println(child.Type())
+		var txt string
+		switch child.Type() {
+		case "accum_type":
+			txt = accumType(child, src)
+			break
+		case "base_type":
+			txt = util.GetNodeText(child, src) + " "
+			break
+		case ",":
+			txt = ", "
+			break
+		case "ASC", "DESC":
+			txt = " " + util.GetNodeText(child, src)
+			break
+		default:
+			txt = util.GetNodeText(child, src)
+			break
+		}
+		sb.WriteString(txt)
+	}
+
+	fmt.Println("accum type func done")
+	sb.WriteString(" ")
 	return sb.String()
 }

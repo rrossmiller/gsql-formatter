@@ -1,11 +1,6 @@
 
 creAte 
-or replace distRibuted QUERY TwitchEgosData( inT  
-current_partition =   0 , INT total_partitions=100, set <string >   myList) FOR GRAPH   TwitchEgos SYNTAX V2{
-
-
-sumaccum<
-int     > 
-@a   ;
-
+or replace distRibuted QUERY TwitchEgosData     (int i=0) FOR GRAPH   TwitchEgos SYNTAX V2{
+   int i 
+   =     0  , y=     300;
 }

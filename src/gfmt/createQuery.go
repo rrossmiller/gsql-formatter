@@ -15,9 +15,10 @@ func CreateQuery(node *sitter.Node, src []byte) string {
 		if child.Type() == "parameter_list" {
 			txt = parameterList(child, src)
 		} else {
-			txt = util.GetNodeText(child, src)
+			txt = " " + util.GetNodeText(child, src)
 		}
-		sb.WriteString(txt + " ")
+
+		sb.WriteString(txt)
 	}
 	return sb.String()
 }
