@@ -1,8 +1,7 @@
-
 creAte 
-or replace distRibuted QUERY TwitchEgosData     (int i=0) FOR GRAPH   TwitchEgos SYNTAX V2{
+or replace distRibuted QUERY TwitchEgosData     () FOR GRAPH   TwitchEgos SYNTAX V2{
    int i 
 ;
+
 i=100;
-i. attr  =100  ;
 }

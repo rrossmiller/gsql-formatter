@@ -79,6 +79,10 @@ func format(sourceCode []byte) (string, error) {
 		case "line_comment":
 			txt = gfmt.LineComment(child, sourceCode, 0)
 			break
+		case "newline":
+			// sb.WriteString("\n")
+			txt = "\n"
+			break
 		}
 		sb.WriteString(txt)
 	}
