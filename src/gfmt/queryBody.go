@@ -42,9 +42,7 @@ func QueryBody(node *sitter.Node, src []byte) string {
 			txt = LineComment(child, src, 1)
 			break
 		case "spacing_line":
-			// if i > 0 && i+1 < int(node.ChildCount()) && node.Child(i-1).Type() != "query_body_stmt" {
 			txt = "\n"
-			// }
 			break
 		}
 		sb.WriteString(txt)

@@ -10,9 +10,6 @@ current_partition =   0 , INT total_partitions=100, set <string >   myList) FOR 
 typedef   TUPlE<VeRTeX indv      , InT age, string name, float x , datetime day, uint 
 
 u>indv_age     ;
-
-
-
 typedef   TUPlE<VeRTeX indv      , InT age, string name, float x , datetime day, uint u> type2    ;
 
 

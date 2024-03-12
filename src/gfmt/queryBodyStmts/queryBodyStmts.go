@@ -20,7 +20,8 @@ func QueryBodyStmts(node *sitter.Node, src []byte) string {
 			txt = assignStmt(child, src)
 			break
 		case "v_set_var_decl_stmt":
-			txt = util.GetNodeText(child, src)
+			// txt = util.GetNodeText(child, src)
+			txt = vSetDecl(child, src)
 			break
 		case "l_accum_assign_stmt":
 			txt = util.GetNodeText(child, src)

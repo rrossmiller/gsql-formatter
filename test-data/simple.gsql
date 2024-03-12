@@ -1,7 +1,11 @@
 creAte 
 or replace distRibuted QUERY TwitchEgosData     () FOR GRAPH   TwitchEgos SYNTAX V2{
-   int i 
-;
-
-i=100;
+Src
+    = {  _
+};
+//    Src = {ANY};
+//    Src = {V.*};
+//    Src = {V.*, S.*, T};
+//    Src = {@@glbl};
+//    Src = {a, b};
 }
