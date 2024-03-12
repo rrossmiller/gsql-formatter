@@ -8,32 +8,64 @@ Format gsql queries so that you can spend more time writing and less time format
 
 Sample results:
 ```sql
-    CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
-        // This is a comment
+creAte 
+or replace distRibuted QUERY TwitchEgosData( inT  
+current_partition =   0 , INT total_partitions=100, set <string >   myList) FOR GRAPH   TwitchEgos SYNTAX V2{
+    /*
+ block comment line 1
+	 block comment line 2
+	*/
+
+       //line comment
+typedef   TUPlE<VeRTeX indv      , InT age, string name, float x , datetime day, uint 
+
+u>indv_age     ;
+typedef   TUPlE<VeRTeX indv      , InT age, string name, float x , datetime day, uint u> type2    ;
+    InT x 
+    = 90         
+    ;
+                            FlOAT x = 90.0
+         , y, z =                     1.0   ;
+sumaccum<
+int     > 
+@a   ;
+   mapAccum
+   <InT
+   , STRING> @acc   ;
+
+    HeapAccum <
+    T  > ( 150,
+    attr1 aSC ,    attr2 DeSC) @@ac1            ;
+
+   int i 
+;
+
 Users = {User.*};
-	Users = SELECT s FROM Users:s 
-			             WHERE vertex_to_int(s) % total_partitions == current_partition
-						 And testCondition
-			  aND anotherOne
-			  ACCUM s.@id += s.id,
-              another.@accum += 0;
-			
-PRINT Users;
+
 }
 ```
 
 Is formatted to...
 ```sql
-CREATE QUERY TwitchEgosData(INT current_partition=0, INT total_partitions=100) FOR GRAPH TwitchEgos SYNTAX V2{
-    // This is a comment
-    Users = {User.*};
-    Users = SELECT s FROM Users:s 
-            WHERE vertex_to_int(s) % total_partitions == current_partition
-              AND testCondition
-              AND anotherOne
-            ACCUM s.@id += s.id,
-              another.@accum += 0;
+CREATE OR REPLACE DISTRIBUTED QUERY TwitchEgosData(INT current_partition = 0, INT total_partitions = 100, SET<STRING> myList) FOR GRAPH TwitchEgos SYNTAX V2{
+    /*
+        block comment line 1
+        block comment line 2
+    */
 
-    PRINT Users;
+    //line comment
+    TYPEDEF TUPLE <VERTEX indv, INT age, STRING name, FLOAT x, DATETIME day, UINT <_-_-_> u> indv_age; 
+    TYPEDEF TUPLE <VERTEX indv, INT age, STRING name, FLOAT x, DATETIME day, UINT u> type2; 
+
+    INT x = 90;
+    FLOAT x = 90.0, y, z = 1.0;
+    SumAccum<INT> @a;
+    MapAccum<INT , STRING > @acc;
+
+    HeapAccum<T>(150, attr1 ASC, attr2 DESC) @@ac1;
+
+    INT i;
+
+    Users = {User.*};
 }
 ```
