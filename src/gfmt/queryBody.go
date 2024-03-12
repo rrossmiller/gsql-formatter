@@ -28,9 +28,9 @@ func QueryBody(node *sitter.Node, src []byte) string {
 		case "typedef":
 			txt = TypeDef(child, src)
 			// separate typedefs from rest of query
-			if child.NextSibling().Type() != "typedef" {
-				txt += "\n"
-			}
+			// if child.NextSibling().Type() != "typedef" {
+			// 	txt += "\n"
+			// }
 			break
 		case "query_body_stmt":
 			txt = querybodystmts.QueryBodyStmts(child, src)
