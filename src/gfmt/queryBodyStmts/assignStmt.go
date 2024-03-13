@@ -18,6 +18,7 @@ func assignStmt(node *sitter.Node, src []byte) string {
 			txt = " = "
 		default:
 			txt = util.GetNodeText(child, src)
+			txt = strings.ReplaceAll(txt, " ", "")
 		}
 
 		sb.WriteString(txt)

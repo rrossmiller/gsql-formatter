@@ -71,13 +71,16 @@ func accumType(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		fmt.Println(">",child.Type())
 		var txt string
 		switch child.Type() {
 		case "accum_type":
 			txt = accumType(child, src)
 		case "base_type":
-			txt = util.GetNodeText(child, src) 
+			if i < int(node.ChildCount()) && node.Child(i+1).Type() == "name" {
+				txt = fmt.Sprint(util.GetNodeText(child, src), " ")
+			} else {
+				txt = util.GetNodeText(child, src)
+			}
 		case ",":
 			txt = ", "
 		case "ASC", "DESC":

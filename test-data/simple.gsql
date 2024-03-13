@@ -1,3 +1,7 @@
 creAte 
 or replace distRibuted QUERY TwitchEgosData     () FOR GRAPH   TwitchEgos SYNTAX V2{
+  
+         groupbyaccum
+    <       STRING k       , INT i, ListAccum<STRING> l, SumAccum<STRING         > x   ,
+    GroupbyAccum<STRING k, INT i, ListAccum<STRING > l,  SumAccum<STRING   > x>      gb> @ac1;
 }

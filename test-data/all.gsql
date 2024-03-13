@@ -62,6 +62,14 @@ Src = {
     Src 
     = {  @@ glbl  };
     Src = {a, b};
+
+
+Src = (          A      
+    union B);
+
+             Src = A UNIOn ( B
+    INTERSEcT   C   )
+    MInUS   D ;
 /*
 Maxaccum<float> @m;
 	    //comment
