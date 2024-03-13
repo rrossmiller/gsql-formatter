@@ -1,7 +1,6 @@
 package querybodystmts
 
 import (
-	"fmt"
 	"grommet/gfmt/util"
 	"strings"
 
@@ -13,7 +12,6 @@ func vSetDecl(node *sitter.Node, src []byte) string {
 	sb.WriteString(util.GetIndent(1))
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		fmt.Println(child.Type())
 		var txt string
 		switch child.Type() {
 		case "=":
@@ -31,14 +29,9 @@ func vSetDecl(node *sitter.Node, src []byte) string {
 
 func seedSet(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
-	fmt.Println("****")
-	fmt.Println(node)
-	fmt.Println(node.ChildCount())
-	fmt.Println("****")
 
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-		fmt.Println(child.Type())
 		var txt string
 		switch child.Type() {
 		case ",":
