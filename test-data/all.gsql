@@ -51,6 +51,17 @@ i. attr  =100  ;
 
 Users = {User.*};
 
+Src
+    = {  _
+
+};
+Src = {
+   ANY,   V .* } ;
+    Src     = {         V.*      };
+    Src =          {V.*    , S.*,    T}         ;
+    Src 
+    = {  @@ glbl  };
+    Src = {a, b};
 /*
 Maxaccum<float> @m;
 	    //comment
