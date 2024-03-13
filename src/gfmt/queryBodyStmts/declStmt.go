@@ -16,10 +16,8 @@ func declStmt(node *sitter.Node, src []byte) string {
 		switch child.Type() {
 		case "base_decl_stmt":
 			txt = baseDecl(child, src)
-			break
 		case "accum_decl_stmt":
 			txt = accumDecl(child, src)
-			break
 
 		}
 		sb.WriteString(util.GetIndent(1))
@@ -56,16 +54,12 @@ func accumDecl(node *sitter.Node, src []byte) string {
 		switch child.Type() {
 		case "accum_type":
 			txt = accumType(child, src)
-			break
 		case ",":
 			txt = ", "
-			break
 		case "=":
 			txt = " = "
-			break
 		default:
 			txt = util.GetNodeText(child, src)
-			break
 		}
 		sb.WriteString(txt)
 	}
@@ -82,19 +76,14 @@ func accumType(node *sitter.Node, src []byte) string {
 		switch child.Type() {
 		case "accum_type":
 			txt = accumType(child, src)
-			break
 		case "base_type":
 			txt = util.GetNodeText(child, src) 
-			break
 		case ",":
 			txt = ", "
-			break
 		case "ASC", "DESC":
 			txt = " " + util.GetNodeText(child, src)
-			break
 		default:
 			txt = util.GetNodeText(child, src)
-			break
 		}
 		sb.WriteString(txt)
 	}

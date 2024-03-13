@@ -21,29 +21,22 @@ func QueryBody(node *sitter.Node, src []byte) string {
 		switch child.Type() {
 		case "{":
 			txt = "{\n"
-			break
 		case "}":
 			txt = "}\n"
-			break
 		case "typedef":
 			txt = TypeDef(child, src)
 			// separate typedefs from rest of query
 			// if child.NextSibling().Type() != "typedef" {
 			// 	txt += "\n"
 			// }
-			break
 		case "query_body_stmt":
 			txt = querybodystmts.QueryBodyStmts(child, src)
-			break
 		case "block_comment":
 			txt = BlockComment(child, src, 1)
-			break
 		case "line_comment":
 			txt = LineComment(child, src, 1)
-			break
 		case "spacing_line":
 			txt = "\n"
-			break
 		}
 		sb.WriteString(txt)
 	}

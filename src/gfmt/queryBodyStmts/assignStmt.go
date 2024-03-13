@@ -16,10 +16,8 @@ func assignStmt(node *sitter.Node, src []byte) string {
 		switch child.Type() {
 		case "=":
 			txt = " = "
-			break
 		default:
 			txt = util.GetNodeText(child, src)
-			break
 		}
 
 		sb.WriteString(txt)

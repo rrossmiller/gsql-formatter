@@ -31,10 +31,8 @@ func TypeDef(node *sitter.Node, src []byte) string {
 			switch child.Type() {
 			case "<", "name":
 				txt = util.GetNodeText(child, src)
-				break
 			default:
 				txt = util.GetNodeText(child, src) + " "
-				break
 			}
 		}
 		sb.WriteString(txt)

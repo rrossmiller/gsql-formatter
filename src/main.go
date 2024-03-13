@@ -67,22 +67,16 @@ func format(sourceCode []byte) (string, error) {
 		switch child.Type() {
 		case "create_query":
 			txt = gfmt.CreateQuery(child, sourceCode)
-			break
 		case "interpret_query":
 			panic("not done yet")
 		case "query_body":
 			txt = gfmt.QueryBody(child, sourceCode)
-			break
 		case "block_comment":
 			txt = gfmt.BlockComment(child, sourceCode, 0)
-			break
 		case "line_comment":
 			txt = gfmt.LineComment(child, sourceCode, 0)
-			break
 		case "newline":
-			// sb.WriteString("\n")
 			txt = "\n"
-			break
 		}
 		sb.WriteString(txt)
 	}

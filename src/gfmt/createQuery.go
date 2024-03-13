@@ -36,11 +36,9 @@ func parameterList(node *sitter.Node, src []byte) string {
 		switch child.Type() {
 		case ",":
 			sb.WriteString(", ")
-			break
 		case "query_param":
 			param := queryParam(child, src)
 			sb.WriteString(param)
-			break
 		}
 
 	}
