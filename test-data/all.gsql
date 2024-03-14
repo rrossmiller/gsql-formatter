@@ -70,6 +70,28 @@ Src = (          A
              Src = A UNIOn ( B
     INTERSEcT   C   )
     MInUS   D ;
+
+v.
+@ac1        =   n  ;
+    v.@ac1 +=
+    @@ac;
+
+v.@ac1
+    = name   .name;
+            v   .
+    @ac1 =    n.@n   .size(  );
+        v   .
+    @ac1 =    n.@n   .size(  ) union         X;
+    v   .
+    @ac1 = (
+    n.@n   .size(  ) union         X
+    );
+    v.@ac1 =    COALESCE (  );
+    v.@ac1 =    IseMPTY( 
+    L
+    );
+    v.@ac1 = 1      +  2    
+    / 3;
 /*
 Maxaccum<float> @m;
 	    //comment
