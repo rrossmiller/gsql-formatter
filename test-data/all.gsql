@@ -92,6 +92,11 @@ v.@ac1
     );
     v.@ac1 = 1      +  2    
     / 3;
+    v.@ac1  = (  - 
+    1   .2 - 3         )        * 5;
+    v.@ac1 
+    = "   hello there!"
+    ;
 /*
 Maxaccum<float> @m;
 	    //comment

@@ -45,7 +45,7 @@ func main() {
 func format(sourceCode []byte) (string, error) {
 	// parse the sourceCode into a tree
 	parser := sitter.NewParser()
-	parser.SetLanguage(gsql.GetLanguage())
+	parser.SetLanguage(gsql.Language())
 	tree, err := parser.ParseCtx(context.Background(), nil, sourceCode)
 	if err != nil {
 		return "", err

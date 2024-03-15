@@ -10,7 +10,6 @@ import (
 
 func expr(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
-	fmt.Println(node, node.ChildCount())
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
 		var txt string
@@ -23,7 +22,6 @@ func expr(node *sitter.Node, src []byte) string {
 			txt = setBagExpr(child, src)
 		case "math_operator":
 			txt = fmt.Sprintf(" %s ", util.GetNodeText(child, src))
-			fmt.Println(txt)
 		case "constant":
 			txt = constant(child, src)
 		default:

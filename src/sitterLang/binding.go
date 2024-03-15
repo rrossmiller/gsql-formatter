@@ -11,7 +11,7 @@ import (
 	sitter "github.com/smacker/go-tree-sitter"
 )
 
-func GetLanguage() *sitter.Language {
+func Language() *sitter.Language {
 	ptr := unsafe.Pointer(C.tree_sitter_gsql())
 	return sitter.NewLanguage(ptr)
 }
