@@ -21,10 +21,8 @@ func QueryBodyStmts(node *sitter.Node, src []byte) string {
 			txt = assignStmt(child, src)
 		case "v_set_var_decl_stmt":
 			txt = vSetDecl(child, src)
-		case "l_accum_assign_stmt", "g_accum_assign_stmt":
+		case "l_accum_assign_stmt", "g_accum_assign_stmt", "g_accum_accum_stmt":
 			txt = accumAssign(child, src)
-		case "g_accum_accum_stmt":
-			txt = util.GetNodeText(child, src)
 		case "func_call_stmt":
 			txt = funcStmt(child, src, 1)
 		case "gsql_select_block":
