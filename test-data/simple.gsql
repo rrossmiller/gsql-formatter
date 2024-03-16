@@ -1,6 +1,15 @@
 creAte or replace distRibuted QUERY TwitchEgosData     () FOR GRAPH   TwitchEgos SYNTAX V2{
-    v.@ac1 =        
-    "   hello there!" ;
+F(   );
+    G(a1,a2);
+    func
+    <   InT,    BOOL>(  a1,a2,a3, 
+    a4);
+
+        a.f();
+    a.
+    f(a1,a2);
+    @@l.f(  
+    );
+    @@l.f(a1
+    ,a2);
 }
-    // v.@ac1
-    // = getvid (      x  )    ;

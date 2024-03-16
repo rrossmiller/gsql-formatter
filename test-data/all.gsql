@@ -97,6 +97,21 @@ v.@ac1
     v.@ac1 
     = "   hello there!"
     ;
+    v.@ac1
+= getvid (      x  )    ;
+F(   );
+    G(a1,a2);
+    func
+    <   InT,    BOOL>(  a1,a2,a3, 
+    a4);
+
+        a.f();
+    a.
+    f(a1,a2);
+    @@l.f(  
+    );
+    @@l.f(a1
+    ,a2);
 /*
 Maxaccum<float> @m;
 	    //comment

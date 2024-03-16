@@ -25,7 +25,7 @@ func expr(node *sitter.Node, src []byte) string {
 		case "constant":
 			txt = constant(child, src)
 		case "func_call_stmt":
-			txt = funcStmt(child, src)
+			txt = funcStmt(child, src, 0)
 		default:
 			txt = util.GetNodeText(child, src)
 		}
