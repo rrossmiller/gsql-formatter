@@ -25,7 +25,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("preprocessed")
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +35,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("formatting")
 	formatted, err := format(src)
 	if err != nil {
 		panic(err)
@@ -57,7 +55,6 @@ func format(sourceCode []byte) (string, error) {
 	// parse the sourceCode into a tree
 	parser := sitter.NewParser()
 	parser.SetLanguage(gsql.Language())
-	fmt.Println("parsing")
 	tree, err := parser.ParseCtx(context.Background(), nil, sourceCode)
 	if err != nil {
 		return "", err

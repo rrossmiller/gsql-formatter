@@ -26,7 +26,7 @@ func QueryBodyStmts(node *sitter.Node, src []byte) string {
 		case "func_call_stmt":
 			txt = funcStmt(child, src, 1)
 		case "gsql_select_block":
-			txt = util.GetNodeText(child, src)
+			txt = gsqlSelect(child, src)
 		case "query_body_case_stmt":
 			txt = util.GetNodeText(child, src)
 		case "query_body_if_stmt":

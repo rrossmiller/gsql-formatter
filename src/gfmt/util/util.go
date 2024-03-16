@@ -42,6 +42,18 @@ func GetConfig() error {
 }
 
 // --
+
+// Concat all text in the within the node
+func ConsumeNode(node *sitter.Node, src []byte) string {
+	var sb strings.Builder
+	for i := 0; i < int(node.ChildCount()); i++ {
+		child := node.Child(i)
+		txt := GetNodeText(child, src)
+		sb.WriteString(txt)
+	}
+
+	return sb.String()
+}
 func GetNodeText(node *sitter.Node, src []byte) string {
 	stb := node.StartByte()
 	eb := node.EndByte()
