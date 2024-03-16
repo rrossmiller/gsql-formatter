@@ -112,6 +112,19 @@ F(   );
     );
     @@l.f(a1
     ,a2);
+@@ac1 
+    = n;
+        @@ac1       += @@ac;
+    @@ac1 =      name.name;
+@@ac1 =     n.@n.size   (      );
+    @@ac1   =     COALESCE( );
+    @@ac1 = ISEMPTY(n       );
+@@ac1 = 1 + 2       / 3;
+            @@ac1 = (       1.2 - 3) * 5;
+    @@ac1 
+    = getvid(x
+    );
+
 /*
 Maxaccum<float> @m;
 	    //comment
