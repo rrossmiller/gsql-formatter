@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"grommet/gfmt"
 	"grommet/gfmt/util"
-	"grommet/preprocess"
 	gsql "grommet/sitterLang"
 	"os"
 	"strings"
@@ -21,7 +20,12 @@ func main() {
 		pth = os.Args[1]
 	}
 	sourceCode := readFile(pth)
-	src, err := preprocess.Preprocess(sourceCode)
+	src, err := util.Preprocess(sourceCode)
+	src, stringStore, err := util.GetStrings(src)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("preprocessed")
 	if err != nil {
 		panic(err)
 	}
@@ -32,10 +36,17 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println("formatting")
 	formatted, err := format(src)
 	if err != nil {
 		panic(err)
 	}
+	// post process
+	formatted, err = util.PostProcess(formatted, stringStore)
+	if err != nil {
+		panic(err)
+	}
+	//
 	err = writeFormattedQuery(formatted, "../test-data/fmt.gsql")
 	if err != nil {
 		panic(err)
@@ -46,6 +57,7 @@ func format(sourceCode []byte) (string, error) {
 	// parse the sourceCode into a tree
 	parser := sitter.NewParser()
 	parser.SetLanguage(gsql.Language())
+	fmt.Println("parsing")
 	tree, err := parser.ParseCtx(context.Background(), nil, sourceCode)
 	if err != nil {
 		return "", err
@@ -61,7 +73,7 @@ func format(sourceCode []byte) (string, error) {
 	var sb strings.Builder
 	for i := 0; i < int(root.ChildCount()); i++ {
 		child := root.Child(i)
-		// fmt.Println("root children:", child.Type())
+		fmt.Println("root children:", child.Type())
 
 		var txt string
 		switch child.Type() {

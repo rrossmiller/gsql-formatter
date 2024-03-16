@@ -12,7 +12,6 @@ func localAccumAssign(node *sitter.Node, src []byte) string {
 	sb.WriteString(util.GetIndent(1))
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
-
 		var txt string
 		switch child.Type() {
 		case "=":

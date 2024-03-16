@@ -24,6 +24,8 @@ func expr(node *sitter.Node, src []byte) string {
 			txt = fmt.Sprintf(" %s ", util.GetNodeText(child, src))
 		case "constant":
 			txt = constant(child, src)
+		case "func_call_stmt":
+			txt = funcStmt(child, src)
 		default:
 			txt = util.GetNodeText(child, src)
 		}

@@ -1,4 +1,4 @@
-package preprocess
+package util
 
 var words = map[string]string{
 	// todo order by frequency to have a higher chance of reaching the key earlier in a loop

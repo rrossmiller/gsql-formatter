@@ -1,7 +1,6 @@
 package querybodystmts
 
 import (
-	"fmt"
 	"grommet/gfmt/util"
 	"strings"
 
@@ -10,8 +9,6 @@ import (
 
 func constant(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
-	fmt.Println("****")
-	fmt.Println(node, node.ChildCount())
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
 		var txt string
@@ -20,22 +17,17 @@ func constant(node *sitter.Node, src []byte) string {
 			txt = number(child, src)
 		case "string_literal":
 			txt = stringLiteral(child, src)
-			fmt.Printf("txt '%s'\n", txt)
 		default:
 			txt = util.GetNodeText(child, src)
 		}
 		sb.WriteString(txt)
 	}
-	fmt.Println("****")
-	// sb.WriteString("\n\nworking on capturing string literals\n")
 
 	return sb.String()
 }
 
 func number(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
-	fmt.Println("****")
-	fmt.Println(node, node.ChildCount())
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
 		var txt string
@@ -45,15 +37,12 @@ func number(node *sitter.Node, src []byte) string {
 		}
 		sb.WriteString(txt)
 	}
-	fmt.Println("****")
 
 	return sb.String()
 }
 
 func stringLiteral(node *sitter.Node, src []byte) string {
 	var sb strings.Builder
-	fmt.Println("****")
-	fmt.Println(node, node.ChildCount())
 	for i := 0; i < int(node.ChildCount()); i++ {
 		child := node.Child(i)
 		var txt string
@@ -63,10 +52,8 @@ func stringLiteral(node *sitter.Node, src []byte) string {
 		default:
 			txt = util.GetNodeText(child, src)
 		}
-		fmt.Println("str child content:", txt, child)
 		sb.WriteString(txt)
 	}
-	fmt.Println("****")
 
 	return sb.String()
 }
