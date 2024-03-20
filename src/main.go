@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"grommet/gfmt"
+	qbs "grommet/gfmt/querybodystatements"
 	"grommet/gfmt/util"
 	gsql "grommet/sitterLang"
 	"os"
@@ -81,9 +82,9 @@ func format(sourceCode []byte) (string, error) {
 		case "query_body":
 			txt = gfmt.QueryBody(child, sourceCode)
 		case "block_comment":
-			txt = gfmt.BlockComment(child, sourceCode, 0)
+			txt = qbs.BlockComment(child, sourceCode, 0)
 		case "line_comment":
-			txt = gfmt.LineComment(child, sourceCode, 0)
+			txt = qbs.LineComment(child, sourceCode, 0)
 		case "newline":
 			txt = "\n"
 		}

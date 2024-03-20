@@ -2,7 +2,7 @@ package gfmt
 
 import (
 	"fmt"
-	querybodystmts "grommet/gfmt/queryBodyStmts"
+	qbs "grommet/gfmt/querybodystatements"
 	"strings"
 
 	sitter "github.com/smacker/go-tree-sitter"
@@ -30,11 +30,11 @@ func QueryBody(node *sitter.Node, src []byte) string {
 			// 	txt += "\n"
 			// }
 		case "query_body_stmt":
-			txt = querybodystmts.QueryBodyStmts(child, src)
+			txt = qbs.QueryBodyStmts(child, src)
 		case "block_comment":
-			txt = BlockComment(child, src, 1)
+			txt = qbs.BlockComment(child, src, 1)
 		case "line_comment":
-			txt = LineComment(child, src, 1)
+			txt = qbs.LineComment(child, src, 1)
 		case "spacing_line":
 			txt = "\n"
 		}

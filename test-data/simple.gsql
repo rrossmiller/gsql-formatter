@@ -1,7 +1,9 @@
 creAte or replace distRibuted QUERY TwitchEgosData     () FOR GRAPH   TwitchEgos SYNTAX V2{
+
+
 V
 = SeLECT    s
 FROM    S : s 
-    -(    E   :  e)- 
+    - (     E   :  e) - 
 T       :t ;
 }
